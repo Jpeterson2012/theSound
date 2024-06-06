@@ -1,0 +1,58 @@
+const { con } = require('../sql.js')
+var express = require('express');
+var router = express.Router();
+
+
+// con.connect(function(err) {
+//   if (err) throw err;
+//   console.log("Connected!");
+//   var sql = "CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(20), sID VARCHAR(20))";
+//   con.query(sql, function(err, result) {
+//     if (err) throw err;
+//     console.log("Table Created")
+//   })
+// })
+
+/* GET users listing. */
+router.get('/', function(req, res, next) {  
+  const url = 'https://api.spotify.com/v1/me'
+  const headers = {
+    Authorization: 'Bearer ' + process.env.access_token
+  }
+
+  fetch(url, { headers })
+      .then(response => response.json())
+      .then(data => {
+        //Checks if user is already in db. Adds if not
+      var sql = `CREATE DATABASE IF NOT EXISTS ${data.display_name}`
+      con.query(sql, (err) => {
+        if (err) throw err;
+        console.log(`Database for user ${data.display_name} created!`)
+      })
+
+      sql = `USE ${data.display_name}`
+      con.query(sql, (err) => {
+        if (err) throw err;
+        console.log('Database selected!')
+      })
+
+      sql = "CREATE TABLE IF NOT EXISTS ualbums (id INT AUTO_INCREMENT PRIMARY KEY, total_tracks SMALLINT(2), album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, label_name VARCHAR(75), popularity SMALLINT(3))"
+      con.query(sql, (err) => {
+        if (err) throw err;
+        console.log('User Album table created!')
+      })
+
+      sql = "CREATE TABLE IF NOT EXISTS uplaylists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(50), public BOOL, uri varCHAR(40), tracks MEDIUMTEXT)"
+      con.query(sql, (err) => {
+        if (err) throw err;
+        console.log('User Playlist table created!')
+      })
+
+      res.send(data)
+      })
+      .catch(error => {
+        throw error
+      });
+
+  });
+module.exports = router;

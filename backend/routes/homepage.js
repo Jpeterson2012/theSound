@@ -1,0 +1,188 @@
+const { con } = require('../sql.js')
+var express = require('express');
+var router = express.Router();
+
+router.get('/', async (req, res) => {
+
+    var url = ''
+    const headers = {
+        Authorization: 'Bearer ' + process.env.access_token
+    }
+
+    //Check if album data already exits
+    sql = 'select exists (select 1 from ualbums) AS Output'
+    con.query(sql, function(err, result) {
+        if (err) throw err;
+        var empty = result[0].Output
+        //If table already has data read relevent data and send to front end
+        if (empty == 1) {
+            // sql = 'SELECT album_id, images, name, artists from ualbums where id = 1'
+            
+            sql = 'SELECT album_id, images, name, uri, artists from ualbums'
+            con.query(sql, function (err, result) {
+                if (err) throw err;
+                var records = {}
+                var items = []
+                var items2 = []
+                for (let i = 0; i < result.length; i++) {
+                    var temp = {}
+                    temp.album_id = result[i].album_id
+                    temp.images = JSON.parse(result[i].images)
+                    temp.name = result[i].name
+                    temp.uri = result[i].uri
+                    temp.artists = JSON.parse(result[i].artists)
+                    items.push(temp)
+                }
+                records.token = process.env.access_token
+                records.items = items
+                sql = 'SELECT playlist_id, images, name, public, uri, tracks from uplaylists'
+                con.query(sql, function (err,result) {
+                    if (err) throw err;
+
+                    for (let i = 0; i < result.length; i++){
+                        var temp ={}
+                        temp.playlist_id = result[i].playlist_id
+                        temp.images = JSON.parse(result[i].images)
+                        temp.name = result[i].name
+                        temp.public = result[i].public
+                        temp.uri = result[i].uri
+
+                        var temp2 = JSON.parse(result[i].tracks)
+                        var temp3 = []
+                        temp2.items?.map(a => {
+                            temp3.push({images: a.album.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms})
+                        })
+                        temp.tracks = temp3
+
+                        items2.push(temp)
+                    }
+                    records.items2 = items2
+                    res.send(records)
+                })
+                
+                // var temp = {}
+                // temp.album_id = result[0].album_id
+                // temp.images = JSON.parse(result[0].images)
+                // temp.name = result[0].name
+                // temp.artists = JSON.parse(result[0].artists)
+                // console.log(temp)
+                // for (let i = 0; i < result.length; i++) {console.log(result[i])}
+            })
+        }
+        else {
+            const getStuff = async() => {
+                //Fetch user's saved playlists
+                pages = 0
+                while(true) {
+                    
+
+                    url = `https://api.spotify.com/v1/me/playlists?offset=${pages}`
+                    var resp = await fetch(url, {headers})
+                    var data = await resp.json()
+                    
+                    data.items.map(async a => {
+                        // values.push([a.id, JSON.stringify(a.images), a.name, a.public, JSON.stringify(a.tracks)])
+                            var values = []
+                            var trackInfo = []
+                            var trackJSON = {}
+                            
+                            const resp2 = await fetch(a.tracks.href, {headers})
+                            const data2 = await resp2.json()
+                            // data2.items.map(a => values2.push({images: a.track.album.images, uri: a.track.uri, name: a.track.name, track_number: a.track.track_number, duration_ms: a.track.duration_ms}))
+                            data2.items.map(a => trackInfo.push(a.track))
+                            trackJSON.items = trackInfo
+                            
+                            values.push([a.id, JSON.stringify(a.images), a.name, a.public, a.uri, JSON.stringify(trackJSON)])
+                            var sql = "INSERT INTO uplaylists (playlist_id, images, name, public, uri, tracks) VALUES ?"
+                            con.query(sql, [values], function(err, result) {
+                                if (err) throw err;
+                                console.log("Number of playlists inserted: " + result.affectedRows);
+                            })
+                        
+                        
+                        //Gearsofwar3!
+                        
+                    })
+                    
+                    pages += 20
+                   
+                    if(data.next == null) {
+                        console.log("done")
+                        break
+                    } 
+                }
+
+                var pages = 0
+
+                //fetch user's saved albums
+                while(true) {
+                    url = `https://api.spotify.com/v1/me/albums?offset=${pages}`
+                    var resp = await fetch(url, {headers})
+                    var data = await resp.json()
+                    var values = []
+                    data.items.map(a => values.push([a.album.total_tracks, a.album.id, JSON.stringify(a.album.images), a.album.name, a.album.release_date, a.album.uri, JSON.stringify(a.album.artists), JSON.stringify(a.album.tracks), a.album.label, a.album.popularity]))
+                    var sql = "INSERT INTO ualbums (total_tracks,album_id, images, name, release_date, uri, artists, tracks, label_name, popularity) VALUES ?"
+                    con.query(sql, [values], function(err, result) {
+                        if (err) throw err;
+                        console.log("Number of albums inserted: " + result.affectedRows);
+                    })
+                    pages += 20
+                   
+                    if(data.next == null) {
+                        break
+                    } 
+                }
+                
+                sql = 'SELECT album_id, images, name, artists from ualbums'
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    var records = {}
+                    var items = []
+                    var items2 = []
+                    for (let i = 0; i < result.length; i++) {
+                        var temp = {}
+                        temp.album_id = result[i].album_id
+                        temp.images = JSON.parse(result[i].images)
+                        temp.name = result[i].name
+                        temp.uri = result[i].uri
+                        temp.artists = JSON.parse(result[i].artists)
+                        items.push(temp)
+                    }
+                    records.token = process.env.access_token
+                    records.items = items
+                    var sql = 'SELECT playlist_id, images, name, public, uri, tracks from uplaylists'
+                    
+                    con.query(sql, function (err, result) {
+                        if (err) throw err;
+
+                        for (let i = 0; i < result.length; i++){
+                            var temp ={}
+                            temp.playlist_id = result[i].playlist_id
+                            temp.images = JSON.parse(result[i].images)
+                            temp.name = result[i].name
+                            temp.public = result[i].public
+                            temp.uri = result[i].uri
+
+                            var temp2 = JSON.parse(result[i].tracks)
+                            var temp3 = []
+                            temp2.items?.map(a => {
+                                temp3.push({images: a.album.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms})
+                            })
+
+                            temp.tracks = temp3
+                            
+                            items2.push(temp)
+                        }
+                        records.items2 = items2
+                        res.send(records)
+                    })
+                })
+            }
+            getStuff()
+        }
+      })
+    
+})
+module.exports = router;
+
+//Gearsofwar3!
