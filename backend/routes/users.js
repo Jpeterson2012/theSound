@@ -48,6 +48,12 @@ router.get('/', function(req, res, next) {
         console.log('User Playlist table created!')
       })
 
+      sql = 'CREATE TABLE IF NOT EXISTS categories (id INT AUTO_INCREMENT PRIMARY KEY, href VARCHAR(100), icons MEDIUMTEXT, c_id VARCHAR(30), name VARCHAR(40))'
+      con.query(sql, (err) => {
+        if (err) throw err;
+        console.log('Category table created!')
+      })
+
       res.send(data)
       })
       .catch(error => {

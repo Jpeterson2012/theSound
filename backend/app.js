@@ -21,6 +21,7 @@ var ptracksRouter = require('./routes/ptracks')
 var artistsRouter = require('./routes/artists')
 var discoverRouter = require('./routes/discover')
 var searchRouter = require('./routes/search')
+var categoriesRouter = require('./routes/categories')
 
 var app = express();
 
@@ -47,7 +48,8 @@ app.use('/auth/token', tokenRouter);
 app.use('/auth/ptracks', ptracksRouter);
 app.use('/auth/artists', artistsRouter);
 app.use('/auth/discover', discoverRouter);
-app.use('/auth/search', searchRouter)
+app.use('/auth/search', searchRouter);
+app.use('/auth/categories', categoriesRouter)
 // const AuthRoutes = require('./routes/AuthRoutes');
 // app.use('/api', cors(), AuthRoutes);
 // app.listen(PORT, () => {

@@ -13,9 +13,10 @@ export default function Track ( {uri, name, number, duration} ) {
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <a onClick={function handleClick () {
-                // console.log(sessionStorage.getItem("device_id"))
-                // console.log(uri)
-                // console.log(sessionStorage.getItem("token"))
+                console.log(sessionStorage.getItem("device_id"))
+                console.log(uri)
+                console.log(sessionStorage.getItem("uri"))
+                console.log(sessionStorage.getItem("token"))
                 sessionStorage.setItem("name", sessionStorage.getItem("albumname"))
 
                 var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`

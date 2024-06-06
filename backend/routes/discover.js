@@ -11,12 +11,7 @@ router.get('/', async (req, res) => {
     
     var resp = await fetch(url, {headers})
     var data = await resp.json()
-    info.releases = data
-
-    url = 'https://api.spotify.com/v1/browse/categories'
-    resp = await fetch(url, {headers})
-    data = await resp.json()
-    info.categories = data
+    info.releases = data  
 
     url = 'https://api.spotify.com/v1/browse/featured-playlists'
     resp = await fetch(url, {headers})

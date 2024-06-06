@@ -36,6 +36,15 @@ export default function Discover() {
         }
 
         else {
+            const fetchCategories = async () => {
+                const resp = await fetch('http://localhost:8888/auth/categories')
+                const data = await resp.json()
+                console.log(data)
+                setCategories(data)
+                sessionStorage.setItem("categories", JSON.stringify(data))
+            }
+            fetchCategories()
+
             const fetchDiscover = async () => {
                 try {
                     var temp = await fetch('http://localhost:8888/auth/discover')
@@ -50,13 +59,11 @@ export default function Discover() {
             const assignDiscover = async () => {
             const tempDiscover = await fetchDiscover()
             setReleases(tempDiscover.releases)
-            setCategories(tempDiscover.categories)
             setFplaylists(tempDiscover.fplaylists)
                 
             sessionStorage.setItem("releases", JSON.stringify(tempDiscover.releases))
-            sessionStorage.setItem("categories", JSON.stringify(tempDiscover.categories))
             sessionStorage.setItem("fplaylists", JSON.stringify(tempDiscover.fplaylists))
-            //   console.log(tempDiscover)
+              console.log(tempDiscover)
             
             }
             assignDiscover()
@@ -64,7 +71,7 @@ export default function Discover() {
 
     }, []);
 
-    const listCategories = categories.categories?.items.map(a =>
+    const listCategories = categories?.map(a =>
         <div style={{width: '200px',height: '305px', marginBottom: '50px'}}>
 
             <img src={a.icons.map(s => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>

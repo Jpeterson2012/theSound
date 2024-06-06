@@ -133,7 +133,7 @@ router.get('/', async (req, res) => {
                     } 
                 }
                 
-                sql = 'SELECT album_id, images, name, artists from ualbums'
+                sql = 'SELECT album_id, images, name, uri, artists from ualbums'
                 con.query(sql, function (err, result) {
                     if (err) throw err;
                     var records = {}
