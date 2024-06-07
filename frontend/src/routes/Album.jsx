@@ -52,10 +52,10 @@ export default function Album({SpinComponent, active, paused}) {
         {isLoading ? <Loading /> : (
           <>
            
-          <div style={{display: 'flex', flexDirection: 'column', marginBottom: '80px'}}>
-            <span style={{marginLeft: '28vw', marginTop: '20px'}}>
+          <div style={{display: 'flex', flexDirection: 'column', marginBottom: '20px'}}>
+            <span style={{marginLeft: '28vw', marginTop: '30px'}}>
               <SpinComponent is_active={active} is_paused={paused}/>
-              <img src={sessionStorage.getItem("image")} style={{height: '359px', position: 'relative', right: '17vw', bottom: '14px', zIndex: '1'}} />
+              <img src={sessionStorage.getItem("image")} style={{height: '359px', position: 'relative', right: '495px', bottom: '17px', zIndex: '1'}} />
               {/* <Card 
               id={sessionStorage.getItem("id")}
               image={sessionStorage.getItem("image")}
@@ -67,9 +67,9 @@ export default function Album({SpinComponent, active, paused}) {
             <h2>{sessionStorage.getItem("artist")}</h2>
 
             <div style={{display: 'inline-flex'}}><span className="lol" style={{marginRight: '500px'}}>Title</span><span className="lol" style={{marginLeft: '500px'}}>Duration</span></div>
-            {listItems}
-            
           </div>
+          {listItems}
+          <p style={{marginBottom: '50px'}}></p>
           </>
         )}
 

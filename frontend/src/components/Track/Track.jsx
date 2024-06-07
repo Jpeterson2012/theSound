@@ -11,7 +11,7 @@ function timeCalc (ms) {
 
 export default function Track ( {uri, name, number, duration} ) {
     return (
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <div style={{display: 'flex'}}>
             <a onClick={function handleClick () {
                 console.log(sessionStorage.getItem("device_id"))
                 console.log(uri)
@@ -32,9 +32,9 @@ export default function Track ( {uri, name, number, duration} ) {
                     })
                 
             }}>
-            <h3 style={{position: 'absolute', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)', }}>{name}</h3>
+            <h3 style={{position: 'relative', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)', }}>{name}</h3>
             </a>
-            <span style={{marginLeft: '300px', fontWeight: 'bold', color: 'rgb(90, 210, 216)'}}>{timeCalc(duration)}</span>
+            <span style={{position: 'absolute', left: '81vw', fontWeight: 'bold', color: 'rgb(90, 210, 216)'}}>{timeCalc(duration)}</span>
       </div>
     )
 }

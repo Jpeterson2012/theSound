@@ -126,13 +126,9 @@
   }
   /* Record animation */
   svg {
-    /* margin-left: 300px; */
     z-index: 0;
-    /* position: absolute; */
-    position: absolute;
-    left: 45vw;
-    /* bottom: 17vw; */
-    bottom: 256px;
+    position: relative;
+    left: 4vw;
     width: 400px;
     height: 390px;
     border: 1px solid 0066ff;

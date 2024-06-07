@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Track from "../components/Track/Track";
 import Card from "../components/Card/Card";
+import Loading from '../components/Loading/Loading.jsx';
 
 export default function Artist() {
   var parts = window.location.href.split('/');
@@ -33,7 +34,7 @@ export default function Artist() {
   }, []);
   var count = 1
   const listTTracks = artists.tracks?.tracks.map(t =>
-    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+    <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
     <p style={{marginRight: '20px'}}>{count}</p> 
     <img src={t.album?.images.filter(t => t.height == 64).map(s => s.url)} />
     <Track 
@@ -60,6 +61,8 @@ export default function Artist() {
 
   return (
     <div style={{marginBottom: '80px'}}>
+        {loading ? <Loading yes={true} /> : (
+          <>
         <h1>{artists.artists?.name}</h1>
         <img src={artists.artists?.images.filter(t=>t.height == 320).map(s => s.url)} />
         <h4>{artists.artists?.followers.total} followers</h4>
@@ -75,7 +78,9 @@ export default function Artist() {
         </div>
         
         
-        {console.log(artists)}
+        {/* {console.log(artists)} */}
+        </>
+      )}
     </div>
   )
 }

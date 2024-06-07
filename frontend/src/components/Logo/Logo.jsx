@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 export default function Logo () {
     const navigate = useNavigate()
     return(
-        <div style={{display: 'flex', position: 'relative', top: '5pt', justifyContent: 'space-between', alignItems: 'center'}}>
+        <div style={{display: 'flex', position: 'relative', top: '5pt', alignItems: 'center'}}>
             <h2 style={{marginRight: '50vw'}}>{sessionStorage.getItem("username")}</h2>
 
             <div class="wrap">

@@ -14,7 +14,6 @@ export default function Playlist({plists, SpinComponent, active, paused}) {
     const headers = {
       Authorization: 'Bearer ' + sessionStorage.getItem("token")
   }
-      
       setpTracks(plists.find((e) => e.playlist_id === lastSegment))
       const getImage = async () => {
         setLoading(true)
@@ -46,11 +45,14 @@ export default function Playlist({plists, SpinComponent, active, paused}) {
     // assignpTracks()
     
   }, []);
-  const listImages = image.filter(t=>t.height == 640).map(s =>
-    <img src={s.url} style={{height: '355px', width: '300px', zIndex: '1', position: 'relative'}}/>
+  
+  const listImages =  image.length == 1 ? image.map(s => <img src={s.url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>) :
+   image.filter(t=>t.height == 640).map(s =>
+    <img src={s.url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>
   )
   var key = 0
   const listItems = ptracks.tracks?.map(t =>
+    
       <div style={{display: 'flex', alignItems: 'center'}}> 
           <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} />
           <PTrack 
@@ -65,9 +67,13 @@ export default function Playlist({plists, SpinComponent, active, paused}) {
   return (
     <>
       {loading ? <Loading /> : (
-        <>
-          {listImages}
+        <div style={{marginTop: '50px'}}>
+        <span style={{marginLeft: '24vw'}}>
           <SpinComponent is_active={active} is_paused={paused}/>
+          {listImages}
+        </span>
+        
+          
           <div style={{marginBottom: '60px'}}>
             
             <h2>{sessionStorage.getItem("playlist_name")}</h2>
@@ -75,7 +81,7 @@ export default function Playlist({plists, SpinComponent, active, paused}) {
             {listItems}
             
           </div>
-        </>
+        </div>
       )}
   
     </>
