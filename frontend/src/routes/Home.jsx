@@ -22,11 +22,11 @@ function Playlists(listPlaylists){
   return(
     <div style={{
       display: 'flex',
+      flexWrap: 'wrap',
       flexDirection: 'column',
       paddingTop: '15px',
       marginBottom: '90px'
     }}>
-    <h4>Hi</h4>
     {listPlaylists}
     </div>
   )
@@ -109,7 +109,11 @@ export default function Home( {albums} ) {
         sessionStorage.setItem("playlist_name", a.name)
         navigate(`/app/playlist/${a.playlist_id}`)
       }}>
-      <img src={a.images.map(s => s.url)} alt={a.name} style={{height: '300px', width: '300px'}}/>
+        <div style={{display: 'flex', alignItems: 'center'}}>
+        <img src={a.images.length == 1 ? a.images.map(s => s.url) : a.images.filter(s => s.height == 300).map(s => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
+        <h2>{a.name}</h2>
+        </div>
+      
       <br></br>
       </a>
       
