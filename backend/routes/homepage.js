@@ -42,6 +42,7 @@ router.get('/', async (req, res) => {
 
                     for (let i = 0; i < result.length; i++){
                         var temp ={}
+                        var tracks = {}
                         temp.playlist_id = result[i].playlist_id
                         temp.images = JSON.parse(result[i].images)
                         temp.name = result[i].name
@@ -67,12 +68,13 @@ router.get('/', async (req, res) => {
                             var temp ={}
                             temp.images = JSON.parse(result[i].images)
                             temp.duration_ms = result[i].duration
-                            temp.track_id = "spotify:track:" + result[i].track_id
+                            temp.uri = "spotify:track:" + result[i].track_id
                             temp.name = result[i].name
                             
                             items3.push(temp)
                         }
-                            records.items3 = items3
+                            tracks.tracks = items3
+                            records.items3 = tracks
                             res.send(records)
                     })
                 })
@@ -123,7 +125,7 @@ router.get('/', async (req, res) => {
                 //Fetch user's liked songs
                 var pages = 0
                 while(true) {
-                    url = `https://api.spotify.com/v1/me/tracks?offset=${pages}`
+                    url = `https://api.spotify.com/v1/me/tracks?offset=${pages}&limit=30`
                     var resp = await fetch(url, {headers})
                     var data = await resp.json()
                     var values = []
@@ -133,7 +135,7 @@ router.get('/', async (req, res) => {
                         if (err) throw err;
                         console.log("Number of liked songs inserted: " + result.affectedRows);
                     })
-                    pages += 20
+                    pages += 30
                    
                     if(data.next == null) {
                         break
@@ -187,6 +189,7 @@ router.get('/', async (req, res) => {
 
                         for (let i = 0; i < result.length; i++){
                             var temp ={}
+                            var tracks ={}
                             temp.playlist_id = result[i].playlist_id
                             temp.images = JSON.parse(result[i].images)
                             temp.name = result[i].name
@@ -213,12 +216,13 @@ router.get('/', async (req, res) => {
                             var temp ={}
                             temp.images = JSON.parse(result[i].images)
                             temp.duration_ms = result[i].duration
-                            temp.track_id = "spotify:track:" + result[i].track_id
+                            temp.uri = "spotify:track:" + result[i].track_id
                             temp.name = result[i].name
                             
                             items3.push(temp)
                         }
-                            records.items3 = items3
+                            tracks.tracks = items3
+                            records.items3 = tracks
                             res.send(records)
                         })
                     })

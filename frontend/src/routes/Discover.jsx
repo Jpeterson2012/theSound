@@ -39,7 +39,6 @@ export default function Discover() {
             const fetchCategories = async () => {
                 const resp = await fetch('http://localhost:8888/auth/categories')
                 const data = await resp.json()
-                console.log(data)
                 setCategories(data)
                 sessionStorage.setItem("categories", JSON.stringify(data))
             }
@@ -49,7 +48,6 @@ export default function Discover() {
                 try {
                     var temp = await fetch('http://localhost:8888/auth/discover')
                 .then((res) => {
-                    // console.log(res.json())
                     return res.json();
                 }).then((data) => {return data})
                     return temp
@@ -63,7 +61,6 @@ export default function Discover() {
                 
             sessionStorage.setItem("releases", JSON.stringify(tempDiscover.releases))
             sessionStorage.setItem("fplaylists", JSON.stringify(tempDiscover.fplaylists))
-              console.log(tempDiscover)
             
             }
             assignDiscover()

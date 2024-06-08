@@ -174,7 +174,7 @@ const WebPlayback = memo(function WebPlayback() {
                 const tempAlbums = await fetchAlbums();
                 setIsLoading(false)
                 
-                console.log(tempAlbums)
+                // console.log(tempAlbums)
                 setUsers(tempUsers.display_name)
                 setAlbums(tempAlbums)
                 sessionStorage.setItem("username", tempUsers.display_name)
@@ -194,7 +194,7 @@ const WebPlayback = memo(function WebPlayback() {
                 <Route path = '/' element={<Home albums={albums}/>}/>
                 <Route path='/discover' element={<Discover />} />
                 <Route path='/album/:id' element={<Album SpinComponent={Spin} active={is_active}  paused={is_paused}/>}/>
-                <Route path='/playlist/:id' element={<Playlist plists={albums.items2} SpinComponent={Spin} active={is_active}  paused={is_paused}/>} />
+                <Route path='/playlist/:id' element={<Playlist plists={albums.items2} liked={albums.items3} SpinComponent={Spin} active={is_active}  paused={is_paused}/>} />
                 <Route path='/artist/:id' element={<Artist />} />
                 </Routes>    
                 
@@ -207,7 +207,7 @@ const WebPlayback = memo(function WebPlayback() {
                                 sessionStorage.setItem("uri", current_track.album.uri)
                                 sessionStorage.setItem("artist", current_track.artists[0].name)
                                 sessionStorage.setItem("image", current_track.album.images?.filter(s => s.height == 640).map(s => s.url))
-                                sessionStorage.setItem("name", current_track.album.name)
+                                // sessionStorage.setItem("name", current_track.album.name)
                                 sessionStorage.setItem("albumname", current_track.album.name)
 
                                 navigate(`/app/album/${lastSegment}`)

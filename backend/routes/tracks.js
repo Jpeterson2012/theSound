@@ -3,7 +3,7 @@ var router = express.Router();
 
 router.get('/:id', async (req, res) => {
     // console.log(req.params.id)
-    url = `https://api.spotify.com/v1/albums/${req.params.id}/tracks`
+    url = `https://api.spotify.com/v1/albums/${req.params.id}/tracks?offset=0&limit=35`
     const headers = {
         Authorization: 'Bearer ' + process.env.access_token
       }

@@ -8,10 +8,10 @@ export default function Logo () {
         <div style={{display: 'flex', position: 'relative', top: '5pt', alignItems: 'center'}}>
             <h2 style={{marginRight: '50vw'}}>{sessionStorage.getItem("username")}</h2>
 
-            <div class="wrap">
-                <div class="search">
-                    <input type="text" class="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
-                    <button type="button" class="searchButton" onClick={function handleSubmit() {
+            <div className="wrap">
+                <div className="search">
+                    <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
+                    <button type="button" className="searchButton" onClick={function handleSubmit() {
                         console.log(document.getElementById("searchTerm").value);
                         const fetchSearch = async () => {
                             const resp = await fetch(`http://localhost:8888/auth/search/${document.getElementById("searchTerm").value}`)
@@ -21,7 +21,7 @@ export default function Logo () {
                         fetchSearch()
                          return false
                          }}>
-                        <i class="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}}></i>
+                        <i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}}></i>
                     </button>
                 </div>
             </div>

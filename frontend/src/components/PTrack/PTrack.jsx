@@ -9,7 +9,7 @@ function timeCalc (ms) {
     else return `${mins}.${secs}`
 }
 
-export default function PTrack ( {uri, name, number, duration} ) {
+export default function PTrack ( {uri, name, number, duration, liked} ) {
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <a onClick={function handleClick () {
@@ -23,7 +23,7 @@ export default function PTrack ( {uri, name, number, duration} ) {
                     fetch(url, {
                         method: 'PUT',
                         headers: headers,
-                        body: JSON.stringify({context_uri: uri, offset: {position: number}})
+                        body: liked !== null ? JSON.stringify({uris: liked, offset: {position: number}}) : JSON.stringify({context_uri: uri, offset: {position: number}})
                     })
                 
             }}>

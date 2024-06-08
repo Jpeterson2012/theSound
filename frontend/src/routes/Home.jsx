@@ -18,7 +18,7 @@ function Albums(listItems){
     </div>
   )
 }
-function Playlists(listPlaylists){
+function Playlists(navigate, listPlaylists){
   return(
     <div style={{
       display: 'flex',
@@ -27,6 +27,15 @@ function Playlists(listPlaylists){
       paddingTop: '15px',
       marginBottom: '90px'
     }}>
+      <a onClick={function handleClick() {
+        sessionStorage.setItem("playlist_name", "Liked Songs")
+        navigate('/app/playlist/likedsongs')
+      }}>
+      <div style={{display: 'flex', alignItems: 'center'}}>
+        <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '300px', width: '300px', marginRight: '50px'}}/>
+        <h2>Liked Songs</h2>
+      </div>
+      </a>
     {listPlaylists}
     </div>
   )
@@ -39,6 +48,7 @@ function Podcasts(){
 
 export default function Home( {albums} ) {
   const navigate = useNavigate()
+  var key = 0
 
     // const [albums, setAlbums] = useState([]);
     // const [users, setUsers] = useState("")
@@ -123,7 +133,7 @@ export default function Home( {albums} ) {
     <>
       <div style={{marginTop: '70px'}}>
         <button onClick={() => setHtml(Albums(listItems))}>Albums</button>
-        <button onClick={() => setHtml(Playlists(listPlaylists))}>Playlists</button>
+        <button onClick={() => setHtml(Playlists(navigate, listPlaylists))}>Playlists</button>
         <button onClick={() => setHtml(Podcasts())}>Podcasts</button>
       </div>
       

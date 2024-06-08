@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import './Album.css'
-import Card from '../components/Card/Card.jsx'
-import Logo from "../components/Logo/Logo.jsx"
 import Loading from "../components/Loading/Loading.jsx"
 import Track from "../components/Track/Track.jsx";
 
@@ -35,8 +33,8 @@ export default function Album({SpinComponent, active, paused}) {
 
       }
       assignTracks()
-      
-    }, []);
+      //This fixes render bug where fetch doesn't activate when clicking on currently playing album
+    }, [sessionStorage.getItem("artist")]);
     
     const listItems = tracks.items?.map(t => 
       <Track 
