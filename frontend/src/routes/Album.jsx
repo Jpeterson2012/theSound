@@ -40,7 +40,7 @@ export default function Album({SpinComponent, active, paused}) {
     
     const listItems = tracks.items?.map(t => 
       <Track 
-        uri={t.uri}
+        uri={"spotify:album:" + lastSegment}
         name={t.name}
         number={t.track_number}
         duration={t.duration_ms}

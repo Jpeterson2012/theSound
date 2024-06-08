@@ -11,19 +11,19 @@ export default function Playlist({plists, SpinComponent, active, paused}) {
   const [image, setImage] = useState([])
   const [loading, setLoading] = useState(false)
   useEffect (() => {
-    const headers = {
-      Authorization: 'Bearer ' + sessionStorage.getItem("token")
-  }
+
+      setLoading(true)
       setpTracks(plists.find((e) => e.playlist_id === lastSegment))
-      const getImage = async () => {
-        setLoading(true)
-        const resp = await fetch(`https://api.spotify.com/v1/playlists/${lastSegment}/images`, {headers})
-        const data = await resp.json()
-        setLoading(false)
-        console.log(data)
-        setImage(data)
-      }
-      getImage()
+      setLoading(false)
+      // const getImage = async () => {
+      //   setLoading(true)
+      //   const resp = await fetch(`https://api.spotify.com/v1/playlists/${lastSegment}/images`, {headers})
+      //   const data = await resp.json()
+      //   setLoading(false)
+      //   // console.log(ptracks)
+      //   setImage(data)
+      // }
+      // getImage()
     // const fetchpTracks = async () => {
     //     try {
     //         var temp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
@@ -45,9 +45,9 @@ export default function Playlist({plists, SpinComponent, active, paused}) {
     // assignpTracks()
     
   }, []);
-  
-  const listImages =  image.length == 1 ? image.map(s => <img src={s.url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>) :
-   image.filter(t=>t.height == 640).map(s =>
+  console.log(ptracks)
+  const listImages =  ptracks.images?.length == 1 ? ptracks.images?.map(s => <img src={s.url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>) :
+   ptracks.images?.filter(t=>t.height == 640).map(s =>
     <img src={s.url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>
   )
   var key = 0
@@ -66,7 +66,7 @@ export default function Playlist({plists, SpinComponent, active, paused}) {
     )
   return (
     <>
-      {loading ? <Loading /> : (
+      {loading ? <Loading yes={true} /> : (
         <div style={{marginTop: '50px'}}>
         <span style={{marginLeft: '24vw'}}>
           <SpinComponent is_active={active} is_paused={paused}/>

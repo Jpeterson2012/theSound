@@ -13,10 +13,11 @@ export default function Track ( {uri, name, number, duration} ) {
     return (
         <div style={{display: 'flex'}}>
             <a onClick={function handleClick () {
-                console.log(sessionStorage.getItem("device_id"))
-                console.log(uri)
-                console.log(sessionStorage.getItem("uri"))
-                console.log(sessionStorage.getItem("token"))
+                // console.log(sessionStorage.getItem("device_id"))
+                // console.log(uri)
+                // console.log(sessionStorage.getItem("uri"))
+                // console.log(sessionStorage.getItem("token"))
+
                 sessionStorage.setItem("name", sessionStorage.getItem("albumname"))
 
                 var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
@@ -28,7 +29,7 @@ export default function Track ( {uri, name, number, duration} ) {
                     fetch(url, {
                         method: 'PUT',
                         headers: headers,
-                        body: JSON.stringify({context_uri: sessionStorage.getItem("uri"), offset: {position: number - 1}})
+                        body: JSON.stringify({context_uri: uri, offset: {position: number - 1}})
                     })
                 
             }}>

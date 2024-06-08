@@ -24,6 +24,7 @@ router.get('/', async (req, res) => {
                 var records = {}
                 var items = []
                 var items2 = []
+                var items3 = []
                 for (let i = 0; i < result.length; i++) {
                     var temp = {}
                     temp.album_id = result[i].album_id
@@ -57,16 +58,24 @@ router.get('/', async (req, res) => {
                         items2.push(temp)
                     }
                     records.items2 = items2
-                    res.send(records)
+
+                    var sql = 'select images, duration, track_id, name from likedsongs'
+                        con.query(sql, function (err, result) {
+                            if (err) throw err;
+
+                        for (let i = 0; i < result.length; i++){
+                            var temp ={}
+                            temp.images = JSON.parse(result[i].images)
+                            temp.duration_ms = result[i].duration
+                            temp.track_id = "spotify:track:" + result[i].track_id
+                            temp.name = result[i].name
+                            
+                            items3.push(temp)
+                        }
+                            records.items3 = items3
+                            res.send(records)
+                    })
                 })
-                
-                // var temp = {}
-                // temp.album_id = result[0].album_id
-                // temp.images = JSON.parse(result[0].images)
-                // temp.name = result[0].name
-                // temp.artists = JSON.parse(result[0].artists)
-                // console.log(temp)
-                // for (let i = 0; i < result.length; i++) {console.log(result[i])}
             })
         }
         else {
@@ -111,6 +120,26 @@ router.get('/', async (req, res) => {
                         break
                     } 
                 }
+                //Fetch user's liked songs
+                var pages = 0
+                while(true) {
+                    url = `https://api.spotify.com/v1/me/tracks?offset=${pages}`
+                    var resp = await fetch(url, {headers})
+                    var data = await resp.json()
+                    var values = []
+                    data.items.map(a => values.push([a.track.album.id, JSON.stringify(a.track.album.images), JSON.stringify(a.track.album.artists), a.track.duration_ms, a.track.id, a.track.name]))
+                    var sql = "INSERT INTO likedsongs (album_id, images, artists, duration, track_id, name) VALUES ?"
+                    con.query(sql, [values], function(err, result) {
+                        if (err) throw err;
+                        console.log("Number of liked songs inserted: " + result.affectedRows);
+                    })
+                    pages += 20
+                   
+                    if(data.next == null) {
+                        break
+                    }
+                }
+
 
                 var pages = 0
 
@@ -139,6 +168,7 @@ router.get('/', async (req, res) => {
                     var records = {}
                     var items = []
                     var items2 = []
+                    var items3 = []
                     for (let i = 0; i < result.length; i++) {
                         var temp = {}
                         temp.album_id = result[i].album_id
@@ -173,8 +203,24 @@ router.get('/', async (req, res) => {
                             
                             items2.push(temp)
                         }
-                        records.items2 = items2
-                        res.send(records)
+                        records.items2 = items
+
+                        var sql = 'SELECT images, duration, track_id, name from likedsongs'
+                        con.query(sql, function (err, result) {
+                            if (err) throw err;
+
+                        for (let i = 0; i < result.length; i++){
+                            var temp ={}
+                            temp.images = JSON.parse(result[i].images)
+                            temp.duration_ms = result[i].duration
+                            temp.track_id = "spotify:track:" + result[i].track_id
+                            temp.name = result[i].name
+                            
+                            items3.push(temp)
+                        }
+                            records.items3 = items3
+                            res.send(records)
+                        })
                     })
                 })
             }

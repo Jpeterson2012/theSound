@@ -21,7 +21,7 @@ const track = {
     ]
 }
 function Spin({is_active, is_paused}){
-    const e = document.getElementById("record")
+    
     return (
         <>
         <svg viewBox="0 0 400 400">
@@ -40,6 +40,7 @@ function Spin({is_active, is_paused}){
             e.getElementById("record").style.animation = 'spin 2.5s linear infinite',
             e.getElementById("record").style.transformOrigin = 'center center'
         )} */}
+        
         </>
     )
 }
@@ -200,9 +201,18 @@ const WebPlayback = memo(function WebPlayback() {
                 <div className='wrapper'>
                         <div className="main-wrapper">
                             <a onClick={function handleClick() {
-                                navigate(`/app/album/${sessionStorage.getItem("id")}`)
+                                var parts = current_track.album.uri.split(':');
+                                var lastSegment = parts.pop() || parts.pop();
+
+                                sessionStorage.setItem("uri", current_track.album.uri)
+                                sessionStorage.setItem("artist", current_track.artists[0].name)
+                                sessionStorage.setItem("image", current_track.album.images?.filter(s => s.height == 640).map(s => s.url))
+                                sessionStorage.setItem("name", current_track.album.name)
+                                sessionStorage.setItem("albumname", current_track.album.name)
+
+                                navigate(`/app/album/${lastSegment}`)
                             }}>
-                            <img src={current_track.album.images[1]?.url} 
+                            <img src={current_track.album.images[0]?.url} 
                                 className="now-playing__cover" alt="" />
                             </a>
                             
@@ -212,9 +222,15 @@ const WebPlayback = memo(function WebPlayback() {
                                             current_track.name
                                             }</div>
 
-                                <div className="now-playing__artist">{
-                                            current_track.artists[0].name
-                                            }</div>
+                                <div className="now-playing__artist">
+                                            <a onClick={function handleClick() {
+                                                var parts = current_track.artists[0].uri.split(':');
+                                                var lastSegment = parts.pop() || parts.pop();
+                                                navigate(`/app/artist/${lastSegment}`)
+                                            }} >
+                                            <p style={{margin: '0px', padding: '0px'}}>{current_track.artists[0].name}</p>
+                                            </a>
+                                            </div>
                             </div>
                             
                         </div>

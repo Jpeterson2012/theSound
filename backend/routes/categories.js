@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
           // info.categories = data
 
           var values = []
-          data.categories.items.map(a => {values.push([a.href, JSON.stringify(a.icons), a.id, a.name]), console.log(a.name)})
+          data.categories.items.map(a => values.push([a.href, JSON.stringify(a.icons), a.id, a.name]))
           sql = "INSERT INTO categories (href, icons, c_id, name) VALUES ?"
           con.query(sql, [values], function(err, result) {
               if (err) throw err;

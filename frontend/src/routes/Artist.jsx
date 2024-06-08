@@ -35,7 +35,7 @@ export default function Artist() {
   var count = 1
   const listTTracks = artists.tracks?.tracks.map(t =>
     <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
-    <p style={{marginRight: '20px'}}>{count}</p> 
+    <p style={{marginRight: '20px'}}>{count < 10 ? '0' + count : count}</p> 
     <img src={t.album?.images.filter(t => t.height == 64).map(s => s.url)} />
     <Track 
       uri={t.uri}
