@@ -229,7 +229,7 @@ const WebPlayback = memo(function WebPlayback() {
                             
 
                             <div className="now-playing__side">
-                                <div className="now-playing__name">{
+                                <div className="now-playing__name" style={{fontWeight: 'bold'}}>{
                                     current_track.name
                                     }</div>
 
