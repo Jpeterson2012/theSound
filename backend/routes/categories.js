@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 
       var empty = result[0].Output
       if (empty == 1) {
-        sql = 'SELECT icons, name from categories'
+        sql = 'SELECT icons, c_id, name from categories'
         con.query(sql, function (err, result) {
           if (err) throw err;
           
@@ -22,6 +22,7 @@ router.get('/', async (req, res) => {
           for (let i = 0; i < result.length; i++) {
               var temp = {}
               temp.icons = JSON.parse(result[i].icons)
+              temp.id = result[i].c_id
               temp.name = result[i].name
               items.push(temp)
           }
@@ -42,7 +43,7 @@ router.get('/', async (req, res) => {
               if (err) throw err;
               console.log("Number of categories inserted: " + result.affectedRows);
           })
-          sql = 'SELECT icons, name from categories'
+          sql = 'SELECT icons, c_id, name from categories'
           con.query(sql, function (err, result) {
             if (err) throw err;
             
@@ -50,6 +51,7 @@ router.get('/', async (req, res) => {
             for (let i = 0; i < result.length; i++) {
                 var temp = {}
                 temp.icons = JSON.parse(result[i].icons)
+                temp.id = result[i].c_id
                 temp.name = result[i].name
                 items.push(temp)
             }

@@ -8,6 +8,7 @@ import Artist from '../../routes/Artist.jsx';
 import Logo from '../Logo/Logo.jsx';
 import Loading from '../Loading/Loading.jsx';
 import Discover from '../../routes/Discover.jsx';
+import Categories from '../../routes/Categories.jsx';
 
 const track = {
     name: "",
@@ -193,6 +194,7 @@ const WebPlayback = memo(function WebPlayback() {
                 <Routes>
                 <Route path = '/' element={<Home albums={albums}/>}/>
                 <Route path='/discover' element={<Discover />} />
+                <Route path='/categories/:id' element={<Categories />} />
                 <Route path='/album/:id' element={<Album SpinComponent={Spin} active={is_active}  paused={is_paused}/>}/>
                 <Route path='/playlist/:id' element={<Playlist plists={albums.items2} liked={albums.items3} SpinComponent={Spin} active={is_active}  paused={is_paused}/>} />
                 <Route path='/artist/:id' element={<Artist />} />

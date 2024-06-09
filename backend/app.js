@@ -22,6 +22,7 @@ var artistsRouter = require('./routes/artists')
 var discoverRouter = require('./routes/discover')
 var searchRouter = require('./routes/search')
 var categoriesRouter = require('./routes/categories')
+var cplaylistsRouter = require('./routes/cplaylists')
 
 var app = express();
 
@@ -50,6 +51,7 @@ app.use('/auth/artists', artistsRouter);
 app.use('/auth/discover', discoverRouter);
 app.use('/auth/search', searchRouter);
 app.use('/auth/categories', categoriesRouter)
+app.use('/auth/cplaylists', cplaylistsRouter);
 // const AuthRoutes = require('./routes/AuthRoutes');
 // app.use('/api', cors(), AuthRoutes);
 // app.listen(PORT, () => {

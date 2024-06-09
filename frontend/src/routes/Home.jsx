@@ -48,7 +48,6 @@ function Podcasts(){
 
 export default function Home( {albums} ) {
   const navigate = useNavigate()
-  var key = 0
 
     // const [albums, setAlbums] = useState([]);
     // const [users, setUsers] = useState("")

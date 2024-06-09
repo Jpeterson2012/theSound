@@ -1,4 +1,7 @@
+//session storage c_icon, c_name variable created here; use for categorie playlist click
+
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import Card from "../components/Card/Card";
 
 function customRender(name, item){
@@ -20,6 +23,7 @@ function customRender(name, item){
 }
 
 export default function Discover() {
+    const navigate = useNavigate()
 
     const [releases, setReleases] = useState([])
     const [categories, setCategories] = useState([])
@@ -69,12 +73,19 @@ export default function Discover() {
     }, []);
 
     const listCategories = categories?.map(a =>
-        <div style={{width: '200px',height: '305px', marginBottom: '50px'}}>
+        <a onClick={function handleClick() {
+            sessionStorage.setItem("c_icon", a.icons.map(s => s.url))
+            sessionStorage.setItem("c_name", a.name)
+            navigate(`/app/categories/${a.id}`)
+        }}>
+            <div style={{width: '200px',height: '305px', marginBottom: '50px'}}>
 
-            <img src={a.icons.map(s => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
-            <h4><b>{a.name}</b></h4>
-                 
-        </div>
+                <img src={a.icons.map(s => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
+                <h4><b>{a.name}</b></h4>
+                
+            </div>
+        </a>
+        
     )
 
     const listReleases = releases.albums?.items.map(a => 

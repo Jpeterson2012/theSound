@@ -13,6 +13,7 @@ export default function PTrack ( {uri, name, number, duration, liked} ) {
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <a onClick={function handleClick () {
+                console.log(uri)
                 sessionStorage.setItem("name", sessionStorage.getItem("playlist_name"))
                 var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
                     const headers = {
