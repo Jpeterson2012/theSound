@@ -1,4 +1,4 @@
-//session storage c_icon, c_name variable created here; use for categorie playlist click
+//session storage c_icon, c_name variable created here; use for categories playlist click
 
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
@@ -91,7 +91,7 @@ export default function Discover() {
     const listReleases = releases.albums?.items.map(a => 
         <Card
           // key={a.id}
-          id={a.album_id}
+          id={a.id}
           uri={a.uri}
           image={a.images.filter(t=>t.height == 300).map(s => s.url)}
           name={a.name}
@@ -100,23 +100,29 @@ export default function Discover() {
         />
       )
     const listPlaylists = fplaylists.playlists?.items.map(a =>
-        <div className="card" style={{width: '200px',height: '305px', marginBottom: '50px', background: a.primary_color}}>
+        <a onClick={function handleClick() {
+            sessionStorage.setItem("p_image", a.images.map(s => s.url))
+            sessionStorage.setItem("playlist_name", a.name)
+            navigate(`/app/playlist/${a.id}`)
+        }}>
+            <div className="card" style={{width: '200px',height: '285px', marginBottom: '50px', background: a.primary_color}}>
 
-            <img src={a.images.map(s => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
-            <div className="container">
-                 <h4><b>{a.name}</b></h4>
-                 <p><b>{a.description}</b></p>
+                <img src={a.images.map(s => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
+                <div className="container">
+                    <h4><b>{a.name}</b></h4>
+                    <p><b>{a.description}</b></p>
+                </div>
+
             </div>
-            
-        </div>
+        </a>
     )
 
 
     return (
-        <>
+        <div style={{marginTop: '170px'}}>
         {customRender("Categories", listCategories)}
         {customRender("New Releases", listReleases)}
         {customRender("Popular Playlists", listPlaylists)}
-        </>
+        </div>
     )
 }

@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/:id', async (req, res) => {
-    // console.log(req.params.id)
-    console.log(req.params.id)
     url = `https://api.spotify.com/v1/playlists/${req.params.id}/tracks`
     
     const headers = {

@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom'
 export default function Logo () {
     const navigate = useNavigate()
     return(
-        <div style={{display: 'flex', position: 'relative', top: '5pt', alignItems: 'center'}}>
-            <h2 style={{marginRight: '50vw'}}>{sessionStorage.getItem("username")}</h2>
+        <div style={{display: 'flex', position: 'absolute', right: '140px', top: '30px', alignItems: 'center'}}>
+            <h2 style={{marginRight: '900px'}}>{sessionStorage.getItem("username")}</h2>
 
             <div className="wrap">
                 <div className="search">

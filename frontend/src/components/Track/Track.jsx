@@ -9,7 +9,7 @@ function timeCalc (ms) {
     else return `${mins}.${secs}`
 }
 
-export default function Track ( {uri, name, number, duration} ) {
+export default function Track ( {uri, name, number, duration, album_name} ) {
     return (
         <div style={{display: 'flex'}}>
             <a onClick={function handleClick () {
@@ -17,7 +17,7 @@ export default function Track ( {uri, name, number, duration} ) {
                 // console.log(uri)
                 // console.log(sessionStorage.getItem("uri"))
                 // console.log(sessionStorage.getItem("token"))
-
+                album_name && sessionStorage.setItem("albumname", album_name)
                 sessionStorage.setItem("name", sessionStorage.getItem("albumname"))
 
                 var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`

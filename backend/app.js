@@ -19,6 +19,7 @@ var playbackRouter = require('./routes/playback')
 var tokenRouter = require('./routes/token')
 var ptracksRouter = require('./routes/ptracks')
 var artistsRouter = require('./routes/artists')
+var artists2Router = require('./routes/artists2')
 var discoverRouter = require('./routes/discover')
 var searchRouter = require('./routes/search')
 var categoriesRouter = require('./routes/categories')
@@ -48,6 +49,7 @@ app.use('/auth/playback', playbackRouter);
 app.use('/auth/token', tokenRouter);
 app.use('/auth/ptracks', ptracksRouter);
 app.use('/auth/artists', artistsRouter);
+app.use('/auth/artists2', artists2Router)
 app.use('/auth/discover', discoverRouter);
 app.use('/auth/search', searchRouter);
 app.use('/auth/categories', categoriesRouter)

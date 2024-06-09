@@ -130,7 +130,7 @@ export default function Home( {albums} ) {
   )
   return (
     <>
-      <div style={{marginTop: '70px'}}>
+      <div style={{marginTop: '170px'}}>
         <button onClick={() => setHtml(Albums(listItems))}>Albums</button>
         <button onClick={() => setHtml(Playlists(navigate, listPlaylists))}>Playlists</button>
         <button onClick={() => setHtml(Podcasts())}>Podcasts</button>

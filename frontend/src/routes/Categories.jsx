@@ -32,6 +32,7 @@ export default function Categories() {
             var parts = a.uri.split(':');
             var lastSegment = parts.pop() || parts.pop();
             sessionStorage.setItem("p_image", a.images.map(s => s.url))
+            sessionStorage.setItem("playlist_name", a.name)
             navigate(`/app/playlist/${lastSegment}`)
         }}>
             <div className="card" style={{width: '200px',height: '305px', marginBottom: '50px', background: a.primary_color}}>
@@ -50,7 +51,7 @@ export default function Categories() {
       <>
       {loading ? <Loading yes={true} /> : (
         <>
-        <img src={sessionStorage.getItem("c_icon")} />
+        <img src={sessionStorage.getItem("c_icon")} style={{marginTop: '170px', height: '300px'}}/>
         <h2>{sessionStorage.getItem("c_name")}</h2>
         <div style={{
             display: 'flex',

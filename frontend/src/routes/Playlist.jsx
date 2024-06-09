@@ -44,12 +44,12 @@ function regPlaylists(ptracks, last){
     ptracks?.items?.map(t => 
       <div style={{display: 'flex', alignItems: 'center'}}>
           
-          <img src={t.track.album.images.filter(t=>t.height == 64).map(s => s.url)} />
+          <img src={t.track?.album.images.filter(t=>t.height == 64).map(s => s.url)} />
           <PTrack 
           uri={"spotify:playlist:" + last}
-          name={t.track.name}
+          name={t.track?.name}
           number={key}
-          duration={t.track.duration_ms}
+          duration={t.track?.duration_ms}
           liked={null}
           />
         <p hidden>{key++}</p>
@@ -100,6 +100,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
       setLoading(true)
       const tempTracks = await fetchpTracks()
       setLoading(false)
+      console.log(tempTracks)
       setpTracks(tempTracks)
       console.log(tempTracks)
     }
@@ -134,7 +135,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
     <>
       {loading ? <Loading yes={true} /> : (
         
-        <div style={{marginTop: '50px'}}>
+        <div style={{marginTop: '120px'}}>
         <span style={{marginLeft: '24vw'}}>
           <SpinComponent is_active={active} is_paused={paused}/>
           {u_plist ? listImages(lastSegment, ptracks) : <img src={sessionStorage.getItem("p_image")} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>}

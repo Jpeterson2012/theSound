@@ -205,9 +205,18 @@ const WebPlayback = memo(function WebPlayback() {
                             <a onClick={function handleClick() {
                                 var parts = current_track.album.uri.split(':');
                                 var lastSegment = parts.pop() || parts.pop();
+                                
+                                var artistss = []
+                                var artist_idss = []
+                                current_track.artists.map(s => { 
+                                    artistss.push(s.name),
+                                    artist_idss.push(s.uri.split(':').pop())
+                                }
+                                )
 
                                 sessionStorage.setItem("uri", current_track.album.uri)
-                                sessionStorage.setItem("artist", current_track.artists[0].name)
+                                sessionStorage.setItem("artist", JSON.stringify(artistss))
+                                sessionStorage.setItem("artist_id", JSON.stringify(artist_idss))
                                 sessionStorage.setItem("image", current_track.album.images?.filter(s => s.height == 640).map(s => s.url))
                                 // sessionStorage.setItem("name", current_track.album.name)
                                 sessionStorage.setItem("albumname", current_track.album.name)
@@ -221,18 +230,16 @@ const WebPlayback = memo(function WebPlayback() {
 
                             <div className="now-playing__side">
                                 <div className="now-playing__name">{
-                                            current_track.name
-                                            }</div>
+                                    current_track.name
+                                    }</div>
 
                                 <div className="now-playing__artist">
-                                            <a onClick={function handleClick() {
-                                                var parts = current_track.artists[0].uri.split(':');
-                                                var lastSegment = parts.pop() || parts.pop();
-                                                navigate(`/app/artist/${lastSegment}`)
-                                            }} >
-                                            <p style={{margin: '0px', padding: '0px'}}>{current_track.artists[0].name}</p>
-                                            </a>
-                                            </div>
+                                    <p style={{margin: '0px', padding: '0px'}}>{current_track.artists.map(s => <a onClick={function handleClick(){ 
+                                        navigate(`/app/artist/${s.uri.split(':').pop()}`)
+                                        }} style={{color: 'rgb(90, 210, 216)'}}>{s.name + " "}</a>)}
+                                    </p>
+                                    
+                                </div>
                             </div>
                             
                         </div>
