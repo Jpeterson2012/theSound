@@ -15,8 +15,16 @@ export default function Logo () {
                         console.log(document.getElementById("searchTerm").value);
                         const fetchSearch = async () => {
                             const resp = await fetch(`http://localhost:8888/auth/search/${document.getElementById("searchTerm").value}`)
-                            const data = await resp.json()
-                            console.log(data)
+                            // const data = await resp.json()
+                            let reader = resp.body.getReader()
+                            let result
+                            let decoder = new TextDecoder('utf8')
+                            while(!result?.done){
+                                result = await reader.read()
+                                let chunk = decoder.decode(result.value)
+                                console.log(JSON.parse(chunk))
+                            }
+                            // console.log(data)
                         }
                         fetchSearch()
                          return false

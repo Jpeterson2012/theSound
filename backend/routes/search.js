@@ -6,12 +6,14 @@ router.get('/:id', async (req, res) => {
     const headers = {
       Authorization: 'Bearer ' + process.env.access_token
     }
-    var i = 0
+    
     for (var i = 0; i < 3; i++){
-      url = `https://api.spotify.com/v1/search?q=${req.params.id}&offest=${i}&limit=1&type=track,artist,album,playlist`
+      url = `https://api.spotify.com/v1/search?q=${req.params.id}&offset=${i}&limit=1&type=track`
       var resp = await fetch(url, {headers})
       var data = await resp.json()
-      res.write(data.albums.total.toString())
+      console.log(data.tracks.items.map(a => a.name))
+      console.log(i)
+      res.write(JSON.stringify(data))
     }
     res.end()
     
