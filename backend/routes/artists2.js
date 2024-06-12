@@ -9,8 +9,8 @@ router.get('/:id', async (req, res) => {
       }
 
     url = `https://api.spotify.com/v1/artists/${req.params.id}/top-tracks`
-    resp = await fetch(url, {headers})
-    data = await resp.json()
+    var resp = await fetch(url, {headers})
+    var data = await resp.json()
     info.tracks = data
 
     url = `https://api.spotify.com/v1/artists/${req.params.id}/albums`

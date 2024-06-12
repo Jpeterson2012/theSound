@@ -3,15 +3,15 @@ import './Logo.css'
 import { useNavigate } from 'react-router-dom'
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Track from '../Track/Track';
 
-function userPlaylists(ptracks) {
+function getTracks(ptracks) {
     var key = 0
     return (
-      ptracks?.map(t =>
+      ptracks.map(t =>
   
-        <div style={{display: 'flex', alignItems: 'center'}}>
+        <div style={{display: 'flex', alignItems: 'center', maxWidth: '500px'}}>
             
             <img src={t.album.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px'}}/>
             <Track 
@@ -26,30 +26,64 @@ function userPlaylists(ptracks) {
       )
     )
   }
+  function getAlbums(palbums, nav, close) {
+    var artists = []
+    var a_ids = []
+    return (
+      palbums.map(t =>
+        <a onClick={function handleClick() {
+            t.artists.map(s => artists.push(s.name))
+            t.artists.map(s => a_ids.push(s.id))
+            sessionStorage.setItem("artist", JSON.stringify(artists))
+            sessionStorage.setItem("artist_id", JSON.stringify(a_ids))
+            sessionStorage.setItem("image", t.images.filter(t=>t.height == 300).map(s => s.url))
+            nav(`/app/album/${t.id}`)
+            close()
+        }}>
+            <div style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
+                <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px'}}/>
+                <div style={{display: 'flex', flexDirection: 'column'}}>
+                <div>{t.name}</div>
+                <div>{t.artists.map(a => a.name + " ")}</div>
+                </div>
+                
+            </div>
+        </a>
+      )
+      
+    )
+  }
+  function getArtists(partists, nav, close){
+    return (
+        <h4>In Development</h4>
+    )
+  }
+  function getPlaylists(plists, nav, close){
+    return (
+        <h4>In Development</h4>
+    )
+  }
 
 export default function Logo () {
     const navigate = useNavigate()
-    const [search, setSearch] = useState([]);
+
+    const [html, setHtml] = useState(null)
+    const [tracks, setTracks] = useState([]);
+    const [albums, setAlbums] = useState([]);
+    const [plist, setPlist] = useState([]);
+    const [artist, setArtist] = useState([])
+
     const [open, setOpen] = useState(false);
     const onOpenModal = () => setOpen(true);
-    const onCloseModal = () => setOpen(false);
+    const onCloseModal = () => {setOpen(false); setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([])};
+    
     const closeIcon = (
         <img src='https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg' style={{height: '64px', width: '64px'}}/>
       );
-    const lorem = (
-        <p>
-          Mauris ac arcu sit amet dui interdum bibendum a sed diam. Praesent rhoncus<br></br>
-          congue ipsum elementum lobortis. Ut ligula purus, ultrices id condimentum<br></br>
-          quis, tincidunt quis purus. Proin quis enim metus. Nunc feugiat odio at<br></br>
-          eros porta, ut rhoncus lorem tristique. Nunc et ipsum eu ex vulputate<br></br>
-          consectetur vel eu nisi. Donec ultricies rutrum lectus, sit ame feugiat<br></br>
-          est semper vitae. Proin varius imperdiet consequat. Proin eu metus nisi.<br></br>
-          In hac habitasse platea dictumst. Vestibulum ac ultrices risus.<br></br>
-          Pellentesque arcu sapien, aliquet sed orci sit amet, pulvinar interdum<br></br>
-          velit. Nunc a rhoncus ipsum, maximus fermentum dolor. Praesent aliquet<br></br>
-          justo vitae rutrum volutpat. Ut quis pulvinar est.
-        </p>
-    )
+
+    useEffect(() => {
+
+    }, [tracks])
 
     return(
         <div style={{display: 'flex', position: 'absolute', right: '140px', top: '30px', alignItems: 'center'}}>
@@ -59,6 +93,7 @@ export default function Logo () {
                 <div className="search">
                     <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
                     <button type="button" className="searchButton" onClick={function handleSubmit() {
+                        
                         onOpenModal();
                         console.log(document.getElementById("searchTerm").value);
                         const fetchSearch = async () => {
@@ -67,16 +102,31 @@ export default function Logo () {
                             let reader = resp.body.getReader()
                             let result
                             let temp
-                            let a = []
+                            let temp2
+                            let t_arr = []
+                            let al_arr = []
+                            let ar_arr = []
+                            let p_arr = []
                             let decoder = new TextDecoder('utf8')
                             while(!result?.done){
                                 result = await reader.read()
                                 let chunk = decoder.decode(result.value)
                                 console.log(chunk ? JSON.parse(chunk) : {})
                                 chunk ? (
-                                    temp = JSON.parse(chunk).tracks.items,
-                                    a.push(...temp),  
-                                    setSearch([...a]) )
+                                    temp = JSON.parse(chunk),
+                                    temp2 = temp.tracks.items,
+                                    t_arr.push(...temp2),  
+                                    setTracks([...t_arr]),
+                                    temp2 = temp.albums.items,
+                                    al_arr.push(...temp2),
+                                    setAlbums([...al_arr]),
+                                    temp2 = temp.artists.items,
+                                    ar_arr.push([...temp2]),
+                                    setArtist([...ar_arr]),
+                                    temp2 = temp.playlists.items,
+                                    p_arr.push([...temp2]),
+                                    setPlist([...p_arr])
+                                    )
                                     : {}
                             }
                             // console.log(data)
@@ -96,22 +146,18 @@ export default function Logo () {
             </a>
 
             <div>
-            {/* <button onClick={onOpenModal}>Open modal</button> */}
-            <Modal open={open} onClose={onCloseModal} center classNames={{overlay: 'customOverlay', modal: 'customModal'}} closeIcon={closeIcon}>
-                {/* <div style={{background: 'black'}}>
-                {lorem}
-                {lorem}
-                {lorem}
-                {lorem}     
-                </div> */}
-                {userPlaylists(search)}
-                <br></br>
-                {/* <h4 style={{color: 'blue'}}>{search.items?.map(a => a.track?.name)}</h4> */}
-                
-            </Modal>
+            
+                <Modal open={open} onClose={onCloseModal} center classNames={{overlay: 'customOverlay', modal: 'customModal'}} closeIcon={closeIcon}>
+                    <div>
+                        <button onClick={() => setHtml(getTracks(tracks))}>Tracks</button>
+                        <button onClick={() => setHtml(getAlbums(albums, navigate, onCloseModal))}>Albums</button>
+                        <button onClick={() => setHtml(getArtists(artist, navigate, onCloseModal))}>Artists</button>
+                        <button onClick={() => setHtml(getPlaylists(plist, navigate, onCloseModal))}>Playlists</button>
+                    </div>
+
+                    {html ? html : getTracks(tracks)}
+                </Modal>
             </div>
         </div>
-        
     )
 }
-// location.href='http://localhost:5173/app/'

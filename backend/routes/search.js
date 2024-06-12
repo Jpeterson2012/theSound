@@ -10,7 +10,7 @@ router.get('/:id', async (req, res) => {
     while (pages < 20){
 
     
-      url = `https://api.spotify.com/v1/search?q=${req.params.id}&offset=${pages}&limit=5&type=track`
+      url = `https://api.spotify.com/v1/search?q=${req.params.id}&offset=${pages}&limit=5&type=track,album,artist,playlist`
       var resp = await fetch(url, {headers})
       var data = await resp.json()
       
