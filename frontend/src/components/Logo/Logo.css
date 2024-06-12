@@ -49,3 +49,17 @@ h2{
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.customOverlay {
+  background: rgba(36, 123, 160, 0.7);
+}
+.customModal{
+  background: #cf0101;
+  margin: 0px;
+  padding: 0px;
+  width: 1000px;
+  height: 1000px;
+  overflow: hidden;
+}
+.customModal p{
+  color: green;
+}

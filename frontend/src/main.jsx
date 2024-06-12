@@ -5,14 +5,15 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import App from './App/App.jsx'
 import Login from './routes/Login.jsx';
 import ErrorPage from "./error-page";
+import ScrollToTop from './components/ScrollToTop.jsx';
 import './index.css'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <>
     {/* <App /> */}
-    
     <Router>
+    <ScrollToTop />
           <Routes>
             <Route path='/' element={<App />} errorElement={<ErrorPage />} />
             <Route path = '/login' element={<Login />}/>

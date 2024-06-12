@@ -24,7 +24,7 @@ function userPlaylists(ptracks, last, liked) {
 
       <div style={{display: 'flex', alignItems: 'center'}}>
           {last == 'likedsongs' ? liked.push(t.uri) : liked = null }
-          <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} />
+          <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px'}}/>
           <PTrack 
           uri={ptracks.uri}
           name={t.name}
@@ -41,15 +41,15 @@ function userPlaylists(ptracks, last, liked) {
 function regPlaylists(ptracks, last){
   var key = 0
   return (
-    ptracks?.items?.map(t => 
-      <div style={{display: 'flex', alignItems: 'center'}}>
+    ptracks?.map(t => 
+      <div style={{display: 'flex', alignItems: 'center'}} key={key}>
           
-          <img src={t.track?.album.images.filter(t=>t.height == 64).map(s => s.url)} />
+          <img src={t.album?.images?.filter(t=>t.height == 64).map(s => s.url)} />
           <PTrack 
           uri={"spotify:playlist:" + last}
-          name={t.track?.name}
+          name={t.name}
           number={key}
-          duration={t.track?.duration_ms}
+          duration={t.duration_ms}
           liked={null}
           />
         <p hidden>{key++}</p>
@@ -64,10 +64,10 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
   var liked_uris = []
   const [ptracks, setpTracks] = useState([]);
-  const [image, setImage] = useState([])
   const [loading, setLoading] = useState(false)
   const [u_plist, setU_plist] = useState(true)
   useEffect (() => {
+    
 
     setLoading(true)
     
@@ -76,60 +76,31 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
     
     if ((plists.find((e) => e.playlist_id === lastSegment)) === undefined && lastSegment !== 'likedsongs') {
       setU_plist(false)
-      // const getImage = async () => {
-      //   setLoading(true)
-      //   const resp = await fetch(`https://api.spotify.com/v1/playlists/${lastSegment}/images`, {headers})
-      //   const data = await resp.json()
-      //   setLoading(false)
-      //   // console.log(ptracks)
-      //   setImage(data)
-      // }
-      // getImage()
-    const fetchpTracks = async () => {
-        try {
-            var temp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
-          .then((res) => {
-            // console.log(res.json())
-            return res.json();
-          }).then((data) => {return data})
-            return temp
-          }
-          catch (err) {}
+      
+     const fetchpTracks = async () => {
+      const resp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
+      let reader = resp.body.getReader()
+      let result
+      let temp
+      let a = []
+      let decoder = new TextDecoder('utf8')
+      while(!result?.done){
+          result = await reader.read()
+          let chunk = decoder.decode(result.value)
+          // console.log(chunk ? JSON.parse(chunk) : {})
+          chunk ? (
+          temp = JSON.parse(chunk).items,
+          a.push(...temp),  
+          setpTracks([...a]) )
+          : {}
+          
+      }
     }
-    const assignpTracks = async () => {
-      setLoading(true)
-      const tempTracks = await fetchpTracks()
-      setLoading(false)
-      console.log(tempTracks)
-      setpTracks(tempTracks)
-      console.log(tempTracks)
-    }
-    assignpTracks()
+    fetchpTracks()
+
   }
     
   }, []);
-  
-  // const listImages =  ptracks.images?.length == 1 ? ptracks.images?.map(s => <img src={s.url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>) :
-  //  ptracks.images?.filter(t=>t.height == 640).map(s =>
-  //   <img src={s.url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>
-  // )
-  
-
-  // const listItems = ptracks?.tracks?.map(t =>
-
-  //     <div style={{display: 'flex', alignItems: 'center'}}>
-  //         {lastSegment == 'likedsongs' ? liked_uris.push(t.uri) : liked_uris = null }
-  //         <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} />
-  //         <PTrack 
-  //         uri={ptracks.uri}
-  //         name={t.name}
-  //         number={key}
-  //         duration={t.duration_ms}
-  //         liked={liked_uris}
-  //         />
-  //       <p hidden>{key++}</p>
-  //     </div>
-  //   )
 
   return (
     <>

@@ -114,6 +114,7 @@ const WebPlayback = memo(function WebPlayback() {
                             return;
                         }
                         setTrack(state.track_window.current_track);
+                        sessionStorage.setItem("name", state.track_window.current_track.album.name)
                         setPaused(state.paused);        
                     
                         player.getCurrentState().then( state => { 

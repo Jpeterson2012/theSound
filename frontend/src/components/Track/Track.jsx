@@ -18,7 +18,7 @@ export default function Track ( {uri, name, number, duration, album_name} ) {
                 // console.log(sessionStorage.getItem("uri"))
                 // console.log(sessionStorage.getItem("token"))
                 album_name && sessionStorage.setItem("albumname", album_name)
-                sessionStorage.setItem("name", sessionStorage.getItem("albumname"))
+                // sessionStorage.setItem("name", sessionStorage.getItem("albumname"))
 
                 var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
                     const headers = {
