@@ -11,9 +11,9 @@ function getTracks(ptracks) {
     return (
       ptracks.map(t =>
   
-        <div style={{display: 'flex', alignItems: 'center', maxWidth: '500px'}}>
+        <div style={{display: 'flex', alignItems: 'center'}}>
             
-            <img src={t.album.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px'}}/>
+            <img src={t.album.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px', width: '64px'}}/>
             <Track 
             uri={t.album.uri}
             name={t.name}
@@ -55,12 +55,41 @@ function getTracks(ptracks) {
   }
   function getArtists(partists, nav, close){
     return (
-        <h4>In Development</h4>
+      partists.map(a => 
+        <a onClick={function handleClick() {
+          nav(`/app/artist/${a.id}`)
+          close()
+        }}>
+      <div style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
+      {/* <img src={a.images?.length == 1 ? a.images?.map(s => s.url) : a.images?.filter(s => s.height == 160).map(s => s.url)} alt={a.name} style={{height: '64px', width: '64px'}}/> */}
+      <img src={a.images?.length == 0 ? 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg' : a.images[2]?.url} alt={a.name} style={{height: '64px', width: '64px'}} />
+        {a.name}
+        </div>
+        </a>
+      )
     )
   }
   function getPlaylists(plists, nav, close){
     return (
-        <h4>In Development</h4>
+      plists.map(a => 
+      <>
+
+      <a onClick={function handleClick() {
+        sessionStorage.setItem("playlist_name", a.name)
+        sessionStorage.setItem("p_image", a.images.length == 1 ? a.images.map(s => s.url) : a.images.filter(s => s.height == 60).map(s => s.url))
+        nav(`/app/playlist/${a.id}`)
+        close()
+      }}>
+        <div style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
+        <img src={a.images?.length == 1 ? a.images?.map(s => s.url) : a.images?.filter(s => s.height == 60).map(s => s.url)} alt={a.name} style={{height: '64px', width: '64px'}}/>
+        {a.name}
+        </div>
+      
+      <br></br>
+      </a>
+      
+    </>
+      )
     )
   }
 
@@ -121,10 +150,10 @@ export default function Logo () {
                                     al_arr.push(...temp2),
                                     setAlbums([...al_arr]),
                                     temp2 = temp.artists.items,
-                                    ar_arr.push([...temp2]),
+                                    ar_arr.push(...temp2),
                                     setArtist([...ar_arr]),
                                     temp2 = temp.playlists.items,
-                                    p_arr.push([...temp2]),
+                                    p_arr.push(...temp2),
                                     setPlist([...p_arr])
                                     )
                                     : {}

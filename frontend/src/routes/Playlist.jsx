@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.jsx";
 import Loading from "../components/Loading/Loading.jsx";
+import './Playlist.css'
 
 function mainImage(url) {
   return (<img src={url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>)
@@ -44,7 +45,7 @@ function regPlaylists(ptracks, last){
     ptracks?.map(t => 
       <div style={{display: 'flex', alignItems: 'center'}} key={key}>
           
-          <img src={t.album?.images?.filter(t=>t.height == 64).map(s => s.url)} />
+          <img src={t.album?.filter(t=>t.height == 64).map(s => s.url)} />
           <PTrack 
           uri={"spotify:playlist:" + last}
           name={t.name}
@@ -78,7 +79,9 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
       setU_plist(false)
       
      const fetchpTracks = async () => {
+      setLoading(true)
       const resp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
+      setLoading(false)
       let reader = resp.body.getReader()
       let result
       let temp
@@ -107,7 +110,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
       {loading ? <Loading yes={true} /> : (
         
         <div style={{marginTop: '120px'}}>
-        <span style={{marginLeft: '24vw'}}>
+        <span className="fade-in-image" style={{marginLeft: '24vw'}}>
           <SpinComponent is_active={active} is_paused={paused}/>
           {u_plist ? listImages(lastSegment, ptracks) : <img src={sessionStorage.getItem("p_image")} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>}
         </span>

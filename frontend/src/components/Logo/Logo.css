@@ -55,11 +55,8 @@ h2{
 .customModal{
   margin: 0px;
   padding: 0px;
-  max-width: 800px;
+  min-width: 800px;
   min-height: 800px;
   overflow: hidden;
   margin-bottom: 150px;
-}
-.customModal p{
-  color: green;
 }

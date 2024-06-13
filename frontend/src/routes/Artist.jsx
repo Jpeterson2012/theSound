@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Track from "../components/Track/Track";
 import Card from "../components/Card/Card";
 import Loading from '../components/Loading/Loading.jsx';
+import './Artist.css'
 
 export default function Artist() {
   var parts = window.location.href.split('/');
@@ -24,8 +25,10 @@ export default function Artist() {
           catch (err) {}
     }
     const assignArtists = async () => {
+      setLoading(true)
       const tempArtists = await fetchArtist()
       setArtists(tempArtists)
+      setLoading(false)
 
     }
     assignArtists()
@@ -42,9 +45,9 @@ export default function Artist() {
         catch (err) {}
   }
   const assignArtists2 = async () => {
-    setLoading(true)
+    // setLoading(true)
     const tempArtists2 = await fetchArtist2()
-    setLoading(false)
+    // setLoading(false)
     setArtists2(tempArtists2)
 
   }
@@ -80,27 +83,28 @@ export default function Artist() {
   
 
   return (
-    <div style={{marginTop: '170px',marginBottom: '80px'}}>
+    <>
+    { loading ? <Loading yes={true} /> :
+    <div style={{marginTop: '140px',marginBottom: '80px'}}>
       <h1>{artists.artists?.name}</h1>
-        <img src={artists.artists?.images.filter(t=>t.height == 320).map(s => s.url)} />
-        <h4>{artists.artists?.followers.total} followers</h4>
+        {/* <img src={artists.artists?.images.filter(t=>t.height == 320).map(s => s.url)} /> */}
+        <img className="fade-in-image" src={artists.artists?.images.length == 0 ? 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg' : artists.artists?.images[1]?.url} alt={artists.artists?.name} style={{height: '320px', width: '320px'}} />
+        <h4>{artists.artists?.followers.total.toLocaleString()} followers</h4>
         <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
             <p>Genres:</p>
             {artists.artists?.genres.map(s => <p>{s}</p>)}
         </div>
-        {loading ? <Loading yes={true} /> : (
-          <>
-        <p>Top Tracks</p>
-        {listTTracks}
-        <p>Albums:</p>
-        <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
-            {listItems}
-        </div>
         
+            <p>Top Tracks</p>
+            {listTTracks}
+            <p>Albums:</p>
+            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
+                {listItems}
+            </div>
+          
         
-        {/* {console.log(artists)} */}
-        </>
-      )}
     </div>
+    }
+    </>
   )
 }
