@@ -181,6 +181,7 @@ const WebPlayback = memo(function WebPlayback() {
                 setAlbums(tempAlbums)
                 sessionStorage.setItem("username", tempUsers.display_name)
                 sessionStorage.setItem("albums", JSON.stringify(tempAlbums))
+                console.log(tempAlbums)
                 }
                 fetchBoth()
             }
@@ -235,9 +236,9 @@ const WebPlayback = memo(function WebPlayback() {
                                     }</div>
 
                                 <div className="now-playing__artist">
-                                    <p style={{margin: '0px', padding: '0px'}}>{current_track.artists.map(s => <a onClick={function handleClick(){ 
+                                    <p style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
                                         navigate(`/app/artist/${s.uri.split(':').pop()}`)
-                                        }} style={{color: 'rgb(90, 210, 216)'}}>{s.name + " "}</a>)}
+                                        }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
                                     </p>
                                     
                                 </div>

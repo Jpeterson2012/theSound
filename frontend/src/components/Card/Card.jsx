@@ -27,11 +27,11 @@ export default function Card( {id, uri, image, name, artist, a_id} ) {
             <div className="container">
                  <h4><b>{name}</b></h4>
 
-                <p><b>{zip.map(s =>
+                <p><b>{zip.map((s,i,row) =>
                     <>
                     <a onClick={function handleClick() {
                         navigate(`/app/artist/${s[1]}`)
-                    }} style={{color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>{s[0] + " "}</a>
+                    }} style={{color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a>
                     <span hidden>{key++}</span>
                     </>
                     )}</b></p>

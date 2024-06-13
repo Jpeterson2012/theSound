@@ -17,7 +17,7 @@ router.get('/:id', async (req, res) => {
         var arr = []
         var a = {}
         var album = {images: [{height: 64, url: 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg', width: 64}]}
-        data.items.map(a => arr.push({album: (a.track?.album === null ? album : a.track?.album.images), name: a.track?.name, duration_ms: a.track?.duration_ms}))
+        data.items.map(a => arr.push({album: (a.track?.album === null ? album : a.track?.album.images), name: a.track?.name, duration_ms: a.track?.duration_ms, artists: a.track?.artists}))
         a.items = arr
         res.write(JSON.stringify(a))
         

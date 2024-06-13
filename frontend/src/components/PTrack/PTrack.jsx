@@ -9,7 +9,7 @@ function timeCalc (ms) {
     else return `${mins}.${secs}`
 }
 
-export default function PTrack ( {uri, name, number, duration, liked} ) {
+export default function PTrack ( {uri, name, number, duration, liked, artist} ) {
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <a onClick={function handleClick () {
@@ -27,7 +27,10 @@ export default function PTrack ( {uri, name, number, duration, liked} ) {
                     })
                 
             }}>
-            <h3 style={{textAlign: 'left', color: 'rgb(90, 210, 216)'}}>{name}</h3>
+            <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
+            <h2 style={{textAlign: 'left', margin: '0px', padding: '0px', fontSize: '20px'}}>{name}</h2>
+            <h4 style={{position: 'absolute'}}>{artist.map((a,i,row) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
+            </div>
             </a>
             <span style={{position: 'absolute', left: '83.5vw', fontWeight: 'bold', color: 'rgb(90, 210, 216)'}}>{timeCalc(duration)}</span>
       </div>

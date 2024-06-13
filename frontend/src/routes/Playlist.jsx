@@ -32,6 +32,7 @@ function userPlaylists(ptracks, last, liked) {
           number={key}
           duration={t.duration_ms}
           liked={liked}
+          artist={t.artists}
           />
         <p hidden>{key++}</p>
       </div>
@@ -52,6 +53,7 @@ function regPlaylists(ptracks, last){
           number={key}
           duration={t.duration_ms}
           liked={null}
+          artist={t.artists}
           />
         <p hidden>{key++}</p>
       </div>
@@ -100,7 +102,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
       }
     }
     fetchpTracks()
-
+    console.log(ptracks)
   }
     
   }, []);

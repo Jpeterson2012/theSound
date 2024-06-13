@@ -21,6 +21,7 @@ function getTracks(ptracks) {
             number={t.track_number}
             duration={t.duration_ms}
             album_name={t.album.name}
+            artist={t.artists}
             />
           <p hidden>{key++}</p>
         </div>

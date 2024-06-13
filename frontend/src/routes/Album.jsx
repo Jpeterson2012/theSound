@@ -49,6 +49,7 @@ export default function Album({SpinComponent, active, paused}) {
         number={t.track_number}
         duration={t.duration_ms}
         album_name={null}
+        artist={t.artists}
       />
     )
     return (
@@ -69,11 +70,11 @@ export default function Album({SpinComponent, active, paused}) {
               /> */}
               
             </span>
-            <h2>{zip.map(s =>
+            <h2>{zip.map((s,i,row) =>
             <>
               <a onClick={function handleClick() {
                 navigate(`/app/artist/${s[1]}`)
-              }} style={{fontWeight: 'bolder'}}>{s[0] + " "}</a> 
+              }} style={{fontWeight: 'bolder'}}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a> 
               </>
             )}</h2>
 

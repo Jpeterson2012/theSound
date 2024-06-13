@@ -52,7 +52,7 @@ router.get('/', async (req, res) => {
                         var temp2 = JSON.parse(result[i].tracks)
                         var temp3 = []
                         temp2.items?.map(a => {
-                            temp3.push({images: a.album.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms})
+                            temp3.push({images: a.album.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
                         })
                         temp.tracks = temp3
 
@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
                     }
                     records.items2 = items2
 
-                    var sql = 'select images, duration, track_id, name from likedsongs'
+                    var sql = 'select images, duration, track_id, name, artists from likedsongs'
                         con.query(sql, function (err, result) {
                             if (err) throw err;
 
@@ -70,6 +70,7 @@ router.get('/', async (req, res) => {
                             temp.duration_ms = result[i].duration
                             temp.uri = "spotify:track:" + result[i].track_id
                             temp.name = result[i].name
+                            temp.artists = JSON.parse(result[i].artists)
                             
                             items3.push(temp)
                         }
@@ -199,7 +200,7 @@ router.get('/', async (req, res) => {
                             var temp2 = JSON.parse(result[i].tracks)
                             var temp3 = []
                             temp2.items?.map(a => {
-                                temp3.push({images: a.album.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms})
+                                temp3.push({images: a.album.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
                             })
 
                             temp.tracks = temp3
@@ -208,7 +209,7 @@ router.get('/', async (req, res) => {
                         }
                         records.items2 = items
 
-                        var sql = 'SELECT images, duration, track_id, name from likedsongs'
+                        var sql = 'SELECT images, duration, track_id, name, artists from likedsongs'
                         con.query(sql, function (err, result) {
                             if (err) throw err;
 
@@ -218,6 +219,7 @@ router.get('/', async (req, res) => {
                             temp.duration_ms = result[i].duration
                             temp.uri = "spotify:track:" + result[i].track_id
                             temp.name = result[i].name
+                            temp.artists = JSON.parse(result[i].artists)
                             
                             items3.push(temp)
                         }
