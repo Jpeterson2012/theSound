@@ -10,7 +10,7 @@ export default function Login() {
   return (
     <>
       <Loading />
-      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+      <div className='fade-in-image' style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <img src={logo} alt='Avatar' />
         <h1>Welcome to TheSound<sup>TM</sup></h1>
       </div>

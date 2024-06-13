@@ -9,6 +9,7 @@
     border-radius: 10px;
     z-index: 1;
     position: relative;
+    animation: fadeIn 0.5s;
   }
   .card:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
@@ -27,4 +28,13 @@ h4, p {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden; 
+}
+
+@keyframes fadeIn {
+  0%{
+      opacity: 0;
+  }
+  100%{
+      opacity: 1;
+  }
 }

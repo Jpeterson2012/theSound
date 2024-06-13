@@ -5,13 +5,14 @@ import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import { useState, useEffect } from 'react';
 import Track from '../Track/Track';
+import escape from '../../images/escape.jpg'
 
 function getTracks(ptracks) {
     var key = 0
     return (
       ptracks.map(t =>
   
-        <div style={{display: 'flex', alignItems: 'center'}}>
+        <div className='fade-in-image' style={{display: 'flex', alignItems: 'center'}}>
             
             <img src={t.album.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px', width: '64px'}}/>
             <Track 
@@ -40,7 +41,7 @@ function getTracks(ptracks) {
             nav(`/app/album/${t.id}`)
             close()
         }}>
-            <div style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
+            <div className='fade-in-image' style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
                 <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px'}}/>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
                 <div>{t.name}</div>
@@ -60,7 +61,7 @@ function getTracks(ptracks) {
           nav(`/app/artist/${a.id}`)
           close()
         }}>
-      <div style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
+      <div className='fade-in-image' style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
       {/* <img src={a.images?.length == 1 ? a.images?.map(s => s.url) : a.images?.filter(s => s.height == 160).map(s => s.url)} alt={a.name} style={{height: '64px', width: '64px'}}/> */}
       <img src={a.images?.length == 0 ? 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg' : a.images[2]?.url} alt={a.name} style={{height: '64px', width: '64px'}} />
         {a.name}
@@ -80,7 +81,7 @@ function getTracks(ptracks) {
         nav(`/app/playlist/${a.id}`)
         close()
       }}>
-        <div style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
+        <div className='fade-in-image' style={{display: 'flex', alignItems: 'center', color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>
         <img src={a.images?.length == 1 ? a.images?.map(s => s.url) : a.images?.filter(s => s.height == 60).map(s => s.url)} alt={a.name} style={{height: '64px', width: '64px'}}/>
         {a.name}
         </div>
@@ -107,7 +108,7 @@ export default function Logo () {
     const onCloseModal = () => {setOpen(false); setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([])};
     
     const closeIcon = (
-        <img src='https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg' style={{height: '64px', width: '64px'}}/>
+        <img src={escape} style={{height: '64px', width: '64px'}}/>
       );
 
     useEffect(() => {

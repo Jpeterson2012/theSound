@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Loading from "../components/Loading/Loading.jsx"
+import './Categories.css'
 
 
 
@@ -51,7 +52,7 @@ export default function Categories() {
       <>
       {loading ? <Loading yes={true} /> : (
         <>
-        <img src={sessionStorage.getItem("c_icon")} style={{marginTop: '170px', height: '300px'}}/>
+        <img className="fade-in-image" src={sessionStorage.getItem("c_icon")} style={{marginTop: '170px', height: '300px'}}/>
         <h2>{sessionStorage.getItem("c_name")}</h2>
         <div style={{
             display: 'flex',

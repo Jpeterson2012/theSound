@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Card from "../components/Card/Card";
+import './Discover.css'
 
 function customRender(name, item){
     return (
@@ -80,7 +81,7 @@ export default function Discover() {
         }}>
             <div style={{width: '200px',height: '305px', marginBottom: '50px'}}>
 
-                <img src={a.icons.map(s => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
+                <img className="fade-in-image" src={a.icons.map(s => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
                 <h4><b>{a.name}</b></h4>
                 
             </div>

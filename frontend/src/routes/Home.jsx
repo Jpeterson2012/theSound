@@ -119,7 +119,7 @@ export default function Home( {albums} ) {
         navigate(`/app/playlist/${a.playlist_id}`)
       }}>
         <div style={{display: 'flex', alignItems: 'center'}}>
-        <img src={a.images.length == 1 ? a.images.map(s => s.url) : a.images.filter(s => s.height == 300).map(s => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
+        <img className="fade-in-image" src={a.images.length == 1 ? a.images.map(s => s.url) : a.images.filter(s => s.height == 300).map(s => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
         <h2>{a.name}</h2>
         </div>
       
