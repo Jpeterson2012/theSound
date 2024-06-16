@@ -23,14 +23,17 @@ router.get('/', function(req, res, next) {
   fetch(url, { headers })
       .then(response => response.json())
       .then(data => {
+        var temp = data.display_name
+        temp = temp.replace(/_|-/g, "a")
+        console.log(temp)
         //Checks if user is already in db. Adds if not
-      var sql = `CREATE DATABASE IF NOT EXISTS ${data.display_name}`
+      var sql = `CREATE DATABASE IF NOT EXISTS ${temp}`
       con.query(sql, (err) => {
         if (err) throw err;
         console.log(`Database for user ${data.display_name} created!`)
       })
 
-      sql = `USE ${data.display_name}`
+      sql = `USE ${temp}`
       con.query(sql, (err) => {
         if (err) throw err;
         console.log('Database selected!')
@@ -42,7 +45,7 @@ router.get('/', function(req, res, next) {
         console.log('User Album table created!')
       })
 
-      sql = "CREATE TABLE IF NOT EXISTS uplaylists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(50), public BOOL, uri varCHAR(40), tracks MEDIUMTEXT)"
+      sql = "CREATE TABLE IF NOT EXISTS uplaylists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(70), images LONGTEXT, name VARCHAR(100), public BOOL, uri varCHAR(40), tracks MEDIUMTEXT)"
       con.query(sql, (err) => {
         if (err) throw err;
         console.log('User Playlist table created!')

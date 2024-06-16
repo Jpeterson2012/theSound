@@ -180,7 +180,7 @@ const WebPlayback = memo(function WebPlayback() {
                 setUsers(tempUsers.display_name)
                 setAlbums(tempAlbums)
                 sessionStorage.setItem("username", tempUsers.display_name)
-                sessionStorage.setItem("albums", JSON.stringify(tempAlbums))
+                // localStorage.setItem("albums", JSON.stringify(tempAlbums))
                 console.log(tempAlbums)
                 }
                 fetchBoth()

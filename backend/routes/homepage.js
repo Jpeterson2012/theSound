@@ -1,7 +1,7 @@
 const { con } = require('../sql.js')
 var express = require('express');
 var router = express.Router();
-
+var urls = []
 router.get('/', async (req, res) => {
 
     var url = ''
@@ -50,9 +50,10 @@ router.get('/', async (req, res) => {
                         temp.uri = result[i].uri
 
                         var temp2 = JSON.parse(result[i].tracks)
+                        
                         var temp3 = []
                         temp2.items?.map(a => {
-                            temp3.push({images: a.album.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
+                            temp3.push({images:( a.album?.images ? a.album?.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
                         })
                         temp.tracks = temp3
 
@@ -73,7 +74,7 @@ router.get('/', async (req, res) => {
                             temp.artists = JSON.parse(result[i].artists)
                             
                             items3.push(temp)
-                        }
+                            }
                             tracks.tracks = items3
                             records.items3 = tracks
                             res.send(records)
@@ -84,11 +85,11 @@ router.get('/', async (req, res) => {
         else {
             const getStuff = async() => {
                 //Fetch user's saved playlists
-                pages = 0
+                var pages = 0
                 while(true) {
                     
 
-                    url = `https://api.spotify.com/v1/me/playlists?offset=${pages}`
+                    url = `https://api.spotify.com/v1/me/playlists?offset=${pages}&limit=5`
                     var resp = await fetch(url, {headers})
                     var data = await resp.json()
                     
@@ -100,8 +101,9 @@ router.get('/', async (req, res) => {
                             
                             const resp2 = await fetch(a.tracks.href, {headers})
                             const data2 = await resp2.json()
-                            // data2.items.map(a => values2.push({images: a.track.album.images, uri: a.track.uri, name: a.track.name, track_number: a.track.track_number, duration_ms: a.track.duration_ms}))
-                            data2.items.map(a => trackInfo.push(a.track))
+            
+                            
+                            data2.items.map(a => {a.track ? trackInfo.push(a.track) : null})
                             trackJSON.items = trackInfo
                             
                             values.push([a.id, JSON.stringify(a.images), a.name, a.public, a.uri, JSON.stringify(trackJSON)])
@@ -116,13 +118,37 @@ router.get('/', async (req, res) => {
                         
                     })
                     
-                    pages += 20
+                    pages += 5
                    
                     if(data.next == null) {
                         console.log("done")
                         break
                     } 
                 }
+
+                
+                
+                var pages = 0
+
+                //fetch user's saved albums
+                while(true) {
+                    url = `https://api.spotify.com/v1/me/albums?offset=${pages}`
+                    var resp = await fetch(url, {headers})
+                    var data = await resp.json()
+                    var values = []
+                    data.items.map(a => values.push([a.album.total_tracks, a.album.id, JSON.stringify(a.album.images), a.album.name, a.album.release_date, a.album.uri, JSON.stringify(a.album.artists), JSON.stringify(a.album.tracks), a.album.label, a.album.popularity]))
+                    var sql = "INSERT INTO ualbums (total_tracks,album_id, images, name, release_date, uri, artists, tracks, label_name, popularity) VALUES ?"
+                    con.query(sql, [values], function(err, result) {
+                        if (err) throw err;
+                        console.log("Number of albums inserted: " + result.affectedRows);
+                    })
+                    pages += 20
+                   
+                    if(data.next == null) {
+                        break
+                    } 
+                }
+
                 //Fetch user's liked songs
                 var pages = 0
                 while(true) {
@@ -144,26 +170,6 @@ router.get('/', async (req, res) => {
                 }
 
 
-                var pages = 0
-
-                //fetch user's saved albums
-                while(true) {
-                    url = `https://api.spotify.com/v1/me/albums?offset=${pages}`
-                    var resp = await fetch(url, {headers})
-                    var data = await resp.json()
-                    var values = []
-                    data.items.map(a => values.push([a.album.total_tracks, a.album.id, JSON.stringify(a.album.images), a.album.name, a.album.release_date, a.album.uri, JSON.stringify(a.album.artists), JSON.stringify(a.album.tracks), a.album.label, a.album.popularity]))
-                    var sql = "INSERT INTO ualbums (total_tracks,album_id, images, name, release_date, uri, artists, tracks, label_name, popularity) VALUES ?"
-                    con.query(sql, [values], function(err, result) {
-                        if (err) throw err;
-                        console.log("Number of albums inserted: " + result.affectedRows);
-                    })
-                    pages += 20
-                   
-                    if(data.next == null) {
-                        break
-                    } 
-                }
                 
                 sql = 'SELECT album_id, images, name, uri, artists from ualbums'
                 con.query(sql, function (err, result) {
@@ -185,9 +191,9 @@ router.get('/', async (req, res) => {
                     records.items = items
                     var sql = 'SELECT playlist_id, images, name, public, uri, tracks from uplaylists'
                     
+                    
                     con.query(sql, function (err, result) {
                         if (err) throw err;
-
                         for (let i = 0; i < result.length; i++){
                             var temp ={}
                             var tracks ={}
@@ -196,18 +202,19 @@ router.get('/', async (req, res) => {
                             temp.name = result[i].name
                             temp.public = result[i].public
                             temp.uri = result[i].uri
-
+        
                             var temp2 = JSON.parse(result[i].tracks)
+                            
                             var temp3 = []
                             temp2.items?.map(a => {
-                                temp3.push({images: a.album.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
+                                temp3.push({images: a.album?.images, uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
                             })
-
+ 
                             temp.tracks = temp3
                             
                             items2.push(temp)
                         }
-                        records.items2 = items
+                        records.items2 = items2
 
                         var sql = 'SELECT images, duration, track_id, name, artists from likedsongs'
                         con.query(sql, function (err, result) {
@@ -222,14 +229,16 @@ router.get('/', async (req, res) => {
                             temp.artists = JSON.parse(result[i].artists)
                             
                             items3.push(temp)
-                        }
+                            }
                             tracks.tracks = items3
                             records.items3 = tracks
                             res.send(records)
+                            
                         })
                     })
                 })
             }
+            
             getStuff()
         }
       })

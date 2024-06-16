@@ -34,6 +34,8 @@ router.get('/', async (req, res) => {
   user-library-read
   user-top-read
   playlist-read-private
+  playlist-read-collaborative
+  playlist-modify-private
   playlist-modify-public`;
 
   res.redirect('https://accounts.spotify.com/authorize?' +

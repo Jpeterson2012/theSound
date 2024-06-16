@@ -118,7 +118,7 @@ export default function Logo () {
 
     return(
         <div style={{display: 'flex', position: 'absolute', right: '140px', top: '30px', alignItems: 'center'}}>
-            <h2 style={{marginRight: '900px'}}>{sessionStorage.getItem("username")}</h2>
+            <h2 style={{marginRight: '55vw'}}>{sessionStorage.getItem("username")}</h2>
 
             <div className="wrap">
                 <div className="search">

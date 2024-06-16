@@ -9,3 +9,7 @@
         opacity: 1;
     }
 }
+.headers{
+    font-weight: bold;
+    font-size: 30px;
+}

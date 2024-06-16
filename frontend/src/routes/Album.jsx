@@ -78,7 +78,7 @@ export default function Album({SpinComponent, active, paused}) {
               </>
             )}</h2>
 
-            <div style={{display: 'inline-flex'}}><span className="lol" style={{marginRight: '500px'}}>Title</span><span className="lol" style={{marginLeft: '500px'}}>Duration</span></div>
+            <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
           </div>
           {listItems}
           <p style={{marginBottom: '50px'}}></p>

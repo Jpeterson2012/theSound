@@ -121,7 +121,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
           <div style={{marginBottom: '60px'}}>
             
             <h2>{sessionStorage.getItem("playlist_name")}</h2>
-            <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol" style={{marginRight: '500px'}}>Title</span><span className="lol" style={{marginLeft: '500px'}}>Duration</span></div>
+            <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
             {u_plist ? userPlaylists(ptracks, lastSegment, liked_uris) : regPlaylists(ptracks, lastSegment)}
             
           </div>
