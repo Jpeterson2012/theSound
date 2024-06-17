@@ -55,7 +55,7 @@ h2{
 .customModal{
   margin: 0px;
   padding: 0px;
-  min-width: 800px;
+  min-width: 75vw;
   min-height: 800px;
   overflow: hidden;
   margin-bottom: 150px;
