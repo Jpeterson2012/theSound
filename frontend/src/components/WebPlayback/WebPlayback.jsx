@@ -9,6 +9,7 @@ import Logo from '../Logo/Logo.jsx';
 import Loading from '../Loading/Loading.jsx';
 import Discover from '../../routes/Discover.jsx';
 import Categories from '../../routes/Categories.jsx';
+import shuffle from '../../images/shuffle.png'
 
 const track = {
     name: "",
@@ -270,7 +271,11 @@ const WebPlayback = memo(function WebPlayback() {
 
                     <button className="btn-spotify" onClick={() => { player.nextTrack() }} >
                         &gt;&gt;
-                    </button>                      
+                    </button>
+                    <img src={shuffle} style={{position: 'absolute', left: '240px', bottom: '17px', height: '15px'}} onClick={function handleClick(){
+                        
+                        fetch(`http://localhost:8888/auth/shuffle`)
+                    }} />                      
                     </div>
                     
                     

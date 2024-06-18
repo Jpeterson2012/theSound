@@ -20,15 +20,31 @@ export default function Categories() {
         const fetchcPlaylists = async () => {
             setLoading(true)
             const resp = await fetch(`http://localhost:8888/auth/cplaylists/${lastSegment}`)
-            const data = await resp.json()
+            // const data = await resp.json()
             setLoading(false)
-            setClists(data)
+            let reader = resp.body.getReader()
+            let result
+            let temp
+            let a = []
+            let decoder = new TextDecoder('utf8')
+            while(!result?.done){
+                result = await reader.read()
+                let chunk = decoder.decode(result.value)
+                console.log(chunk ? JSON.parse(chunk) : {})
+                chunk ? (
+                temp = JSON.parse(chunk).playlists,
+                a.push(...temp),  
+                setClists([...a]) )
+                : {}
+                
+            }
+            // setClists(data)
             
         }
         fetchcPlaylists()
     }, []);
 
-    const listPlaylists = clists?.playlists.items.map(a =>
+    const listPlaylists = clists?.map(a =>
         <a onClick={function handleClick() {
             var parts = a.uri.split(':');
             var lastSegment = parts.pop() || parts.pop();
@@ -50,10 +66,11 @@ export default function Categories() {
     
     return (
       <>
+      <img className="fade-in-image" src={sessionStorage.getItem("c_icon")} style={{marginTop: '170px', height: '300px'}}/>
+      <h2>{sessionStorage.getItem("c_name")}</h2>
       {loading ? <Loading yes={true} /> : (
         <>
-        <img className="fade-in-image" src={sessionStorage.getItem("c_icon")} style={{marginTop: '170px', height: '300px'}}/>
-        <h2>{sessionStorage.getItem("c_name")}</h2>
+        
         <div style={{
             display: 'flex',
                 flexWrap: 'wrap',

@@ -74,10 +74,10 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
 
     setLoading(true)
     
-    lastSegment == 'likedsongs' ? setpTracks(liked) : setpTracks(plists.find((e) => e.playlist_id === lastSegment))
+    lastSegment == 'likedsongs' ? setpTracks(liked) : setpTracks(plists?.find((e) => e.playlist_id === lastSegment))
     setLoading(false)
     
-    if ((plists.find((e) => e.playlist_id === lastSegment)) === undefined && lastSegment !== 'likedsongs') {
+    if ((plists?.find((e) => e.playlist_id === lastSegment)) === undefined && lastSegment !== 'likedsongs') {
       setU_plist(false)
       
      const fetchpTracks = async () => {

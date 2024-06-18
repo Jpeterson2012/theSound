@@ -24,6 +24,7 @@ var discoverRouter = require('./routes/discover')
 var searchRouter = require('./routes/search')
 var categoriesRouter = require('./routes/categories')
 var cplaylistsRouter = require('./routes/cplaylists')
+var shuffleRouter = require('./routes/shuffle')
 
 var app = express();
 
@@ -54,6 +55,7 @@ app.use('/auth/discover', discoverRouter);
 app.use('/auth/search', searchRouter);
 app.use('/auth/categories', categoriesRouter)
 app.use('/auth/cplaylists', cplaylistsRouter);
+app.use('/auth/shuffle', shuffleRouter)
 // const AuthRoutes = require('./routes/AuthRoutes');
 // app.use('/api', cors(), AuthRoutes);
 // app.listen(PORT, () => {

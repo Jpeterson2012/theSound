@@ -14,13 +14,13 @@ function getTracks(ptracks) {
   
         <div className='fade-in-image' style={{display: 'flex', alignItems: 'center'}}>
             
-            <img src={t.album.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px', width: '64px'}}/>
+            <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px', width: '64px'}}/>
             <Track 
-            uri={t.album.uri}
+            uri={t.url}
             name={t.name}
             number={t.track_number}
             duration={t.duration_ms}
-            album_name={t.album.name}
+            album_name={t.album_name}
             artist={t.artists}
             />
           <p hidden>{key++}</p>
@@ -126,7 +126,7 @@ export default function Logo () {
                     <button type="button" className="searchButton" onClick={function handleSubmit() {
                         
                         onOpenModal();
-                        console.log(document.getElementById("searchTerm").value);
+                        // console.log(document.getElementById("searchTerm").value);
                         const fetchSearch = async () => {
                             const resp = await fetch(`http://localhost:8888/auth/search/${document.getElementById("searchTerm").value}`)
                             // const data = await resp.json()
@@ -145,16 +145,16 @@ export default function Logo () {
                                 console.log(chunk ? JSON.parse(chunk) : {})
                                 chunk ? (
                                     temp = JSON.parse(chunk),
-                                    temp2 = temp.tracks.items,
+                                    temp2 = temp.tracks,
                                     t_arr.push(...temp2),  
                                     setTracks([...t_arr]),
-                                    temp2 = temp.albums.items,
+                                    temp2 = temp.albums,
                                     al_arr.push(...temp2),
                                     setAlbums([...al_arr]),
-                                    temp2 = temp.artists.items,
+                                    temp2 = temp.artists,
                                     ar_arr.push(...temp2),
                                     setArtist([...ar_arr]),
-                                    temp2 = temp.playlists.items,
+                                    temp2 = temp.playlists,
                                     p_arr.push(...temp2),
                                     setPlist([...p_arr])
                                     )
