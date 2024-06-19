@@ -67,6 +67,8 @@ export default function Album({SpinComponent, active, paused}) {
               /> */}
               
             </span>
+            {isLoading ? <Loading yes={true} /> : (
+              <>
             <h2>{zip.map((s,i,row) =>
             <>
               <a onClick={function handleClick() {
@@ -76,17 +78,19 @@ export default function Album({SpinComponent, active, paused}) {
             )}</h2>
             <div style={{display: 'flex', alignItems: 'center', marginBottom: '20px'}}>
               <div style={{display: 'flex', marginRight: '10px'}}>
-                <h5 style={{marginRight: '5px'}}>{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
-                <h5>{tracks.albums?.total_tracks} Song(s)</h5>
+                <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
+                <h5 style={{color: 'rgb(90, 210, 216)'}}>{tracks.albums?.total_tracks === 1 ? tracks.albums?.total_tracks + " Song" : tracks.albums?.total_tracks + " Songs" }</h5>
               </div>
               {tracks.images?.map(a => a.filter(b => b.height === 160).map(c => <img src={c.url} style={{borderRadius: '50%', height: '40px'}} />))}
             </div>
+            </>
+            )}
             
             
 
             <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
           </div>
-        {isLoading ? <Loading /> : (
+        {isLoading ? <Loading yes={true} /> : (
           <>
            
           
@@ -95,10 +99,9 @@ export default function Album({SpinComponent, active, paused}) {
           {tracks.images?.map(a => a.filter(b => b.height === 320).map(c => <img src={c.url} style={{ height: '90px', width: '90px'}} />))}
           </div>
           
-          <h5 style={{textAlign: 'left'}}>Release Date: {tracks.albums?.release_date}</h5>
-          {/* <h5 style={{textAlign: 'left'}}>{tracks.albums?.copyrights.map(a => a.text + " ")}</h5> */}
-          <h5 style={{textAlign: 'left'}}>{ tracks.albums?.copyrights[0]?.text} </h5>
-          <h5 style={{textAlign: 'left'}}>(R) {tracks.albums?.label}</h5>
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {tracks.albums?.release_date}</h5>
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ tracks.albums?.copyrights[0]?.text} </h5>
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {tracks.albums?.label}</h5>
           <p style={{marginBottom: '50px'}}></p>
           </>
         )}

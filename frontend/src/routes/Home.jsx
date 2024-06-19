@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import './Home.css'
 import Card from "../components/Card/Card.jsx";
+import Local from "../components/Local/Local.jsx";
 
 function Albums(listItems){
   return(
@@ -43,6 +44,11 @@ function Playlists(navigate, listPlaylists){
 function Podcasts(){
   return(
     <h4>Hello there</h4>
+  )
+}
+function localSong(){
+  return(
+    <Local />
   )
 }
 
@@ -134,6 +140,8 @@ export default function Home( {albums} ) {
         <button onClick={() => setHtml(Albums(listItems))}>Albums</button>
         <button onClick={() => setHtml(Playlists(navigate, listPlaylists))}>Playlists</button>
         <button onClick={() => setHtml(Podcasts())}>Podcasts</button>
+        <button onClick={() => setHtml(localSong())}>Local</button>
+        
       </div>
       
       {html ? html : Albums(listItems)}

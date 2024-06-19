@@ -93,7 +93,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
       while(!result?.done){
           result = await reader.read()
           let chunk = decoder.decode(result.value)
-          // console.log(chunk ? JSON.parse(chunk) : {})
+          console.log(chunk ? JSON.parse(chunk) : {})
           chunk ? (
           total ? null : setTotal(JSON.parse(chunk).total),
           temp = JSON.parse(chunk).items,
@@ -124,9 +124,8 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
             <h2>{sessionStorage.getItem("playlist_name")}</h2>
             
               <div style={{display: 'flex', marginRight: '10px'}}>
-                <h5 style={{marginRight: '5px'}}>playlist &#8226;</h5>
-                {/* <h5>{ptracks?.map((a,i) => i < 1 ? a.total : null)} Song(s)</h5> */}
-                <h5>{ptracks?.tracks?.length} Song(s)</h5>
+                <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
+                <h5 style={{color: 'rgb(90, 210, 216)'}}>{total ? total : ptracks?.tracks?.length} Songs</h5>
               </div>
               
             

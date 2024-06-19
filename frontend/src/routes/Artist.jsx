@@ -70,7 +70,9 @@ export default function Artist() {
     <p hidden>{count++}</p>
     </div>
   )
-  const listItems = artists2.albums?.items.map(a => 
+  const listItems = artists2.albums?.items.filter(a => a.album_type === 'album').map(a =>
+    <div> 
+      <h5>{a.release_date}</h5>
     <Card
       // key={a.id}
       id={a.id}
@@ -80,6 +82,37 @@ export default function Artist() {
       artist={a.artists.map(t => t.name)}
       a_id={a.artists.map(t => t.id)}
     />
+    </div>
+  )
+  
+  const listItems2 = artists2.albums?.items.filter(a => a.album_type === 'single').map(a =>
+    <div>
+      <h5>{a.release_date}</h5>
+    <Card
+      // key={a.id}
+      id={a.id}
+      uri={a.uri}
+      image={a.images.filter(t=>t.height == 300).map(s => s.url)}
+      name={a.name}
+      artist={a.artists.map(t => t.name)}
+      a_id={a.artists.map(t => t.id)}
+    />
+    </div>
+  )
+
+  const listItems3 = artists2.albums?.items.filter(a => a.album_type === 'compilation').map(a =>
+    <div>
+      <h5>{a.release_date}</h5> 
+    <Card
+      // key={a.id}
+      id={a.id}
+      uri={a.uri}
+      image={a.images.filter(t=>t.height == 300).map(s => s.url)}
+      name={a.name}
+      artist={a.artists.map(t => t.name)}
+      a_id={a.artists.map(t => t.id)}
+    />
+    </div>
   )
   
 
@@ -102,6 +135,15 @@ export default function Artist() {
             <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
                 {listItems}
             </div>
+            {listItems2?.length !== 0 ? <p className="headers">Singles</p> : null}
+            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
+                {listItems2}
+            </div>
+            {listItems3?.length !== 0 ? <p className="headers">Compilations</p> : null}
+            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
+                {listItems3}
+            </div>
+            
           
         
     </div>

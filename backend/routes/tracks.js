@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
         data2 = await resp.json(),
         temp3.push(data2.images)
         if (arr.length - i === 1){
-            console.log(temp3)
+            // console.log(temp3)
             let temp2 = {}
             temp2.albums = data
             temp2.images = temp3
