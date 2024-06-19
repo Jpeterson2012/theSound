@@ -10,9 +10,8 @@ export default function Local() {
     audio.pause()
   }
 
-
   return (
-    < div >
+    < div >    
       <button onClick={start}>Play</button>
       <button onClick={stop}>Pause</button>
     </div >
