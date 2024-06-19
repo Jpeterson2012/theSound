@@ -69,6 +69,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
   const [ptracks, setpTracks] = useState([]);
   const [loading, setLoading] = useState(false)
   const [u_plist, setU_plist] = useState(true)
+  const[total, setTotal] = useState(null)
   useEffect (() => {
     
 
@@ -94,6 +95,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
           let chunk = decoder.decode(result.value)
           // console.log(chunk ? JSON.parse(chunk) : {})
           chunk ? (
+          total ? null : setTotal(JSON.parse(chunk).total),
           temp = JSON.parse(chunk).items,
           a.push(...temp),  
           setpTracks([...a]) )
@@ -102,7 +104,6 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
       }
     }
     fetchpTracks()
-    console.log(ptracks)
   }
     
   }, []);
@@ -121,6 +122,16 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
           <div style={{marginBottom: '60px'}}>
             
             <h2>{sessionStorage.getItem("playlist_name")}</h2>
+            
+              <div style={{display: 'flex', marginRight: '10px'}}>
+                <h5 style={{marginRight: '5px'}}>playlist &#8226;</h5>
+                {/* <h5>{ptracks?.map((a,i) => i < 1 ? a.total : null)} Song(s)</h5> */}
+                <h5>{ptracks?.tracks?.length} Song(s)</h5>
+              </div>
+              
+            
+
+
             <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
             {u_plist ? userPlaylists(ptracks, lastSegment, liked_uris) : regPlaylists(ptracks, lastSegment)}
             

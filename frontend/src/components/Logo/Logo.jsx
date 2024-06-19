@@ -142,7 +142,7 @@ export default function Logo () {
                             while(!result?.done){
                                 result = await reader.read()
                                 let chunk = decoder.decode(result.value)
-                                console.log(chunk ? JSON.parse(chunk) : {})
+                                // console.log(chunk ? JSON.parse(chunk) : {})
                                 chunk ? (
                                     temp = JSON.parse(chunk),
                                     temp2 = temp.tracks,

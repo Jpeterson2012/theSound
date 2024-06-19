@@ -35,6 +35,7 @@ export default function Album({SpinComponent, active, paused}) {
         setIsLoading(true)
         const tempTracks = await fetchTracks()
         setIsLoading(false)
+        console.log(tempTracks)
         setTracks(tempTracks)
 
       }
@@ -42,9 +43,9 @@ export default function Album({SpinComponent, active, paused}) {
       //This fixes render bug where fetch doesn't activate when clicking on currently playing album
     }, [sessionStorage.getItem("artist")]);
     
-    const listItems = tracks.items?.map(t => 
+    const listItems = tracks.albums?.tracks?.items.map(t => 
       <Track 
-        uri={"spotify:album:" + lastSegment}
+        uri={tracks.albums.uri}
         name={t.name}
         number={t.track_number}
         duration={t.duration_ms}
@@ -54,11 +55,7 @@ export default function Album({SpinComponent, active, paused}) {
     )
     return (
       <>
-
-        {isLoading ? <Loading /> : (
-          <>
-           
-          <div style={{display: 'flex', flexDirection: 'column', marginTop: '80px',marginBottom: '20px'}}>
+        <div style={{display: 'flex', flexDirection: 'column', marginTop: '80px',marginBottom: '20px'}}>
             <span className="fade-in-image" style={{marginLeft: '28vw', marginTop: '30px'}}>
               <SpinComponent is_active={active} is_paused={paused}/>
               <img src={sessionStorage.getItem("image")} style={{height: '359px', position: 'relative', right: '495px', bottom: '17px', zIndex: '1'}} />
@@ -77,10 +74,31 @@ export default function Album({SpinComponent, active, paused}) {
               }} style={{fontWeight: 'bolder'}}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a> 
               </>
             )}</h2>
+            <div style={{display: 'flex', alignItems: 'center', marginBottom: '20px'}}>
+              <div style={{display: 'flex', marginRight: '10px'}}>
+                <h5 style={{marginRight: '5px'}}>{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
+                <h5>{tracks.albums?.total_tracks} Song(s)</h5>
+              </div>
+              {tracks.images?.map(a => a.filter(b => b.height === 160).map(c => <img src={c.url} style={{borderRadius: '50%', height: '40px'}} />))}
+            </div>
+            
+            
 
             <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
           </div>
+        {isLoading ? <Loading /> : (
+          <>
+           
+          
           {listItems}
+          <div style={{display: 'flex', flexDirection: 'column', marginTop: '50px', marginBottom: '50px'}}>
+          {tracks.images?.map(a => a.filter(b => b.height === 320).map(c => <img src={c.url} style={{ height: '90px', width: '90px'}} />))}
+          </div>
+          
+          <h5 style={{textAlign: 'left'}}>Release Date: {tracks.albums?.release_date}</h5>
+          {/* <h5 style={{textAlign: 'left'}}>{tracks.albums?.copyrights.map(a => a.text + " ")}</h5> */}
+          <h5 style={{textAlign: 'left'}}>{ tracks.albums?.copyrights[0]?.text} </h5>
+          <h5 style={{textAlign: 'left'}}>(R) {tracks.albums?.label}</h5>
           <p style={{marginBottom: '50px'}}></p>
           </>
         )}

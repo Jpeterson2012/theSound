@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
         if (empty == 1) {
             // sql = 'SELECT album_id, images, name, artists from ualbums where id = 1'
             
-            sql = 'SELECT album_id, images, name, uri, artists from ualbums'
+            sql = 'SELECT album_id, images, name, release_date, uri, artists, label_name from ualbums'
             con.query(sql, function (err, result) {
                 if (err) throw err;
                 var records = {}
@@ -30,8 +30,10 @@ router.get('/', async (req, res) => {
                     temp.album_id = result[i].album_id
                     temp.images = JSON.parse(result[i].images)
                     temp.name = result[i].name
+                    temp.release_date = result[i].release_date
                     temp.uri = result[i].uri
                     temp.artists = JSON.parse(result[i].artists)
+                    temp.label_name = result[i].label_name
                     items.push(temp)
                 }
                 records.token = process.env.access_token
@@ -102,7 +104,6 @@ router.get('/', async (req, res) => {
                             const resp2 = await fetch(a.tracks.href, {headers})
                             const data2 = await resp2.json()
             
-                            
                             data2.items.map(a => {a.track ? trackInfo.push(a.track) : null})
                             trackJSON.items = trackInfo
                             
@@ -171,7 +172,7 @@ router.get('/', async (req, res) => {
 
 
                 
-                sql = 'SELECT album_id, images, name, uri, artists from ualbums'
+                sql = 'SELECT album_id, images, name, release_date, uri, artists, label_name from ualbums'
                 con.query(sql, function (err, result) {
                     if (err) throw err;
                     var records = {}
@@ -183,8 +184,10 @@ router.get('/', async (req, res) => {
                         temp.album_id = result[i].album_id
                         temp.images = JSON.parse(result[i].images)
                         temp.name = result[i].name
+                        temp.release_date = result[i].release_date
                         temp.uri = result[i].uri
                         temp.artists = JSON.parse(result[i].artists)
+                        temp.label_name = result[i].label_name
                         items.push(temp)
                     }
                     records.token = process.env.access_token

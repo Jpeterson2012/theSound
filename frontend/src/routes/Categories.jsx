@@ -30,7 +30,7 @@ export default function Categories() {
             while(!result?.done){
                 result = await reader.read()
                 let chunk = decoder.decode(result.value)
-                console.log(chunk ? JSON.parse(chunk) : {})
+                // console.log(chunk ? JSON.parse(chunk) : {})
                 chunk ? (
                 temp = JSON.parse(chunk).playlists,
                 a.push(...temp),  
