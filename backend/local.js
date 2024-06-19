@@ -1,13 +1,33 @@
 var jsmediatags = require("jsmediatags");
+const testFolder = 'ori/'
+let fs = require('fs')
+let files = fs.readdirSync(testFolder)
+console.log(files)
+let arr = []
+// fs.readdir(testFolder, (err, files) => {
+//   files.forEach(file => {
+//     console.log(file);
+//   });
+// });
+for (let i = 0; i < files.length; i++){
+  jsmediatags.read(testFolder + files[i], {
+    onSuccess: function(tag) {
+      console.log(tag.tags.title);
+    },
+    onError: function(error) {
+      console.log(':(', error.type, error.info);
+    }
+  });
+}
 
-jsmediatags.read('34-LumaPools.mp3', {
-  onSuccess: function(tag) {
-    console.log(tag);
-  },
-  onError: function(error) {
-    console.log(':(', error.type, error.info);
-  }
-});
+// jsmediatags.read('34-LumaPools.mp3', {
+//   onSuccess: function(tag) {
+//     console.log(tag.tags.title);
+//   },
+//   onError: function(error) {
+//     console.log(':(', error.type, error.info);
+//   }
+// });
 module.exports = {jsmediatags}
 
 // var jsmediatags = require("jsmediatags");
