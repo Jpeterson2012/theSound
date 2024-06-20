@@ -19,18 +19,39 @@ router.get('/:id', async (req, res) => {
     data.artists.map(a => 
         temp.push(a.id)
     )
-    temp.map(async (a,i,arr) => {
-        resp = await fetch(`https://api.spotify.com/v1/artists/${a}`,{headers}),
-        data2 = await resp.json(),
-        temp3.push(data2.images)
-        if (arr.length - i === 1){
-            // console.log(temp3)
-            let temp2 = {}
-            temp2.albums = data
-            temp2.images = temp3
-            res.send(temp2)
-        }   
-    })
+// let apiRequestLoop = function(temp) {
+//   let promiseArray = [];
+//   for (let i = 1; i <= temp.length; i++) {
+//     console.log(temp[i])
+//     let dataUrlLoop = `https://api.spotify.com/v1/artists/${temp[i]}`
+//     promiseArray.push(fetch(dataUrlLoop, {headers}).then(response => response.json()));
+//   }
+//   return Promise.all(promiseArray);
+// }
+// apiRequestLoop(temp).then(values => console.log(values))
+let apiRequestLoop = function(){
+let promiseArray = []
+temp.map(a =>
+    promiseArray.push(fetch(`https://api.spotify.com/v1/artists/${a}`,{headers}).then(response => response.json()))
+)
+return Promise.all(promiseArray);
+}
+apiRequestLoop().then(data => data.map(a => console.log(a.name)))
+
+
+
+    // temp.map(async (a,i,arr) => {
+    //     resp = await fetch(`https://api.spotify.com/v1/artists/${a}`,{headers}),
+    //     data2 = await resp.json(),
+    //     temp3.push(data2.images)
+    //     if (arr.length - 1 === i){
+    //         // console.log(temp3)
+    //         let temp2 = {}
+    //         temp2.albums = data
+    //         temp2.images = temp3
+    //         res.send(temp2)
+    //     }   
+    // })
     
     
     //   fetch(url, { headers })
