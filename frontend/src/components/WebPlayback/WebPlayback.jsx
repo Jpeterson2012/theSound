@@ -187,7 +187,25 @@ const WebPlayback = memo(function WebPlayback() {
                 fetchBoth()
             }
         // }
+            
     }, []);
+    const scrollers = document.querySelectorAll(".now-playing__side")
+    if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches) addAnimation()
+    function addAnimation(){
+        scrollers.forEach(scroller => {
+            scroller.setAttribute("data-animated", true);
+
+            // const scrollerInner = scroller.querySelector(".now-playing__name")
+            // const scrollerContent = Array.from(scrollerInner.children)
+
+            // scrollerContent.forEach((item) => {
+            //     const duplicatedItem = item.cloneNode(true);
+            //     duplicatedItem.setAttribute("aria-hidden", true);
+            //     scrollerInner.appendChild(duplicatedItem);
+            // })
+        })
+        
+    }
     
     return (
         <>
@@ -232,11 +250,11 @@ const WebPlayback = memo(function WebPlayback() {
                             
 
                             <div className="now-playing__side">
-                                <div className="now-playing__name" style={{fontWeight: 'bold'}}>{
+                                <div className="now-playing__name" style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}>{
                                     current_track.name
                                     }</div>
 
-                                <div className="now-playing__artist">
+                                <div className="now-playing__name" data-direction="right">
                                     <p style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
                                         navigate(`/app/artist/${s.uri.split(':').pop()}`)
                                         }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}

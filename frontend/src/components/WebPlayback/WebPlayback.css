@@ -1,9 +1,35 @@
-.now-playing__name, .now-playing__artist {
-    color: rgb(90, 210, 216);
-    text-overflow: ellipsis;
+.now-playing__side{
+  max-width: 400px;
+  color: rgb(90, 210, 216);
+    /* text-overflow: ellipsis; */
     white-space: nowrap;
-    overflow: hidden; 
+    overflow: hidden;
 }
+.now-playing__name {
+    /* color: rgb(90, 210, 216); */
+    /* text-overflow: ellipsis; */
+    /* white-space: nowrap; */
+    /* overflow: hidden;  */
+}
+.now-playing__side[data-animated="true"] {
+  overflow: hidden;
+  -webikit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+  mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent)
+}
+.now-playing__side[data-animated="true"] .now-playing__name{
+  width: max-content;
+  animation: scroll var(--_animation-duration, 40s)
+  var(--_animation-duration, forwards) linear infinite;
+}
+.now-playing__side[data-direction="right"]{
+  --_animation-direction: reverse
+}
+@keyframes scroll {
+  to{
+    transform: translate(-50%);
+  }
+}
+
 .main-wrapper img {
     height: 60px;
 }
