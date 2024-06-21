@@ -41,7 +41,7 @@ export default function Album({SpinComponent, active, paused}) {
       }
       assignTracks()
       //This fixes render bug where fetch doesn't activate when clicking on currently playing album
-    }, [sessionStorage.getItem("artist")]);
+    }, [sessionStorage.getItem("image")]);
     
     const listItems = tracks.albums?.tracks?.items.map(t => 
       <Track 
