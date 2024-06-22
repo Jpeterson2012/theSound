@@ -109,14 +109,15 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
   }, []);
 
   return (
-    <>
-      {loading ? <Loading yes={true} /> : (
-        
-        <div style={{marginTop: '120px'}}>
-        <span className="fade-in-image" style={{marginLeft: '24vw'}}>
+    <div style={{marginTop: '120px'}}>
+    <span className="fade-in-image" style={{marginLeft: '24vw'}}>
           <SpinComponent is_active={active} is_paused={paused}/>
           {u_plist ? listImages(lastSegment, ptracks) : <img src={sessionStorage.getItem("p_image")} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>}
         </span>
+      {loading ? <Loading yes={true} /> : (
+        
+        <div>
+        
         
           
           <div style={{marginBottom: '60px'}}>
@@ -137,6 +138,6 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
