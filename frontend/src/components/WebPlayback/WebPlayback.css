@@ -1,22 +1,39 @@
-.now-playing__side{
-  max-width: 400px;
+.scrollbar1{
+  max-width: 500px;
   color: rgb(90, 210, 216);
     /* text-overflow: ellipsis; */
-    white-space: nowrap;
-    overflow: hidden;
+    /* white-space: nowrap; */
+    /* overflow: hidden; */
 }
-.now-playing__name {
+.scrollbar2{
+  max-width: 500px;
+  color: rgb(90, 210, 216);
+}
+.now-playing__name, .now-playing__artist {
+  display: flex;
+  flex-wrap: wrap;
+  width: max-content;
     /* color: rgb(90, 210, 216); */
     /* text-overflow: ellipsis; */
     /* white-space: nowrap; */
     /* overflow: hidden;  */
 }
-.now-playing__side[data-animated="true"] {
+.scrollbar1[data-animated="true"] {
   overflow: hidden;
   -webikit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
   mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent)
 }
-.now-playing__side[data-animated="true"] .now-playing__name{
+.scrollbar2[data-animated="true"] {
+  overflow: hidden;
+  -webikit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+  mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent)
+}
+.scrollbar1[data-animated="true"] .now-playing__name{
+  width: max-content;
+  animation: scroll var(--_animation-duration, 40s)
+  var(--_animation-duration, reverse) linear infinite;
+}
+.scrollbar2[data-animated="true"] .now-playing__artist{
   width: max-content;
   animation: scroll var(--_animation-duration, 40s)
   var(--_animation-duration, forwards) linear infinite;

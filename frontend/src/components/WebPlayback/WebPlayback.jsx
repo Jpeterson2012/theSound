@@ -10,6 +10,7 @@ import Loading from '../Loading/Loading.jsx';
 import Discover from '../../routes/Discover.jsx';
 import Categories from '../../routes/Categories.jsx';
 import shuffle from '../../images/shuffle.png'
+import HScroll from '../HScroll.jsx';
 
 const track = {
     name: "",
@@ -189,23 +190,6 @@ const WebPlayback = memo(function WebPlayback() {
         // }
             
     }, []);
-    const scrollers = document.querySelectorAll(".now-playing__side")
-    if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches) addAnimation()
-    function addAnimation(){
-        scrollers.forEach(scroller => {
-            scroller.setAttribute("data-animated", true);
-
-            // const scrollerInner = scroller.querySelector(".now-playing__name")
-            // const scrollerContent = Array.from(scrollerInner.children)
-
-            // scrollerContent.forEach((item) => {
-            //     const duplicatedItem = item.cloneNode(true);
-            //     duplicatedItem.setAttribute("aria-hidden", true);
-            //     scrollerInner.appendChild(duplicatedItem);
-            // })
-        })
-        
-    }
     
     return (
         <>
@@ -250,17 +234,28 @@ const WebPlayback = memo(function WebPlayback() {
                             
 
                             <div className="now-playing__side">
-                                <div className="now-playing__name" style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}>{
+                                <div className='scrollbar1'>
+                                <div className="now-playing__name" style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}><p style={{margin: '0px', padding: '0px', gap: '1rem'}}>{
                                     current_track.name
-                                    }</div>
-
-                                <div className="now-playing__name" data-direction="right">
-                                    <p style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
+                                    }</p>
+                                    <p className='temp' style={{margin: '0px', padding: '0px'}}>{current_track.name}</p>
+                                    {current_track.name ? <HScroll name={'scrollbar1'}/> : null}</div>
+                                </div>
+                                
+                                <div className='scrollbar2'>
+                                <div className="now-playing__artist" data-direction="right">
+                                    <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
                                         navigate(`/app/artist/${s.uri.split(':').pop()}`)
                                         }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
                                     </p>
-                                    
+                                    <p className='temp' style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
+                                        navigate(`/app/artist/${s.uri.split(':').pop()}`)
+                                        }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
+                                    </p>
+                                    {current_track.name ? <HScroll name={'scrollbar2'} /> : null}
                                 </div>
+                                </div>
+                                
                             </div>
                             
                         </div>

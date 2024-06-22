@@ -179,14 +179,14 @@ export default function Logo () {
             <div>
             
                 <Modal open={open} onClose={onCloseModal} center classNames={{overlay: 'customOverlay', modal: 'customModal'}} closeIcon={closeIcon}>
-                    <div>
+                    <div >
                         <button onClick={() => setHtml(getTracks(tracks))}>Tracks</button>
                         <button onClick={() => setHtml(getAlbums(albums, navigate, onCloseModal))}>Albums</button>
                         <button onClick={() => setHtml(getArtists(artist, navigate, onCloseModal))}>Artists</button>
                         <button onClick={() => setHtml(getPlaylists(plist, navigate, onCloseModal))}>Playlists</button>
                     </div>
 
-                    {html ? html : getTracks(tracks)}
+                    <div style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>{html ? html : getTracks(tracks)}</div>
                 </Modal>
             </div>
         </div>
