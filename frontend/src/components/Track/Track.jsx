@@ -34,9 +34,10 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                 
             }}>
             <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
-            <h2 style={{margin: '0px', padding: '0px', fontSize: '20px'}} >{name}</h2>
-            <h4 style={{position: 'absolute'}}>{artist.map((a,i,row) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
+            <h2 style={{margin: '0px', padding: '0px', fontSize: '20px',maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}} >{name}</h2>
+            <h4 style={{position: 'absolute', maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{artist.map((a,i,row) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
             </div>
+            <br></br>
             <br></br>
             </a>
             <span style={{position: 'absolute', left: '81vw', fontWeight: 'bold', color: 'rgb(90, 210, 216)'}}>{timeCalc(duration)}</span>

@@ -77,6 +77,10 @@
 .buttonWrapper{
     position: fixed;
 }
+.now_playing{
+  position: fixed;
+  bottom: 50px;
+}
 .btn-spotify {
     color: rgb(90, 210, 216);
 }

@@ -39,25 +39,22 @@ function Spin({is_active, is_paused}){
               <circle id="dot" cx="200" cy="200" r="6" />
               </g>
             </svg>
-        {/* {is_paused ? e.getElementById("record").style.animationPlayState = 'paused' : (
-            e.getElementById("record").style.animation = 'spin 2.5s linear infinite',
-            e.getElementById("record").style.transformOrigin = 'center center'
-        )} */}
-        
         </>
     )
 }
-
 const WebPlayback = memo(function WebPlayback() {
     const [player, setPlayer] = useState(undefined);
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
     const [current_track, setTrack] = useState(track);
+    const [pos, setPos] = useState(0)
+    const [duration, setDuration] = useState(0)
+    const [shuffled, setisShuffled] = useState(true)
 
     const [albums, setAlbums] = useState([]);
     const [users, setUsers] = useState("")
     const [isLoading, setIsLoading] = useState(false)
-
+    
 
     const navigate = useNavigate()
 
@@ -110,7 +107,8 @@ const WebPlayback = memo(function WebPlayback() {
                     player.addListener('account_error', ({ message }) => {
                         console.error(message);
                     });
-                
+                    
+                    
                     player.addListener('player_state_changed', ( state => {
                         if (!state) {
                             return;
@@ -118,26 +116,12 @@ const WebPlayback = memo(function WebPlayback() {
                         setTrack(state.track_window.current_track);
                         sessionStorage.setItem("name", state.track_window.current_track.album.name)
                         setPaused(state.paused);        
+                        setDuration(state.duration)            
                     
                         player.getCurrentState().then( state => { 
-                            (!state)? setActive(false) : setActive(true) 
-                        });
-
-                        // const e = document.getElementById("record")
-                        // if (location.href !== 'http://localhost:5173/app'){
-                        // if (state.paused !== true) {
-                        //     e.style.animation = 'spin 2.5s linear infinite'
-                        //     e.style.transformOrigin = 'center center'
-                        //     sessionStorage.setItem("playing", true)
-                            
-                        // }
-                        // else {
-                        //     e.style.animationPlayState = 'paused'
-                        //     sessionStorage.setItem("playing", false)
-                        // }
-
-                    //}
-                    
+                            (!state)? setActive(false) : setActive(true)                            
+                        })
+                                                            
                     }));
                     
                     player.connect();
@@ -188,9 +172,18 @@ const WebPlayback = memo(function WebPlayback() {
                 fetchBoth()
             }
         // }
+        
+
             
     }, []);
-    
+
+    setTimeout(() => {
+    is_active && player.getCurrentState().then(state => {
+            if (!state){console.error('error');return}
+            setPos(state.position)
+        })
+    }, 500)
+
     return (
         <>
         {isLoading ? <Loading yes={true}/> : (
@@ -262,15 +255,15 @@ const WebPlayback = memo(function WebPlayback() {
                     
                     <div className='buttonWrapper'>
                         { !is_active ? null : ( is_paused ? null : (
-                            <div class="now playing" id="music">
-                            <span class="bar n1">A</span>
-                            <span class="bar n2">B</span>
-                            <span class="bar n3">c</span>
-                            <span class="bar n4">D</span>
-                            <span class="bar n5">E</span>
-                            <span class="bar n6">F</span>
-                            <span class="bar n7">G</span>
-                            <span class="bar n8">H</span>
+                            <div className="now_playing" id="music">
+                            <span className="bar n1">A</span>
+                            <span className="bar n2">B</span>
+                            <span className="bar n3">c</span>
+                            <span className="bar n4">D</span>
+                            <span className="bar n5">E</span>
+                            <span className="bar n6">F</span>
+                            <span className="bar n7">G</span>
+                            <span className="bar n8">H</span>
                             </div>
                         ))}
 
@@ -278,17 +271,31 @@ const WebPlayback = memo(function WebPlayback() {
                         &lt;&lt;
                     </button>
 
-                    <button className="btn-spotify" onClick={() => { player.togglePlay() }} >
+                    <button className="btn-spotify" style={{maxWidth: '85px', minWidth: '85px'}} onClick={() => { player.togglePlay() }} >
                         { is_paused ? "PLAY" : "PAUSE" }
                     </button>
 
                     <button className="btn-spotify" onClick={() => { player.nextTrack() }} >
                         &gt;&gt;
                     </button>
-                    <img src={shuffle} style={{position: 'absolute', left: '240px', bottom: '17px', height: '15px'}} onClick={function handleClick(){
+
+                    <img src={shuffle} style={{position: 'absolute', left: '240px', bottom: '17px', height: '15px', cursor: 'pointer'}} onClick={function handleClick(){     
+
+                        if (shuffled === true) setisShuffled(false)
+                        else setisShuffled(true)                
+                        fetch(`http://localhost:8888/auth/shuffle`, {
+                            method: 'POST',
+                            headers: {"Content-Type":"application/json"},
+                            body: JSON.stringify({state: shuffled})
+                        })
                         
-                        fetch(`http://localhost:8888/auth/shuffle`)
-                    }} />                      
+                    }} />            
+
+                    <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){
+                        player.seek(e.target.value)
+                        setPos(e.target.value)
+                    }} style={{position: 'absolute', left: '300px', bottom: '7px', width: '500px'}} /> 
+
                     </div>
                     
                     
