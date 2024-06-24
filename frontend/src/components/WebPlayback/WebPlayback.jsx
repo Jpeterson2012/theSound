@@ -10,6 +10,8 @@ import Loading from '../Loading/Loading.jsx';
 import Discover from '../../routes/Discover.jsx';
 import Categories from '../../routes/Categories.jsx';
 import shuffle from '../../images/shuffle.png'
+import repeat from '../../images/repeat.png'
+import repeat1 from '../../images/repeat1.png'
 import HScroll from '../HScroll.jsx';
 
 const track = {
@@ -50,6 +52,7 @@ const WebPlayback = memo(function WebPlayback() {
     const [pos, setPos] = useState(0)
     const [duration, setDuration] = useState(0)
     const [shuffled, setisShuffled] = useState(true)
+    const [repeated, setRepeated] = useState(0)
 
     const [albums, setAlbums] = useState([]);
     const [users, setUsers] = useState("")
@@ -254,6 +257,25 @@ const WebPlayback = memo(function WebPlayback() {
                         </div>
                     
                     <div className='buttonWrapper'>
+                    <img id='toggle1' src={repeated < 2 ? repeat : repeat1} style={{position: 'absolute', right: '250px', bottom: '12px', height: '20px', cursor: 'pointer', opacity: repeated === 0 ? '0.5' : 1}} onClick={function handleClick(){   
+                        let temp = document.getElementById('toggle1')
+                        temp.style.animation = 'hithere 1s ease'  
+
+                        if (repeated === 0) setRepeated(1)
+                        else if (repeated === 1) setRepeated(2)
+                        else setRepeated(0)                
+                        fetch(`http://localhost:8888/auth/shuffle`, {
+                            method: 'POST',
+                            headers: {"Content-Type":"application/json"},
+                            body: JSON.stringify({state: repeated === 0 ? 'context' : (repeated === 1 ? 'track' : 'off')})
+                        })
+
+                        setTimeout(()=>{
+                            temp.style.removeProperty('animation')
+                        }, 1000)
+
+                        }} />
+
                         { !is_active ? null : ( is_paused ? null : (
                             <div className="now_playing" id="music">
                             <span className="bar n1">A</span>
@@ -267,7 +289,7 @@ const WebPlayback = memo(function WebPlayback() {
                             </div>
                         ))}
 
-                    <button className="btn-spotify" onClick={() => { player.previousTrack() }} >
+                    <button className="btn-spotify" onClick={() => { pos > 3000 ? player.seek(0) : player.previousTrack() }} >
                         &lt;&lt;
                     </button>
 
@@ -279,7 +301,10 @@ const WebPlayback = memo(function WebPlayback() {
                         &gt;&gt;
                     </button>
 
-                    <img src={shuffle} style={{position: 'absolute', left: '240px', bottom: '17px', height: '15px', cursor: 'pointer'}} onClick={function handleClick(){     
+                    <img id='toggle2' src={shuffle} style={{position: 'absolute', left: '240px', bottom: '12px', height: '19px', cursor: 'pointer', opacity: shuffled ? '0.5' : '1'}} onClick={function handleClick(){     
+
+                        let temp = document.getElementById('toggle2')
+                        temp.style.animation = 'hithere 1s ease'
 
                         if (shuffled === true) setisShuffled(false)
                         else setisShuffled(true)                
@@ -288,13 +313,17 @@ const WebPlayback = memo(function WebPlayback() {
                             headers: {"Content-Type":"application/json"},
                             body: JSON.stringify({state: shuffled})
                         })
+                        setTimeout(()=>{
+                            temp.style.removeProperty('animation')
+                        }, 1000)
+                        
                         
                     }} />            
 
                     <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){
                         player.seek(e.target.value)
                         setPos(e.target.value)
-                    }} style={{position: 'absolute', left: '300px', bottom: '7px', width: '500px'}} /> 
+                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> 
 
                     </div>
                     
