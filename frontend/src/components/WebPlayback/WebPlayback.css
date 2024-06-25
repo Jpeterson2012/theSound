@@ -180,6 +180,7 @@
     height: 390px;
     border: 1px solid 0066ff;
     background: black;
+    overflow: hidden;
   }
   
   #label {
@@ -238,7 +239,7 @@ input[type=range]::-moz-range-track{
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  border-radius: 16px;
+  border-radius: 0px;
   margin-top: -10px;
   background-color: rgb(90, 210, 216);
   height: 1.5rem;

@@ -37,7 +37,7 @@ function Spin({is_active, is_paused}){
               <circle className="line3" r="140" cx="200" cy="200" />
               <circle id="label" cx="200" cy="200" r="100" style={{fill: '#0066ff'}}/>
               <text className="writing" y="160" x="165">TheSound </text>  
-              <text className="writing" y="230" x="115" textLength="170">{sessionStorage.getItem("name")}</text>    
+              <text className="writing" y="230" x="115" textLength="170" lengthAdjust="spacing" >{sessionStorage.getItem("name") ? (sessionStorage.getItem("name").length > 49 ? (sessionStorage.getItem("name").substring(0,25) + "...") : sessionStorage.getItem("name")) : null}</text>    
               <circle id="dot" cx="200" cy="200" r="6" />
               </g>
             </svg>
@@ -221,6 +221,7 @@ const WebPlayback = memo(function WebPlayback() {
                                 sessionStorage.setItem("image", current_track.album.images?.filter(s => s.height == 640).map(s => s.url))
                                 // sessionStorage.setItem("name", current_track.album.name)
                                 sessionStorage.setItem("albumname", current_track.album.name)
+                                console.log(sessionStorage.getItem("name").length)
 
                                 navigate(`/app/album/${lastSegment}`)
                             }}>
@@ -263,7 +264,8 @@ const WebPlayback = memo(function WebPlayback() {
 
                         if (repeated === 0) setRepeated(1)
                         else if (repeated === 1) setRepeated(2)
-                        else setRepeated(0)                
+                        else if (repeated === 2) setRepeated(0)
+                        console.log(repeated)                
                         fetch(`http://localhost:8888/auth/shuffle`, {
                             method: 'POST',
                             headers: {"Content-Type":"application/json"},
@@ -272,7 +274,7 @@ const WebPlayback = memo(function WebPlayback() {
 
                         setTimeout(()=>{
                             temp.style.removeProperty('animation')
-                        }, 1000)
+                        }, 750)
 
                         }} />
 
@@ -315,12 +317,12 @@ const WebPlayback = memo(function WebPlayback() {
                         })
                         setTimeout(()=>{
                             temp.style.removeProperty('animation')
-                        }, 1000)
+                        }, 750)
                         
                         
                     }} />            
 
-                    <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){
+                    <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){ 
                         player.seek(e.target.value)
                         setPos(e.target.value)
                     }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> 

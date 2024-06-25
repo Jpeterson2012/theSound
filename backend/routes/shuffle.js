@@ -5,7 +5,7 @@ router.post('/', async (req, res) => {
     const headers = {
       Authorization: 'Bearer ' + process.env.access_token
     }
-
+    try{
     console.log(req.body.state)
 
     if (req.body.state === 'track' || req.body.state === 'context' || req.body.state === 'off'){
@@ -17,7 +17,12 @@ router.post('/', async (req, res) => {
       await fetch(url, {
         method: 'PUT',
         headers: headers,
-      }).then(req.body.state === true || req.body.state === false ? console.log(req.body.state === true ? "Shuffled" : "Un-Shuffled") : console.log("Repeat mode: " + req.body.state))
+      }).then(res.send("200"))
+    }
+    catch(e){
+      console.log(e)
+      res.send("500")
+    }
 })
 
 module.exports = router;
