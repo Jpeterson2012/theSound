@@ -6,6 +6,8 @@ import { Modal } from 'react-responsive-modal';
 import { useState, useEffect } from 'react';
 import Track from '../Track/Track';
 import escape from '../../images/escape.jpg'
+import search from '../../images/search.png'
+import space from '../../images/space.gif'
 
 function getTracks(ptracks) {
     var key = 0
@@ -118,9 +120,11 @@ export default function Logo () {
 
     return(
         <div style={{display: 'flex', position: 'absolute', right: '140px', top: '30px', alignItems: 'center'}}>
-            <h2 style={{marginRight: '55vw'}}>{sessionStorage.getItem("username")}</h2>
+            <h2 style={{marginRight: '57vw'}}>{sessionStorage.getItem("username")}</h2>
+            <img src={search} style={{cursor: 'pointer', width: '70px', height: '70px', position: 'absolute', left: '35vw'}} onClick={function handleClick(){onOpenModal()}} />
 
-            <div className="wrap">
+
+            {/* <div className="wrap">
                 <div className="search">
                     <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
                     <button type="button" className="searchButton" onClick={function handleSubmit() {
@@ -168,9 +172,9 @@ export default function Logo () {
                         <i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}}></i>
                     </button>
                 </div>
-            </div>
+            </div> */}
             <a onClick={function handleClick() {navigate('/app/discover')}}>
-                <h2>Discover</h2>
+                <h2 style={{position: 'relative', right: '5vw'}} >Discover</h2>
             </a>
             <a onClick={function handleClick() {navigate('/app')}}>
                 <img style={{width: '80px', height: '80px'}} src={logo} alt="Avatar"/>
@@ -179,7 +183,57 @@ export default function Logo () {
             <div>
             
                 <Modal open={open} onClose={onCloseModal} center classNames={{overlay: 'customOverlay', modal: 'customModal'}} closeIcon={closeIcon}>
-                    <div >
+                  
+                <div className="wrap">
+                <div className="search">
+                    <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
+                    <button type="button" className="searchButton" onClick={function handleSubmit(){
+                      setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([])
+                      console.log(document.getElementById("searchTerm").value);
+                      const fetchSearch = async () => {
+                          const resp = await fetch(`http://localhost:8888/auth/search/${document.getElementById("searchTerm").value}`)
+                          // const data = await resp.json()
+                          let reader = resp.body.getReader()
+                          let result
+                          let temp
+                          let temp2
+                          let t_arr = []
+                          let al_arr = []
+                          let ar_arr = []
+                          let p_arr = []
+                          let decoder = new TextDecoder('utf8')
+                          while(!result?.done){
+                              result = await reader.read()
+                              let chunk = decoder.decode(result.value)
+                              // console.log(chunk ? JSON.parse(chunk) : {})
+                              chunk ? (
+                                  temp = JSON.parse(chunk),
+                                  temp2 = temp.tracks,
+                                  t_arr.push(...temp2),  
+                                  setTracks([...t_arr]),
+                                  temp2 = temp.albums,
+                                  al_arr.push(...temp2),
+                                  setAlbums([...al_arr]),
+                                  temp2 = temp.artists,
+                                  ar_arr.push(...temp2),
+                                  setArtist([...ar_arr]),
+                                  temp2 = temp.playlists,
+                                  p_arr.push(...temp2),
+                                  setPlist([...p_arr])
+                                  )
+                                  : {}
+                          }
+                          // console.log(data)
+                      }
+                      fetchSearch()
+                       return false
+                    }}><i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}} ></i></button>
+                    </div>
+                    </div>
+                    <img src={space} style={{zIndex: '0', width: '100%', height: '200px', position: 'absolute', top: '0'}} />
+
+
+                    <div style={{display: 'flex', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '5vw'}}>
                         <button onClick={() => setHtml(getTracks(tracks))}>Tracks</button>
                         <button onClick={() => setHtml(getAlbums(albums, navigate, onCloseModal))}>Albums</button>
                         <button onClick={() => setHtml(getArtists(artist, navigate, onCloseModal))}>Artists</button>

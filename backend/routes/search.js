@@ -7,6 +7,7 @@ router.get('/:id', async (req, res) => {
       Authorization: 'Bearer ' + process.env.access_token
     }
     var pages = 0
+    try{
     while (pages < 30){
 
     
@@ -36,6 +37,10 @@ router.get('/:id', async (req, res) => {
       pages += 5
     }
     res.end()
+  }
+  catch(e){
+    console.error(e)
+  }
   
 })
 
