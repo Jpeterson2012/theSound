@@ -64,9 +64,11 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 .react-responsive-modal-modal{
-  background: rgb(37, 37, 37);
+  background: rgb(28, 28, 28);
   overflow: hidden;
   border-radius: 16px;
+  margin: 0px;
+  padding: 20px 0px;
 }
 
 @media (prefers-color-scheme: light) {

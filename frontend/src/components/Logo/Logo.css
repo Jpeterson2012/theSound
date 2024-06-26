@@ -17,7 +17,7 @@ h2{
   border: 3px solid #7a19e9;
   border-right: none;
   padding: 5px;
-  height: 20px;
+  height: 25px;
   border-radius: 5px 0 0 5px;
   outline: none;
   color: #9DBFAF;
@@ -29,7 +29,7 @@ h2{
 
 .searchButton {
   width: 40px;
-  height: 36px;
+  height: 41px;
   border: 1px solid #7a19e9;
   background: #7a19e9;
   text-align: center;

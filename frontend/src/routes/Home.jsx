@@ -104,6 +104,11 @@ export default function Home( {albums} ) {
       //   }
       //   fetchBoth()
       // }
+      let temp = sessionStorage.getItem('home')
+      if (temp === 'playlist') setHtml(Playlists(navigate,listPlaylists))
+      if (temp === 'podcast') setHtml(Podcasts())
+      if (temp === 'local') setHtml(localSong())
+
     
   }, []);
   const listItems = albums.items?.map(a => 
@@ -137,10 +142,10 @@ export default function Home( {albums} ) {
   return (
     <>
       <div style={{marginTop: '170px'}}>
-        <button onClick={() => setHtml(Albums(listItems))}>Albums</button>
-        <button onClick={() => setHtml(Playlists(navigate, listPlaylists))}>Playlists</button>
-        <button onClick={() => setHtml(Podcasts())}>Podcasts</button>
-        <button onClick={() => setHtml(localSong())}>Local</button>
+        <button onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
+        <button onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist'),console.log(sessionStorage.getItem('home'))}}>Playlists</button>
+        <button onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
+        <button onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button>
         
       </div>
       

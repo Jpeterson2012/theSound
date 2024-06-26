@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import Track from '../Track/Track';
 import escape from '../../images/escape.jpg'
 import search from '../../images/search.png'
-import space from '../../images/space.gif'
+import space from '../../images/music.gif'
 
 function getTracks(ptracks) {
     var key = 0
@@ -111,7 +111,7 @@ export default function Logo () {
     const onCloseModal = () => {setOpen(false); setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([])};
     
     const closeIcon = (
-        <img src={escape} style={{height: '64px', width: '64px'}}/>
+        <img src={escape} style={{height: '44px', width: '44px'}}/>
       );
 
     useEffect(() => {
@@ -121,7 +121,18 @@ export default function Logo () {
     return(
         <div style={{display: 'flex', position: 'absolute', right: '140px', top: '30px', alignItems: 'center'}}>
             <h2 style={{marginRight: '57vw'}}>{sessionStorage.getItem("username")}</h2>
+
+            <h2 style={{position: 'absolute', left: '25vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
+              if (window.history?.length && window.history.length > 1) navigate(-1)
+              else navigate('/app/', {replace: true})
+            }}>{"<"}</h2>
+
             <img src={search} style={{cursor: 'pointer', width: '70px', height: '70px', position: 'absolute', left: '35vw'}} onClick={function handleClick(){onOpenModal()}} />
+
+            <h2 style={{position: 'absolute', right: '30vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
+              if (window.history?.length && window.history.length > 1) navigate(1)
+                else navigate('/app/', {replace: true})
+            }}>{">"}</h2>
 
 
             {/* <div className="wrap">
@@ -230,7 +241,7 @@ export default function Logo () {
                     }}><i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}} ></i></button>
                     </div>
                     </div>
-                    <img src={space} style={{zIndex: '0', width: '100%', height: '200px', position: 'absolute', top: '0'}} />
+                    <img src={space} style={{zIndex: '0', width: '100%', height: '180px', position: 'absolute', top: '0', opacity: '0.3', objectFit: 'cover', objectPosition: '20% 50%'}} />
 
 
                     <div style={{display: 'flex', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '5vw'}}>
@@ -240,7 +251,7 @@ export default function Logo () {
                         <button onClick={() => setHtml(getPlaylists(plist, navigate, onCloseModal))}>Playlists</button>
                     </div>
 
-                    <div style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>{html ? html : getTracks(tracks)}</div>
+                    <div style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginTop: '40px'}}>{html ? html : getTracks(tracks)}</div>
                 </Modal>
             </div>
         </div>

@@ -6,6 +6,7 @@ import App from './App/App.jsx'
 import Login from './routes/Login.jsx';
 import ErrorPage from "./error-page";
 import ScrollToTop from './components/ScrollToTop.jsx';
+import Home from './routes/Home.jsx';
 import './index.css'
 
 
@@ -16,10 +17,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ScrollToTop />
           <Routes>
             <Route path='/' element={<App />} errorElement={<ErrorPage />} />
-            <Route path = '/login' element={<Login />}/>
+            <Route path = '/login' element={sessionStorage.getItem("token") === null ? <Login /> : <WebPlayback />}/>
             <Route path='/app/*' element={<WebPlayback />} />
             
-            <Route path='*' element={sessionStorage.getItem("loggedIn") !== true ? <Login /> : <Home /> }/>
+            <Route path='*' element={<WebPlayback /> }/>
           </Routes>
         </Router>
         

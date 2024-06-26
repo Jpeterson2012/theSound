@@ -9,7 +9,7 @@ export default function App() {
         sessionStorage.setItem("playing", false)
     }, []);
 
-    return (<Login />)    
+    return ( <Login />)    
 }
 
 
