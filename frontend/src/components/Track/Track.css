@@ -1,13 +1,18 @@
+.now_playing2{
+  position: relative;
+  /* bottom: 50px; */
+}
+
 .bar2 {
     display: inline-block;
     /* position: fixed; */
     margin-right: 1px;
-    width: 21px;
+    width: 5px;
     height: 1px;
     overflow: hidden;
     background: linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%);
     color: transparent;
-    animation-name: pulse;
+    animation-name: pulse2;
     animation-duration: 0.9s;
     animation-iteration-count: infinite;
   }
@@ -23,37 +28,26 @@
   .n4 {
     animation-delay: 0.9s;
   }
-  .n5 {
-    animation-delay: 2.3s;
-  }
-  .n6 {
-    animation-delay: 1.3s;
-  }
-  .n7 {
-    animation-delay: 3.1s;
-  }
-  .n8 {
-    animation-delay: 1.9s;
-  }
-  @keyframes pulse {
+  
+  @keyframes pulse2 {
     0% {
       height: 1px;
       margin-top: 0;
     }
     10% {
-      height: 40px;
+      height: 10px;
       margin-top: -40px;
     }
     50% {
-      height: 20px;
+      height: 5px;
       margin-top: -20px;
     }
     60% {
-      height: 30px;
+      height: 7.5px;
       margin-top: -30px;
     }
     80% {
-      height: 60px;
+      height: 15px;
       margin-top: -60px;
     }
     100% {

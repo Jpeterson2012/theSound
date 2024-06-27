@@ -18,7 +18,7 @@ function listImages(last, ptracks) {
     )
   }
 }
-function userPlaylists(ptracks, last, liked) {
+function userPlaylists(ptracks, last, liked, paused) {
   var key = 0
   return (
     ptracks?.tracks?.map(t =>
@@ -33,6 +33,8 @@ function userPlaylists(ptracks, last, liked) {
           duration={t.duration_ms}
           liked={liked}
           artist={t.artists}
+          t_uri={t.uri}
+          pause={paused}
           />
         <p hidden>{key++}</p>
       </div>
@@ -40,7 +42,7 @@ function userPlaylists(ptracks, last, liked) {
   )
 }
 
-function regPlaylists(ptracks, last){
+function regPlaylists(ptracks, last, paused){
   var key = 0
   return (
     ptracks?.map(t => 
@@ -54,6 +56,8 @@ function regPlaylists(ptracks, last){
           duration={t.duration_ms}
           liked={null}
           artist={t.artists}
+          t_uri={t.uri}
+          pause={paused}
           />
         <p hidden>{key++}</p>
       </div>
@@ -133,7 +137,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
 
 
             <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
-            {u_plist ? userPlaylists(ptracks, lastSegment, liked_uris) : regPlaylists(ptracks, lastSegment)}
+            {u_plist ? userPlaylists(ptracks, lastSegment, liked_uris, paused) : regPlaylists(ptracks, lastSegment, paused)}
             
           </div>
         </div>

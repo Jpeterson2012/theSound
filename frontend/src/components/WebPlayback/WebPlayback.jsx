@@ -55,6 +55,11 @@ const WebPlayback = memo(function WebPlayback() {
     const [repeated, setRepeated] = useState(0)
 
     const [albums, setAlbums] = useState([]);
+    function passAlbum(temp){
+        setAlbums(temp)
+    }
+    const [playlists, setPlaylists] = useState([])
+    const [liked_songs, setLiked_songs] = useState([])
     const [users, setUsers] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     
@@ -168,7 +173,9 @@ const WebPlayback = memo(function WebPlayback() {
                 
                 // console.log(tempAlbums)
                 setUsers(tempUsers.display_name)
-                setAlbums(tempAlbums)
+                setAlbums(tempAlbums.items)
+                setPlaylists(tempAlbums.items2)
+                setLiked_songs(tempAlbums.items3)
                 sessionStorage.setItem("username", tempUsers.display_name)
                 // localStorage.setItem("albums", JSON.stringify(tempAlbums))
                 console.log(tempAlbums)
@@ -194,12 +201,12 @@ const WebPlayback = memo(function WebPlayback() {
             <>
                 <Logo />
                 <Routes>
-                <Route path = '/' element={<Home albums={albums}/>}/>
+                <Route path = '/' element={<Home albums={albums} set_albums={passAlbum} playlists={playlists}/>}/>
                 <Route path='/discover' element={<Discover />} />
                 <Route path='/categories/:id' element={<Categories />} />
                 <Route path='/album/:id' element={<Album SpinComponent={Spin} active={is_active}  paused={is_paused}/>}/>
-                <Route path='/playlist/:id' element={<Playlist plists={albums.items2} liked={albums.items3} SpinComponent={Spin} active={is_active}  paused={is_paused}/>} />
-                <Route path='/artist/:id' element={<Artist />} />
+                <Route path='/playlist/:id' element={<Playlist plists={playlists} liked={liked_songs} SpinComponent={Spin} active={is_active}  paused={is_paused}/>} />
+                <Route path='/artist/:id' element={<Artist paused={is_paused} />} />
                 </Routes>    
                 
                 <div className='wrapper'>

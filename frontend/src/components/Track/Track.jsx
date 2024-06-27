@@ -1,5 +1,5 @@
 //session storage variable name set here
-// import musicBar from "../musicBar/musicBar.jsx"
+import musicBar from "../musicBar/musicBar.jsx"
 import './Track.css'
 
 function timeCalc (ms) {
@@ -10,22 +10,18 @@ function timeCalc (ms) {
     if (secs.toString().length == 1) return `${mins}.${secs}0`
     else return `${mins}.${secs}`
 }
-function musicBar(){
-    return (
-        <div className="now_playing" id="music">
-                            <span className="bar2 n1">A</span>
-                            <span className="bar2 n2">B</span>
-                            <span className="bar2 n3">c</span>
-                            <span className="bar2 n4">D</span>
-                            <span className="bar2 n5">E</span>
-                            <span className="bar2 n6">F</span>
-                            <span className="bar2 n7">G</span>
-                            <span className="bar2 n8">H</span>
-                            </div>
-    )
-}
+// function musicBar(){
+//     return (
+//         <div className="now_playing2" id="music2">
+//             <span className="bar2 n1">A</span>
+//             <span className="bar2 n2">B</span>
+//             <span className="bar2 n3">c</span>
+//             <span className="bar2 n4">D</span>
+//         </div>
+//     )
+// }
 
-export default function Track ( {uri, name, number, duration, album_name, artist,t_uri} ) {
+export default function Track ( {uri, name, number, duration, album_name, artist, t_uri, pause} ) {
     return (
         <div style={{display: 'flex'}}>
             <a onClick={function handleClick () {
@@ -49,14 +45,13 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                     })
                 
             }}>
-            <div style={{display: 'flex'}}>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+                {!pause ? <span style={{margin: '0px', padding: '0px', position: 'absolute', left: '140px'}} >{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
+                <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
+                    <h2 style={{margin: '0px', padding: '0px', fontSize: '20px',maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}} >{name}</h2>
+                    <h4 style={{position: 'absolute', maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{artist.map((a,i,row) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
+                </div>
             
-            <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
-            <h2 style={{margin: '0px', padding: '0px', fontSize: '20px',maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}} >{sessionStorage.getItem('current') === t_uri ? "✓" + name : name}</h2>
-            <h4 style={{position: 'absolute', maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{artist.map((a,i,row) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
-            
-            </div>
-            <span>{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span>
             </div>
             <br></br>
             <br></br>

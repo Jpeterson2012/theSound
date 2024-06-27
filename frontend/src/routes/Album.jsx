@@ -52,6 +52,7 @@ export default function Album({SpinComponent, active, paused}) {
         album_name={null}
         artist={t.artists}
         t_uri={t.uri}
+        pause={paused}
       />
     )
     return (

@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
       .then(response => response.json())
       .then(data => {
         var temp = data.display_name
-        temp = temp.replace(/_|-/g, "a")
+        temp = temp.replace(/_|-/g, "")
         console.log(temp)
         //Checks if user is already in db. Adds if not
       var sql = `CREATE DATABASE IF NOT EXISTS ${temp}`

@@ -4,7 +4,7 @@ import Card from "../components/Card/Card";
 import Loading from '../components/Loading/Loading.jsx';
 import './Artist.css'
 
-export default function Artist() {
+export default function Artist({paused}) {
   var parts = window.location.href.split('/');
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
   
@@ -57,8 +57,8 @@ export default function Artist() {
   var count = 1
   const listTTracks = artists2.tracks?.tracks.map(t =>
     <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
-    <p style={{marginRight: '20px'}}>{count < 10 ? '0' + count : count}</p> 
-    <img src={t.album?.images.filter(t => t.height == 64).map(s => s.url)} />
+    <p style={{marginLeft: '16px'}}>{count < 10 ? '0' + count : count}</p> 
+    <img src={t.album?.images.filter(t => t.height == 64).map(s => s.url)} style={{marginLeft: '20px'}} />
     <Track 
       uri={t.album.uri}
       name={t.name}
@@ -66,6 +66,8 @@ export default function Artist() {
       duration={t.duration_ms}
       album_name={t.album?.name}
       artist={t.artists}
+      t_uri={t.uri}
+      pause={paused}
     />
     <p hidden>{count++}</p>
     </div>

@@ -52,7 +52,7 @@ function localSong(){
   )
 }
 
-export default function Home( {albums} ) {
+export default function Home( {albums, set_albums, playlists} ) {
   const navigate = useNavigate()
 
     // const [albums, setAlbums] = useState([]);
@@ -111,7 +111,7 @@ export default function Home( {albums} ) {
 
     
   }, []);
-  const listItems = albums.items?.map(a => 
+  const listItems = albums?.map(a => 
     <Card
       // key={a.id}
       id={a.album_id}
@@ -122,7 +122,7 @@ export default function Home( {albums} ) {
       a_id={a.artists.map(t => t.id)}
     />
   )
-  const listPlaylists = albums.items2?.map(a =>
+  const listPlaylists = playlists?.map(a =>
     <>
 
       <a onClick={function handleClick() {
@@ -146,7 +146,15 @@ export default function Home( {albums} ) {
         <button onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist'),console.log(sessionStorage.getItem('home'))}}>Playlists</button>
         <button onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
         <button onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button>
-        
+        <span onClick={function handleClick(){
+          let temp = [...albums]
+          temp.sort((a,b) => a.name.localeCompare(b.name))
+          set_albums(temp)
+          // console.log(albums)
+          setHtml(null)
+          // setHtml(Albums(listItems))
+          
+        }}>Sort</span>
       </div>
       
       {html ? html : Albums(listItems)}
