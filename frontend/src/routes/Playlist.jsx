@@ -44,7 +44,7 @@ function regPlaylists(ptracks, last){
   var key = 0
   return (
     ptracks?.map(t => 
-      <div style={{display: 'flex', alignItems: 'center'}} key={key}>
+      <div style={{display: 'flex', alignItems: 'center'}} >
           
           <img src={t.album?.filter(t=>t.height == 64).map(s => s.url)} />
           <PTrack 
