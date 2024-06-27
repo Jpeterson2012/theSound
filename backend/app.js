@@ -15,7 +15,6 @@ var loginRouter = require('./routes/login');
 var callbackRouter = require('./routes/callback');
 var homepageRouter = require('./routes/homepage');
 var tracksRouter = require('./routes/tracks');
-var playbackRouter = require('./routes/playback')
 var tokenRouter = require('./routes/token')
 var ptracksRouter = require('./routes/ptracks')
 var artistsRouter = require('./routes/artists')
@@ -47,7 +46,6 @@ app.use('/auth/login', loginRouter);
 app.use('/auth/callback', callbackRouter);  
 app.use('/auth/homepage', homepageRouter);
 app.use('/auth/tracks', tracksRouter);
-app.use('/auth/playback', playbackRouter);
 app.use('/auth/token', tokenRouter);
 app.use('/auth/ptracks', ptracksRouter);
 app.use('/auth/artists', artistsRouter);

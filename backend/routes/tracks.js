@@ -10,6 +10,7 @@ router.get('/:id', async (req, res) => {
     const headers = {
         Authorization: 'Bearer ' + process.env.access_token
       }
+    try{
     var resp = await fetch(url,{headers})
     const data = await resp.json()
     let data2
@@ -38,6 +39,11 @@ router.get('/:id', async (req, res) => {
                 res.send(temp2)
          ) : null
     }))
+
+}
+catch(e){
+    console.error(e)
+}
 
 
 

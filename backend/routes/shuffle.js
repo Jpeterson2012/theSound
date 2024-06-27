@@ -6,7 +6,7 @@ router.post('/', async (req, res) => {
       Authorization: 'Bearer ' + process.env.access_token
     }
     try{
-    console.log(req.body.state)
+    // console.log(req.body.state)
 
     if (req.body.state === 'track' || req.body.state === 'context' || req.body.state === 'off'){
       url = `https://api.spotify.com/v1/me/player/repeat?state=${req.body.state}`

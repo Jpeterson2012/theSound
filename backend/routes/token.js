@@ -10,7 +10,12 @@ router.get('/', function(req, res) {
     //     var token = {items: process.env.access_token}
     //     res.send(token)
     // })
+    try{
     var token = {items: process.env.access_token}
-        res.send(token)
+    res.send(token)
+    }
+    catch(e){
+        console.error(e)
+    }
 })
 module.exports = router;

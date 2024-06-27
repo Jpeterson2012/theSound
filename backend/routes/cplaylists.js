@@ -9,6 +9,7 @@ router.get('/:id', async (req, res) => {
     const headers = {
         Authorization: 'Bearer ' + process.env.access_token
       }
+      try{
       var pages = 0
       while (pages < 30){
         url = `https://api.spotify.com/v1/browse/categories/${req.params.id}/playlists?offset=${pages}&limit=5`
@@ -23,6 +24,10 @@ router.get('/:id', async (req, res) => {
         pages += 5
       }
       res.end()
+    }
+    catch(e){
+      console.error(e)
+    }
     
     //   fetch(url, { headers })
     //       .then(response => response.json())

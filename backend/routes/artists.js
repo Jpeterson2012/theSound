@@ -3,6 +3,7 @@ var router = express.Router();
 
 router.get('/:id', async (req, res) => {
     // console.log(req.params.id)
+    try{
     var info = {}
     url = `https://api.spotify.com/v1/artists/${req.params.id}`
     const headers = {
@@ -14,6 +15,10 @@ router.get('/:id', async (req, res) => {
     info.artists = data
 
     res.send(info)
+    }
+    catch(e){
+      console.error(e)
+    }
     
     //   fetch(url, { headers })
     //       .then(response => response.json())

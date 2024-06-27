@@ -1,4 +1,5 @@
 var express = require('express');
+const { con } = require('../sql');
 var router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -8,6 +9,7 @@ router.get('/', async (req, res) => {
     const headers = {
         Authorization: 'Bearer ' + process.env.access_token
       }
+    try{
     
     var resp = await fetch(url, {headers})
     var data = await resp.json()
@@ -19,6 +21,10 @@ router.get('/', async (req, res) => {
     info.fplaylists = data
 
     res.send(info)
+    }
+    catch(e){
+      console.error(e)
+    }
 })
 
 module.exports = router;

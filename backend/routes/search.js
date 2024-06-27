@@ -8,7 +8,7 @@ router.get('/:id', async (req, res) => {
     }
     var pages = 0
     try{
-    while (pages < 30){
+    while (pages < 25){
 
     
       url = `https://api.spotify.com/v1/search?q=${req.params.id}&offset=${pages}&limit=5&type=track,album,artist,playlist`
