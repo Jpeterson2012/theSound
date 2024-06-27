@@ -81,10 +81,12 @@ export default function Album({SpinComponent, active, paused}) {
                 <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
                 <h5 style={{color: 'rgb(90, 210, 216)'}}>{tracks.albums?.total_tracks === 1 ? tracks.albums?.total_tracks + " Song" : tracks.albums?.total_tracks + " Songs" }</h5>
               </div>
-              {tracks.images?.map(a => a.filter(b => b.height === 160).map(c => <img src={c.url} style={{borderRadius: '50%', height: '40px'}} />))}
+              
+              <img src={tracks.images?.map(b => b.find(b => b.height > 160).url)} style={{borderRadius: '50%', height: '40px'}} />
+              {/* {tracks.images?.map(a => a.filter(b => b.height === 160).map(c => <img src={c.url} style={{borderRadius: '50%', height: '40px'}} />))} */}
             </div>
             </>
-            )}
+            )} 
             
             
 
@@ -96,7 +98,7 @@ export default function Album({SpinComponent, active, paused}) {
           
           {listItems}
           <div style={{display: 'flex', flexDirection: 'column', marginTop: '50px', marginBottom: '50px'}}>
-          {tracks.images?.map(a => a.filter(b => b.height === 320).map(c => <img src={c.url} style={{ height: '90px', width: '90px'}} />))}
+          <img src={tracks.images?.map(b => b.find(b => b.height > 160).url)} style={{width: '90px', height: '90px'}} />
           </div>
           
           <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {tracks.albums?.release_date}</h5>

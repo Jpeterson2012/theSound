@@ -199,8 +199,13 @@ export default function Logo () {
                 <div className="search">
                     <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
                     <button type="button" className="searchButton" onClick={function handleSubmit(){
+
                       setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([])
+
                       console.log(document.getElementById("searchTerm").value);
+                      let t = document.getElementById('modalbuttons')
+                      t.style.display = 'flex'
+                      t.style.animation = 'fadeIn 0.5s'
                       const fetchSearch = async () => {
                           const resp = await fetch(`http://localhost:8888/auth/search/${document.getElementById("searchTerm").value}`)
                           // const data = await resp.json()
@@ -244,7 +249,7 @@ export default function Logo () {
                     <img src={space} style={{zIndex: '0', width: '100%', height: '180px', position: 'absolute', top: '0', opacity: '0.3', objectFit: 'cover', objectPosition: '20% 50%'}} />
 
 
-                    <div style={{display: 'flex', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '5vw'}}>
+                    <div id='modalbuttons' style={{display: 'none', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '5vw'}}>
                         <button onClick={() => setHtml(getTracks(tracks))}>Tracks</button>
                         <button onClick={() => setHtml(getAlbums(albums, navigate, onCloseModal))}>Albums</button>
                         <button onClick={() => setHtml(getArtists(artist, navigate, onCloseModal))}>Artists</button>
