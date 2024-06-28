@@ -66,17 +66,18 @@ function regPlaylists(ptracks, last, paused){
 }
 
 
-export default function Playlist({plists, liked, SpinComponent, active, paused}) {
+export default function Playlist({plists, liked, set_liked, SpinComponent, active, paused}) {
   var parts = window.location.href.split('/');
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
   var liked_uris = []
   const [ptracks, setpTracks] = useState([]);
   const [loading, setLoading] = useState(false)
+  const [sorted, setSorted] = useState(false)
   const [u_plist, setU_plist] = useState(true)
   const[total, setTotal] = useState(null)
   useEffect (() => {
     
-
+    setSorted(false)
     setLoading(true)
     
     lastSegment == 'likedsongs' ? setpTracks(liked) : setpTracks(plists?.find((e) => e.playlist_id === lastSegment))
@@ -110,7 +111,7 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
     fetchpTracks()
   }
     
-  }, []);
+  }, [sorted]);
 
   return (
     <div style={{marginTop: '120px'}}>
@@ -131,6 +132,20 @@ export default function Playlist({plists, liked, SpinComponent, active, paused})
               <div style={{display: 'flex', marginRight: '10px'}}>
                 <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
                 <h5 style={{color: 'rgb(90, 210, 216)'}}>{total ? total : ptracks?.tracks?.length} Songs</h5>
+
+                <div className="dropdown" id="dropdown" style={{left: '700px'}}>
+                  <button className="dropbtn">Sort</button>
+                  <div className="dropdown-content">
+                  <button className="theme" onClick={function handleClick(){
+                    let temp = u_plist ? [...ptracks?.tracks] : [...ptracks]
+                    console.log(temp)
+                    temp.sort((a,b) => a.name.localeCompare(b.name))
+                    // setpTracks(temp)
+                    set_liked(temp)
+                    setSorted(true)
+                  }}>A-Z</button>
+                  </div>
+                </div>
               </div>
               
             

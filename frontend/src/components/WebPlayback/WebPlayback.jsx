@@ -63,6 +63,9 @@ const WebPlayback = memo(function WebPlayback() {
         setPlaylists(temp)
     }
     const [liked_songs, setLiked_songs] = useState([])
+    function passLiked(temp){
+        setLiked_songs(temp)
+    }
     const [users, setUsers] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     
@@ -208,7 +211,7 @@ const WebPlayback = memo(function WebPlayback() {
                 <Route path='/discover' element={<Discover />} />
                 <Route path='/categories/:id' element={<Categories />} />
                 <Route path='/album/:id' element={<Album SpinComponent={Spin} active={is_active}  paused={is_paused}/>}/>
-                <Route path='/playlist/:id' element={<Playlist plists={playlists} liked={liked_songs} SpinComponent={Spin} active={is_active}  paused={is_paused}/>} />
+                <Route path='/playlist/:id' element={<Playlist plists={playlists} liked={liked_songs} set_liked={passLiked} SpinComponent={Spin} active={is_active}  paused={is_paused}/>} />
                 <Route path='/artist/:id' element={<Artist paused={is_paused} />} />
                 </Routes>    
                 
