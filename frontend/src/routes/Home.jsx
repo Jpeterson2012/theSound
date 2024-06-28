@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css'
 import Card from "../components/Card/Card.jsx";
 import Local from "../components/Local/Local.jsx";
+import Loading from "../components/Loading/Loading.jsx";
 
 function Albums(listItems){
   return(
@@ -17,6 +18,39 @@ function Albums(listItems){
     }}>
       {listItems}
     </div>
+  )
+}
+function albumSort(albums, set_albums, setSorted){
+  return(
+    <>
+    <button className="theme" onClick={function handleClick(){
+      let temp = [...albums]
+      temp.sort((a,b) => a.name.localeCompare(b.name))
+      set_albums(temp)
+      setSorted(true)
+    }}>A-Z</button>
+
+    <button className="theme" onClick={function handleClick(){
+      let temp = [...albums]
+      temp.sort((a,b) => b.name.localeCompare(a.name))
+      set_albums(temp)
+      setSorted(true)
+    }}>Z-A</button>
+
+    <button className="theme" onClick={function handleClick(){
+      let temp = [...albums]
+      temp.sort((a,b) => a.artists[0]?.name.localeCompare(b.artists[0]?.name))
+      set_albums(temp)
+      setSorted(true)
+    }}>Artist A-Z</button>
+
+    <button className="theme" onClick={function handleClick(){
+      let temp = [...albums]
+      temp.sort((a,b) => b.artists[0]?.name.localeCompare(a.artists[0]?.name))
+      set_albums(temp)
+      setSorted(true)
+    }}>Artist Z-A</button>
+    </>
   )
 }
 function Playlists(navigate, listPlaylists){
@@ -41,6 +75,25 @@ function Playlists(navigate, listPlaylists){
     </div>
   )
 }
+function playlistSort(playlists, set_playlists, setSorted){
+  return(
+    <>
+      <button className="theme" onClick={function handleClick(){
+      let temp = [...playlists]
+      temp.sort((a,b) => a.name.localeCompare(b.name))
+      set_playlists(temp)
+      setSorted(true)
+    }}>A-Z</button>
+
+    <button className="theme" onClick={function handleClick(){
+      let temp = [...playlists]
+      temp.sort((a,b) => b.name.localeCompare(a.name))
+      set_playlists(temp)
+      setSorted(true)
+    }}>Z-A</button>
+    </>
+  )
+}
 function Podcasts(){
   return(
     <h4>Hello there</h4>
@@ -52,65 +105,40 @@ function localSong(){
   )
 }
 
-export default function Home( {albums, set_albums, playlists} ) {
-  const navigate = useNavigate()
-
-    // const [albums, setAlbums] = useState([]);
-    // const [users, setUsers] = useState("")
+export default function Home( {albums, set_albums, playlists, set_playlists} ) {
+    const navigate = useNavigate()
     const [html, setHtml] = useState(null)
+    const [sorted, setSorted] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-      // sessionStorage.setItem("loggedIn", true)
-      // //Get UserName
-      // const user = sessionStorage.getItem("username")
-      // const album = sessionStorage.getItem("albums")
-      // if (user && album){
-      //   setUsers(user);
-      //   setAlbums(JSON.parse(album))
-      // }
-      // else{
-      //   const fetchUsers = async () => {
-      //     try {
-      //       var temp = await fetch("http://localhost:8888/auth/users")
-      //     .then((res) => {
-      //       return res.json();
-      //     })
-      //       return temp
-      //     }
-      //     catch (err) {}
-      //   }
-      //   const fetchAlbums = async () => {
-      //     try {
-      //       var temp = await fetch("http://localhost:8888/auth/homepage")
-      //     .then((res) => {
-      //       return res.json();
-      //     }).then((data) => {return data})
-      //       return temp
-      //     }
-      //     catch (err) {}
-      //   }
-        
-      //   const fetchBoth = async () => {
-      //     setIsLoading(true)
-      //     const tempUsers = await fetchUsers();
-      //     const tempAlbums = await fetchAlbums();
-      //     setIsLoading(false)
-          
-      //     console.log(tempAlbums)
-      //     setUsers(tempUsers.display_name)
-      //     setAlbums(tempAlbums)
-      //     sessionStorage.setItem("username", tempUsers.display_name)
-      //     sessionStorage.setItem("albums", JSON.stringify(tempAlbums))
-      //   }
-      //   fetchBoth()
-      // }
-      let temp = sessionStorage.getItem('home')
-      if (temp === 'playlist') setHtml(Playlists(navigate,listPlaylists))
-      if (temp === 'podcast') setHtml(Podcasts())
-      if (temp === 'local') setHtml(localSong())
+      setSorted(false)
+      
+      // let temp = sessionStorage.getItem('home')
+      // if (temp === 'playlist') setHtml(Playlists(navigate,listPlaylists))
+      // if (temp === 'podcast') setHtml(Podcasts())
+      // if (temp === 'local') setHtml(localSong())
+      setLoading(true)
+      switch(sessionStorage.getItem('home')){
+        case 'album':
+          setHtml(Albums(listItems))
+          break
+        case 'playlist':
+          setHtml(Playlists(navigate,listPlaylists))
+          break
+        case 'podcast':
+          setHtml(Podcasts())
+          break
+        case 'local':
+          setHtml(localSong())
+          break
+        default:
+          setHtml(Albums(listItems))
+      }
+      setLoading(false)
 
     
-  }, []);
+  }, [sorted]);
   const listItems = albums?.map(a => 
     <Card
       // key={a.id}
@@ -141,23 +169,25 @@ export default function Home( {albums, set_albums, playlists} ) {
   )
   return (
     <>
+      {loading ? <Loading yes={true} /> : (<>
       <div style={{marginTop: '170px'}}>
-        <button onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
-        <button onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist'),console.log(sessionStorage.getItem('home'))}}>Playlists</button>
-        <button onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
-        <button onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button>
-        <span onClick={function handleClick(){
-          let temp = [...albums]
-          temp.sort((a,b) => a.name.localeCompare(b.name))
-          set_albums(temp)
-          // console.log(albums)
-          setHtml(null)
-          // setHtml(Albums(listItems))
-          
-        }}>Sort</span>
+        <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
+        <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
+        <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
+        <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button>
+        <div className="dropdown" id="dropdown">
+          <button className="dropbtn">Sort</button>
+          <div className="dropdown-content">
+            {(sessionStorage.getItem('home') === null || sessionStorage.getItem('home') === 'album') && albumSort(albums, set_albums, setSorted)}
+            {sessionStorage.getItem('home') === 'playlist' && playlistSort(playlists, set_playlists, setSorted)}
+          </div>
+        </div>
+        
       </div>
       
-      {html ? html : Albums(listItems)}
+      {html}
+      </>
+    )}
     </>
   )
 }

@@ -59,6 +59,9 @@ const WebPlayback = memo(function WebPlayback() {
         setAlbums(temp)
     }
     const [playlists, setPlaylists] = useState([])
+    function passPlaylist(temp){
+        setPlaylists(temp)
+    }
     const [liked_songs, setLiked_songs] = useState([])
     const [users, setUsers] = useState("")
     const [isLoading, setIsLoading] = useState(false)
@@ -201,7 +204,7 @@ const WebPlayback = memo(function WebPlayback() {
             <>
                 <Logo />
                 <Routes>
-                <Route path = '/' element={<Home albums={albums} set_albums={passAlbum} playlists={playlists}/>}/>
+                <Route path = '/' element={<Home albums={albums} set_albums={passAlbum} playlists={playlists} set_playlists={passPlaylist}/>}/>
                 <Route path='/discover' element={<Discover />} />
                 <Route path='/categories/:id' element={<Categories />} />
                 <Route path='/album/:id' element={<Album SpinComponent={Spin} active={is_active}  paused={is_paused}/>}/>
@@ -234,7 +237,7 @@ const WebPlayback = memo(function WebPlayback() {
                                 navigate(`/app/album/${lastSegment}`)
                             }}>
                             <img src={current_track.album.images[0]?.url} 
-                                className="now-playing__cover" alt="" />
+                                className="now-playing__cover" alt="" style={{marginRight: '14px'}} />
                             </a>
                             
 
