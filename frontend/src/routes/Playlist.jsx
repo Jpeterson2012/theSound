@@ -25,7 +25,7 @@ function userPlaylists(ptracks, last, liked, paused) {
 
       <div style={{display: 'flex', alignItems: 'center'}}>
           {last == 'likedsongs' ? liked.push(t.uri) : liked = null }
-          <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px'}}/>
+          <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px', width: '64px'}}/>
           <PTrack 
           uri={ptracks.uri}
           name={t.name}
@@ -111,7 +111,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
     fetchpTracks()
   }
     
-  }, [sorted]);
+  }, [sessionStorage.getItem("playlist_name")]);
 
   return (
     <div style={{marginTop: '120px'}}>
@@ -128,24 +128,30 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
           <div style={{marginBottom: '60px'}}>
             
             <h2>{sessionStorage.getItem("playlist_name")}</h2>
+            <div className="dropdown" id="dropdown" style={{right: '-300px'}}>
+                  <button className="dropbtn">Sort</button>
+                  <div className="dropdown-content">
+                    {/* {u_plist ? null : (
+                  <button className="theme" onClick={function handleClick(){
+
+                    let temp = [...ptracks]
+                    
+                    
+                    temp.sort((a,b) => a.name.localeCompare(b.name))
+                    
+                    setpTracks(temp)
+                    setSorted(true)
+                    // set_liked(temp2)
+                  }}>A-Z</button>
+                )} */}
+                  </div>
+                </div>
             
               <div style={{display: 'flex', marginRight: '10px'}}>
                 <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
                 <h5 style={{color: 'rgb(90, 210, 216)'}}>{total ? total : ptracks?.tracks?.length} Songs</h5>
 
-                <div className="dropdown" id="dropdown" style={{left: '700px'}}>
-                  <button className="dropbtn">Sort</button>
-                  <div className="dropdown-content">
-                  <button className="theme" onClick={function handleClick(){
-                    let temp = u_plist ? [...ptracks?.tracks] : [...ptracks]
-                    console.log(temp)
-                    temp.sort((a,b) => a.name.localeCompare(b.name))
-                    // setpTracks(temp)
-                    set_liked(temp)
-                    setSorted(true)
-                  }}>A-Z</button>
-                  </div>
-                </div>
+                
               </div>
               
             

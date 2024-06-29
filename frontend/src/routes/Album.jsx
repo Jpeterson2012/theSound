@@ -85,7 +85,7 @@ export default function Album({SpinComponent, active, paused}) {
               </div>
               
               {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
-              {tracks.images?.map(a => <img src={a.find(b => b.height > 160).url} style={{borderRadius: '50%', height: '40px'}} />)}
+              {tracks.images?.map(a => <img src={a.find(b => b.height > 160).url} style={{borderRadius: '50%', height: '40px', width: '40px'}} />)}
             </div>
             </>
             )} 

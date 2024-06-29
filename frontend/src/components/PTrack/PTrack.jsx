@@ -30,10 +30,10 @@ export default function PTrack ( {uri, name, number, duration, liked, artist, t_
             }}>
             <div>
             {!pause ? <span style={{margin: '0px', padding: '0px', position: 'absolute', left: '160px'}} >{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
-            <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
-            <h2 style={{textAlign: 'left', margin: '0px', padding: '0px', fontSize: '20px'}}>{name}</h2>
-            <h4 style={{position: 'absolute'}}>{artist.map((a,i,row) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
-            </div>
+                <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
+                    <h2 style={{textAlign: 'left', margin: '0px', padding: '0px', fontSize: '20px', maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{name}</h2>
+                    <h4 style={{position: 'absolute',maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{artist?.map((a,i,row) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
+                </div>
             </div>
             
             </a>
