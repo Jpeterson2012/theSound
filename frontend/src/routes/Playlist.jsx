@@ -18,20 +18,20 @@ function listImages(last, ptracks) {
     )
   }
 }
-function userPlaylists(ptracks, last, liked, paused, set_liked) {
+function userPlaylists(ptracks, last, liked, liked_urls, paused, set_liked, setpTracks) {
   let key = 0
   return (
     ptracks?.tracks?.map(t =>
 
       <div style={{display: 'flex', alignItems: 'center'}}>
-          {last == 'likedsongs' ? liked.push(t.uri) : liked = null }
+          {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null }
           <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px', width: '64px'}}/>
           <PTrack 
           uri={ptracks.uri}
           name={t.name}
           number={key}
           duration={t.duration_ms}
-          liked={liked}
+          liked={liked_urls}
           artist={t.artists}
           t_uri={t.uri}
           pause={paused}
@@ -47,7 +47,9 @@ function userPlaylists(ptracks, last, liked, paused, set_liked) {
           var parts = t.uri.split(':');
           var lastSegment = parts.pop() || parts.pop();
 
-          set_liked(liked.tracks?.map(b => b.filter(a => a.tracks.uri !== t.uri)))
+          set_liked({tracks: liked.tracks?.filter(a => a.uri !== t.uri)})
+          // setpTracks({tracks: ptracks?.tracks?.filter(a => a.uri !== t.uri)})
+          
 
           fetch(`http://localhost:8888/auth/update`, {
             method: 'DELETE',
@@ -129,7 +131,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
     fetchpTracks()
   }
     
-  }, [sessionStorage.getItem("playlist_name")]);
+  }, [sessionStorage.getItem("playlist_name"),liked]);
 
   return (
     <div style={{marginTop: '120px'}}>
@@ -149,19 +151,19 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
             <div className="dropdown" id="dropdown" style={{right: '-300px'}}>
                   <button className="dropbtn">Sort</button>
                   <div className="dropdown-content">
-                    {/* {u_plist ? null : (
+                    {!u_plist ? null : (
                   <button className="theme" onClick={function handleClick(){
 
-                    let temp = [...ptracks]
+                    let temp = [...ptracks.tracks]
                     
                     
                     temp.sort((a,b) => a.name.localeCompare(b.name))
                     
-                    setpTracks(temp)
-                    setSorted(true)
+                    setpTracks({tracks: temp})
+                    // setSorted(true)
                     // set_liked(temp2)
                   }}>A-Z</button>
-                )} */}
+                )}
                   </div>
                 </div>
             
@@ -176,7 +178,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
 
 
             <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
-            {u_plist ? userPlaylists(ptracks, lastSegment, liked_uris, paused, set_liked) : regPlaylists(ptracks, lastSegment, paused)}
+            {u_plist ? userPlaylists(ptracks, lastSegment, liked, liked_uris, paused, set_liked, setpTracks) : regPlaylists(ptracks, lastSegment, paused)}
             
           </div>
         </div>

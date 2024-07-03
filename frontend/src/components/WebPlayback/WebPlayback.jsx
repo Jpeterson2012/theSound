@@ -268,12 +268,12 @@ const WebPlayback = memo(function WebPlayback() {
                                 </div>
                                 
                             </div>
-                            <h2 id='addSong' style={{marginLeft: '15px', cursor: 'pointer'}} onClick={function handleClick(){
+                            <h2 id='addSong' style={{height: '35px', width: '35px', marginLeft: '15px', cursor: 'pointer', border: '2px solid white', borderRadius: '50%'}} onClick={function handleClick(){
                                 let temp = document.getElementById('addSong')
                                 temp.style.animation = 'hithere 1s ease'
                                 setTimeout(()=>{
                                     temp.style.removeProperty('animation')
-                                }, 750)
+                                }, 750)                    
 
                                 setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
                                 var parts = current_track.album.uri.split(':');
