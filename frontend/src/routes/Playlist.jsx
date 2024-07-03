@@ -18,8 +18,8 @@ function listImages(last, ptracks) {
     )
   }
 }
-function userPlaylists(ptracks, last, liked, paused) {
-  var key = 0
+function userPlaylists(ptracks, last, liked, paused, set_liked) {
+  let key = 0
   return (
     ptracks?.tracks?.map(t =>
 
@@ -37,6 +37,24 @@ function userPlaylists(ptracks, last, liked, paused) {
           pause={paused}
           />
         <p hidden>{key++}</p>
+        <h1 id="deleteSong" style={{position: 'absolute', left: '180px', cursor: 'pointer'}} onClick={function handleClick(){
+          let temp = document.getElementById('deleteSong')
+          temp.style.animation = 'hithere 1s ease'
+          setTimeout(()=>{
+              temp.style.removeProperty('animation')
+          }, 750)
+
+          var parts = t.uri.split(':');
+          var lastSegment = parts.pop() || parts.pop();
+
+          set_liked(liked.tracks?.map(b => b.filter(a => a.tracks.uri !== t.uri)))
+
+          fetch(`http://localhost:8888/auth/update`, {
+            method: 'DELETE',
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({track_id: lastSegment})
+        })
+        }}>-</h1>
       </div>
     )
   )
@@ -158,7 +176,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
 
 
             <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
-            {u_plist ? userPlaylists(ptracks, lastSegment, liked_uris, paused) : regPlaylists(ptracks, lastSegment, paused)}
+            {u_plist ? userPlaylists(ptracks, lastSegment, liked_uris, paused, set_liked) : regPlaylists(ptracks, lastSegment, paused)}
             
           </div>
         </div>

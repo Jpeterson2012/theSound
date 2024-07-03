@@ -254,20 +254,36 @@ const WebPlayback = memo(function WebPlayback() {
                                 </div>
                                 
                                 <div className='scrollbar2'>
-                                <div className="now-playing__artist" data-direction="right">
-                                    <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
-                                        navigate(`/app/artist/${s.uri.split(':').pop()}`)
-                                        }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
-                                    </p>
-                                    <p className='temp' style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
-                                        navigate(`/app/artist/${s.uri.split(':').pop()}`)
-                                        }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
-                                    </p>
-                                    {current_track.name ? <HScroll name={'scrollbar2'} /> : null}
-                                </div>
+                                    <div className="now-playing__artist" data-direction="right">
+                                        <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
+                                            navigate(`/app/artist/${s.uri.split(':').pop()}`)
+                                            }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
+                                        </p>
+                                        <p className='temp' style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s,i,row) => <a onClick={function handleClick(){ 
+                                            navigate(`/app/artist/${s.uri.split(':').pop()}`)
+                                            }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
+                                        </p>
+                                        {current_track.name ? <HScroll name={'scrollbar2'} /> : null}
+                                    </div>
                                 </div>
                                 
                             </div>
+                            <h2 id='addSong' style={{marginLeft: '15px', cursor: 'pointer'}} onClick={function handleClick(){
+                                let temp = document.getElementById('addSong')
+                                temp.style.animation = 'hithere 1s ease'
+                                setTimeout(()=>{
+                                    temp.style.removeProperty('animation')
+                                }, 750)
+
+                                setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
+                                var parts = current_track.album.uri.split(':');
+                                var lastSegment = parts.pop() || parts.pop();
+                                fetch(`http://localhost:8888/auth/update`, {
+                                    method: 'POST',
+                                    headers: {"Content-Type":"application/json"},
+                                    body: JSON.stringify({album_id: lastSegment, images: JSON.stringify(current_track.album.images), artists: JSON.stringify(current_track.artists), duration: duration, track_id: current_track.id, name: current_track.name})
+                                })
+                            }}>+</h2>
                             
                         </div>
                     

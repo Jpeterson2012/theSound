@@ -25,6 +25,7 @@ var categoriesRouter = require('./routes/categories')
 var cplaylistsRouter = require('./routes/cplaylists')
 var shuffleRouter = require('./routes/shuffle')
 var localRouter = require('./routes/local')
+var updateRouter = require('./routes/update')
 
 var app = express();
 
@@ -56,6 +57,7 @@ app.use('/auth/categories', categoriesRouter)
 app.use('/auth/cplaylists', cplaylistsRouter);
 app.use('/auth/shuffle', shuffleRouter);
 app.use('/auth/local', localRouter);
+app.use('/auth/update', updateRouter)
 // const AuthRoutes = require('./routes/AuthRoutes');
 // app.use('/api', cors(), AuthRoutes);
 // app.listen(PORT, () => {
