@@ -24,7 +24,9 @@ function userPlaylists(ptracks, last, liked, liked_urls, paused, set_liked, setp
     ptracks?.tracks?.map(t =>
 
       <div style={{display: 'flex', alignItems: 'center'}}>
-          {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null }
+          {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
+          {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
+          {liked_urls.push(t.uri)}
           <img src={t.images.filter(t=>t.height == 64).map(s => s.url)} style={{height: '64px', width: '64px'}}/>
           <PTrack 
           uri={ptracks.uri}
@@ -62,19 +64,20 @@ function userPlaylists(ptracks, last, liked, liked_urls, paused, set_liked, setp
   )
 }
 
-function regPlaylists(ptracks, last, paused){
-  var key = 0
+function regPlaylists(ptracks, last, liked_urls, paused){
+  let key = 0
   return (
     ptracks?.map(t => 
+
       <div style={{display: 'flex', alignItems: 'center'}} >
-          
+          {liked_urls.push(t.uri)}
           <img src={t.album?.filter(t=>t.height == 64).map(s => s.url)} />
           <PTrack 
           uri={"spotify:playlist:" + last}
           name={t.name}
           number={key}
           duration={t.duration_ms}
-          liked={null}
+          liked={liked_urls}
           artist={t.artists}
           t_uri={t.uri}
           pause={paused}
@@ -92,12 +95,10 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
   var liked_uris = []
   const [ptracks, setpTracks] = useState([]);
   const [loading, setLoading] = useState(false)
-  const [sorted, setSorted] = useState(false)
   const [u_plist, setU_plist] = useState(true)
-  const[total, setTotal] = useState(null)
+  const [total, setTotal] = useState(null)
   useEffect (() => {
     
-    setSorted(false)
     setLoading(true)
     
     lastSegment == 'likedsongs' ? setpTracks(liked) : setpTracks(plists?.find((e) => e.playlist_id === lastSegment))
@@ -151,19 +152,67 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
             <div className="dropdown" id="dropdown" style={{right: '-300px'}}>
                   <button className="dropbtn">Sort</button>
                   <div className="dropdown-content">
-                    {!u_plist ? null : (
+                    
                   <button className="theme" onClick={function handleClick(){
-
-                    let temp = [...ptracks.tracks]
+                    let temp
+                    u_plist ? (
+                      temp = [...ptracks.tracks],
+                      temp.sort((a,b) => a.name.localeCompare(b.name)),
+                      setpTracks({...ptracks, tracks: temp})
+                     ) : (
+                      temp = [...ptracks],
+                      temp.sort((a,b) => a.name.localeCompare(b.name)),
+                      setpTracks(temp)
+                     )                                  
                     
                     
-                    temp.sort((a,b) => a.name.localeCompare(b.name))
-                    
-                    setpTracks({tracks: temp})
-                    // setSorted(true)
-                    // set_liked(temp2)
                   }}>A-Z</button>
-                )}
+
+                  <button className="theme" onClick={function handleClick(){
+                    let temp
+                    u_plist ? (
+                      temp = [...ptracks.tracks],
+                      temp.sort((a,b) => b.name.localeCompare(a.name)),
+                      setpTracks({...ptracks, tracks: temp})
+                     ) : (
+                      temp = [...ptracks],
+                      temp.sort((a,b) => b.name.localeCompare(a.name)),
+                      setpTracks(temp)
+                     )                                  
+                    
+                    
+                  }}>Z-A</button>
+
+                  <button className="theme" onClick={function handleClick(){
+                    let temp
+                    u_plist ? (
+                      temp = [...ptracks.tracks],
+                      temp.sort((a,b) => a.artists[0]?.name.localeCompare(b.artists[0]?.name)),
+                      setpTracks({...ptracks, tracks: temp})
+                     ) : (
+                      temp = [...ptracks],
+                      temp.sort((a,b) => a.artists[0]?.name.localeCompare(b.artists[0]?.name)),
+                      setpTracks(temp)
+                     )                                  
+                    
+                    
+                  }}>Artist A-Z</button>
+
+                  <button className="theme" onClick={function handleClick(){
+                    let temp
+                    u_plist ? (
+                      temp = [...ptracks.tracks],
+                      temp.sort((a,b) => b.artists[0]?.name.localeCompare(a.artists[0]?.name)),
+                      setpTracks({...ptracks, tracks: temp})
+                     ) : (
+                      temp = [...ptracks],
+                      temp.sort((a,b) => b.artists[0]?.name.localeCompare(a.artists[0]?.name)),
+                      setpTracks(temp)
+                     )                                  
+                    
+                    
+                  }}>Artist Z-A</button>
+                
                   </div>
                 </div>
             
@@ -178,7 +227,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
 
 
             <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
-            {u_plist ? userPlaylists(ptracks, lastSegment, liked, liked_uris, paused, set_liked, setpTracks) : regPlaylists(ptracks, lastSegment, paused)}
+            {u_plist ? userPlaylists(ptracks, lastSegment, liked, liked_uris, paused, set_liked, setpTracks) : regPlaylists(ptracks, lastSegment, liked_uris, paused)}
             
           </div>
         </div>
