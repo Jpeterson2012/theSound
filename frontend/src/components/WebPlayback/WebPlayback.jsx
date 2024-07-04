@@ -44,6 +44,7 @@ function Spin({is_active, is_paused}){
         </>
     )
 }
+
 const WebPlayback = memo(function WebPlayback() {
     const [player, setPlayer] = useState(undefined);
     const [is_paused, setPaused] = useState(false);
@@ -199,7 +200,7 @@ const WebPlayback = memo(function WebPlayback() {
             if (!state){console.error('error');return}
             setPos(state.position)
         })
-    }, 500)
+    }, 1000)
 
     return (
         <>
@@ -268,13 +269,15 @@ const WebPlayback = memo(function WebPlayback() {
                                 </div>
                                 
                             </div>
+                            { !is_active ? null : (
                             <h2 id='addSong' style={{height: '35px', width: '35px', marginLeft: '15px', cursor: 'pointer', border: '2px solid white', borderRadius: '50%'}} onClick={function handleClick(){
                                 let temp = document.getElementById('addSong')
                                 temp.style.animation = 'hithere 1s ease'
                                 setTimeout(()=>{
                                     temp.style.removeProperty('animation')
-                                }, 750)                    
+                                }, 750)
 
+                                
                                 setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
                                 var parts = current_track.album.uri.split(':');
                                 var lastSegment = parts.pop() || parts.pop();
@@ -283,7 +286,8 @@ const WebPlayback = memo(function WebPlayback() {
                                     headers: {"Content-Type":"application/json"},
                                     body: JSON.stringify({album_id: lastSegment, images: JSON.stringify(current_track.album.images), artists: JSON.stringify(current_track.artists), duration: duration, track_id: current_track.id, name: current_track.name})
                                 })
-                            }}>+</h2>
+                            }}>{(liked_songs.tracks.find((e)=>e.uri === current_track.uri) === undefined ? "+" : "✓")}</h2>
+                        )}
                             
                         </div>
                     

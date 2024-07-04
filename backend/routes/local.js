@@ -23,17 +23,31 @@ router.get('/', async (req, res) => {
   });
   let b = 0
   
-  async function run() {
-    files.map(async (a,i) =>  {
-      await get_song(a).then(tag => { return {id: b, title: tag?.tags?.title, artist: tag?.tags?.artist, album: tag?.tags?.album, track_number: tag?.tags?.track}}).then(data => (console.log(data), b++))
-      // arr.push({title: tag?.tags?.title, artist: tag?.tags?.artist, album: tag?.tags?.album, track_number: tag?.tags?.track}),console.log(arr[i])
+  // async function run() {
+  //   files.map(async (a,i) =>  {
+  //     await get_song(a).then(tag => { return {id: b, title: tag?.tags?.title, artist: tag?.tags?.artist, album: tag?.tags?.album, track_number: tag?.tags?.track}}).then(data => (console.log(data), b++))
+  //     // arr.push({title: tag?.tags?.title, artist: tag?.tags?.artist, album: tag?.tags?.album, track_number: tag?.tags?.track}),console.log(arr[i])
       
-    })
-  }
-  await run()
+  //   })
+  // }
+  // await run()
 
-  
-  
+  let apiRequestLoop = function(){
+    let promiseArray = []
+    files.map(a => promiseArray.push(get_song(a).then(tag => { return {id: b++, title: tag?.tags?.title, artist: tag?.tags?.artist, album: tag?.tags?.album, track_number: tag?.tags?.track}}))
+    )
+    return Promise.all(promiseArray);
+    }
+  let temp2 ={}
+  let temp3 = []
+  apiRequestLoop().then(a => a.map((b,i,arr) => {
+    temp3.push(b)
+    arr.length - 1 === i ? (
+      temp2.items = temp3,
+      res.send(temp2)
+    ) : null
+    // console.log(b)
+  }))
 
   // for (let i = 0; i < files.length; i++){
   //   jsmediatags.read(testFolder + files[i], {
@@ -49,8 +63,8 @@ router.get('/', async (req, res) => {
   //   });
   // }
     // console.log(arr[0])
-    info.items = arr
-    res.send(info)
+    // info.items = arr
+    // res.send(info)
 })
 
 module.exports = router;
