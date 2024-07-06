@@ -2,18 +2,27 @@ import ori from '../../local/34-LumaPools.mp3'
 import Loading from '../Loading/Loading'
 import { useEffect, useState } from 'react'
 
+
+const testFolder = '../../../ori/'
+var keyVal = 0
 function displaySongs(songs){
   return (
     <>
     <p>{songs[0]?.album}</p>
-    <div style={{marginBottom: '80px'}}>
+    <div style={{marginBottom: '80px'}} key={keyVal++}>
       {
         songs?.map(a => 
           <div style={{display: 'flex', marginBottom: '20px'}}>
           <div style={{display: 'flex', alignItems: 'center'}}>
               <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
+                <a onClick={function handleClick(){
+                  let audio = new Audio(testFolder + a.uri)
+                  audio.play()
+                  
+                }}>
                   <h2 style={{margin: '0px', padding: '0px', fontSize: '20px',maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}} >{a?.title}</h2>
                   <h4 style={{position: 'absolute', maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{a?.artist}</h4>
+                  </a>
               </div>
           
           </div>
@@ -44,6 +53,7 @@ export default function Local() {
       const data = await resp.json()
       setLoading(false)
       setSongs(data.items)
+      console.log(data.items)
       sessionStorage.setItem("local_tracks", JSON.stringify(data.items))
     }
     fetchLocal()
