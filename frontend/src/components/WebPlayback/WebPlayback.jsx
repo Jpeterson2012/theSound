@@ -199,13 +199,15 @@ const WebPlayback = memo(function WebPlayback() {
             
     }, []);
 
-    setTimeout(() => {
+    //try putting this inside range value of seek bar as arrow function!!!!!!!!!!!!
+    //also try useRef for remembering state on page reloads
     is_active && player.getCurrentState().then(state => {
             if (!state){console.error('error');return}
-            setPos(state.position)
+            if (Math.abs(pos - state.position) > 500)
+                 setPos(state.position)
         })
 
-    }, 1250)
+    
     
 
     return (
@@ -331,7 +333,7 @@ const WebPlayback = memo(function WebPlayback() {
                             </div>
                         ))}
 
-                    <button className="btn-spotify" onClick={() => { setPos(0), pos > 3000 ? player.seek(0) : player.previousTrack() }} >
+                    <button className="btn-spotify" onClick={() => { pos > 3000 ? player.seek(0) : player.previousTrack() }} >
                         &lt;&lt;
                     </button>
 
@@ -339,7 +341,7 @@ const WebPlayback = memo(function WebPlayback() {
                         { is_paused ? "PLAY" : "PAUSE" }
                     </button>
 
-                    <button className="btn-spotify" onClick={() => { setPos(0),player.nextTrack() }} >
+                    <button className="btn-spotify" onClick={() => { player.nextTrack() }} >
                         &gt;&gt;
                     </button>
 
@@ -363,8 +365,8 @@ const WebPlayback = memo(function WebPlayback() {
                     }} />            
 
                     <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){ 
-                        player.seek(e.target.value)
                         setPos(e.target.value)
+                        player.seek(e.target.value)
                     }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> 
 
                     </div>
