@@ -135,10 +135,14 @@ const WebPlayback = memo(function WebPlayback() {
                         setDuration(state.duration)            
                     
                         player.getCurrentState().then( state => { 
-                            (!state)? setActive(false) : setActive(true)                            
+                            !state ? setActive(false) : setActive(true)
+                                
+                                                    
                         })
                                                             
                     }));
+                    
+                    
                     
                     player.connect();
                         
@@ -200,7 +204,9 @@ const WebPlayback = memo(function WebPlayback() {
             if (!state){console.error('error');return}
             setPos(state.position)
         })
-    }, 1000)
+
+    }, 1250)
+    
 
     return (
         <>
@@ -325,7 +331,7 @@ const WebPlayback = memo(function WebPlayback() {
                             </div>
                         ))}
 
-                    <button className="btn-spotify" onClick={() => { pos > 3000 ? player.seek(0) : player.previousTrack() }} >
+                    <button className="btn-spotify" onClick={() => { setPos(0), pos > 3000 ? player.seek(0) : player.previousTrack() }} >
                         &lt;&lt;
                     </button>
 
@@ -333,7 +339,7 @@ const WebPlayback = memo(function WebPlayback() {
                         { is_paused ? "PLAY" : "PAUSE" }
                     </button>
 
-                    <button className="btn-spotify" onClick={() => { player.nextTrack() }} >
+                    <button className="btn-spotify" onClick={() => { setPos(0),player.nextTrack() }} >
                         &gt;&gt;
                     </button>
 
