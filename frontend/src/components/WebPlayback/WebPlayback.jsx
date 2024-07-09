@@ -44,6 +44,12 @@ function Spin({is_active, is_paused}){
         </>
     )
 }
+function saved(uri,liked,playlists){
+    (liked.tracks.find((e)=>e.uri === uri)) === undefined ? console.log("not in liked") : console.log("in liked")
+    for(let i = 0; i < playlists.length; i++){
+        (playlists[i].tracks.find((e)=>e.uri === uri)) === undefined ? console.log(`not in playlist: ${playlists[i].name}`) : console.log(`in playlist: ${playlists[i].name}`)
+    }
+}
 
 const WebPlayback = memo(function WebPlayback() {
     const [player, setPlayer] = useState(undefined);
@@ -337,7 +343,7 @@ const WebPlayback = memo(function WebPlayback() {
                         &lt;&lt;
                     </button>
 
-                    <button className="btn-spotify" style={{maxWidth: '85px', minWidth: '85px'}} onClick={() => { player.togglePlay() }} >
+                    <button className="btn-spotify" style={{maxWidth: '85px', minWidth: '85px'}} onClick={() => { player.togglePlay(), saved(current_track.uri,liked_songs,playlists) }} >
                         { is_paused ? "PLAY" : "PAUSE" }
                     </button>
 

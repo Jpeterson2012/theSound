@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PTrack from "../components/PTrack/PTrack.jsx";
 import Loading from "../components/Loading/Loading.jsx";
 import './Playlist.css'
@@ -97,6 +97,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
   const [loading, setLoading] = useState(false)
   const [u_plist, setU_plist] = useState(true)
   const [total, setTotal] = useState(null)
+  const ref = useRef(null)
   useEffect (() => {
     
     setLoading(true)
@@ -130,6 +131,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
       }
     }
     fetchpTracks()
+    ref.current = ptracks
   }
     
   }, [sessionStorage.getItem("playlist_name"),liked]);
