@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+//Session storage vars ref_id and ref_items created here
+import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.jsx";
 import Loading from "../components/Loading/Loading.jsx";
 import './Playlist.css'
@@ -97,7 +98,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
   const [loading, setLoading] = useState(false)
   const [u_plist, setU_plist] = useState(true)
   const [total, setTotal] = useState(null)
-  const ref = useRef(null)
+  
   useEffect (() => {
     
     setLoading(true)
@@ -108,6 +109,11 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
     if ((plists?.find((e) => e.playlist_id === lastSegment)) === undefined && lastSegment !== 'likedsongs') {
       setU_plist(false)
       
+      if (sessionStorage.getItem("ref_id") === lastSegment) {
+        setpTracks(JSON.parse(sessionStorage.getItem("ref_items")))
+        setTotal(JSON.parse(sessionStorage.getItem("ref_items")).length)
+      }
+      else{
      const fetchpTracks = async () => {
       setLoading(true)
       const resp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
@@ -126,12 +132,13 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
           temp = JSON.parse(chunk).items,
           a.push(...temp),  
           setpTracks([...a]) )
-          : {}
+          : (sessionStorage.setItem("ref_id", lastSegment),  sessionStorage.setItem("ref_items", JSON.stringify(a)))
           
       }
+      
     }
     fetchpTracks()
-    ref.current = ptracks
+  }
   }
     
   }, [sessionStorage.getItem("playlist_name"),liked]);

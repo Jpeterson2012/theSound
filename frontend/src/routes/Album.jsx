@@ -19,7 +19,10 @@ export default function Album({SpinComponent, active, paused}) {
     
 
     useEffect (() => {
-      
+      if (sessionStorage.getItem("ref_id") === lastSegment) {
+        setTracks(JSON.parse(sessionStorage.getItem("ref_items")))
+      }
+      else{
       const fetchTracks = async () => {
           try {
               var temp = await fetch(`http://localhost:8888/auth/tracks/${lastSegment}`)
@@ -35,11 +38,14 @@ export default function Album({SpinComponent, active, paused}) {
         setIsLoading(true)
         const tempTracks = await fetchTracks()
         setIsLoading(false)
-        console.log(tempTracks)
+        // console.log(tempTracks)
         setTracks(tempTracks)
+        sessionStorage.setItem("ref_id", lastSegment)
+        sessionStorage.setItem("ref_items", JSON.stringify(tempTracks))
 
       }
       assignTracks()
+    }
       //This fixes render bug where fetch doesn't activate when clicking on currently playing album
     }, [sessionStorage.getItem("image")]);
     
