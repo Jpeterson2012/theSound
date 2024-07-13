@@ -13,6 +13,9 @@ import shuffle from '../../images/shuffle.png'
 import repeat from '../../images/repeat.png'
 import repeat1 from '../../images/repeat1.png'
 import HScroll from '../HScroll.jsx';
+import 'react-responsive-modal/styles.css';
+import { Modal } from 'react-responsive-modal';
+import escape from '../../images/escape.jpg'
 
 const track = {
     name: "",
@@ -75,6 +78,12 @@ const WebPlayback = memo(function WebPlayback() {
     }
     const [users, setUsers] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const [open, setOpen] = useState(false);
+    const onOpenModal = () => setOpen(true);
+    const onCloseModal = () => setOpen(false);
+    const closeIcon = (
+        <img src={escape} style={{height: '44px', width: '44px'}}/>
+    )
     
 
     const navigate = useNavigate()
@@ -209,8 +218,10 @@ const WebPlayback = memo(function WebPlayback() {
     //also try useRef for remembering state on page reloads
     is_active && player.getCurrentState().then(state => {
             if (!state){console.error('error');return}
-            if (Math.abs(pos - state.position) > 500)
-                 setPos(state.position)
+            setTimeout(()=>{
+                setPos(state.position)
+            },1250)
+                 
         })
 
     
@@ -231,6 +242,29 @@ const WebPlayback = memo(function WebPlayback() {
                 </Routes>    
                 
                 <div className='wrapper'>
+
+                    <div id="snackbar">Added to Liked Songs <button style={{border: 'none'}} onClick={function handleClick(){
+                        onOpenModal()
+                    }}>Change</button></div>
+                    <div>            
+                        <Modal open={open} onClose={onCloseModal} center classNames={{overlay: 'customOverlay', modal: 'customModal'}} closeIcon={closeIcon}>
+                            <div>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '100px', width: '100px', marginRight: '50px'}}/>
+                                <h3>Liked Songs</h3>
+                                <button>{(liked_songs?.tracks?.find((e)=>e.uri === current_track.uri) === undefined ? "Add" : "Remove")}</button>
+                            </div>
+                            {playlists.map(a =>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                <img className="fade-in-image" src={a.images.length == 1 ? a.images.map(s => s.url) : a.images.filter(s => s.height == 300).map(s => s.url)} alt={a.name} style={{height: '100px', width: '100px', marginRight: '50px'}}/>
+                                <h3>{a.name}</h3>
+                                <button>{(a.tracks?.find((e)=>e.uri === current_track?.uri) === undefined ? "Add" : "Remove")}</button>
+                                </div>    
+                            )}
+                            </div>                               
+                        </Modal>
+                    </div>
+
                         <div className="main-wrapper">
                             <a onClick={function handleClick() {
                                 var parts = current_track.album.uri.split(':');
@@ -290,6 +324,10 @@ const WebPlayback = memo(function WebPlayback() {
                                 setTimeout(()=>{
                                     temp.style.removeProperty('animation')
                                 }, 750)
+
+                                var x = document.getElementById("snackbar");
+                                x.className = "show";
+                                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
 
                                 
                                 setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
@@ -382,7 +420,7 @@ const WebPlayback = memo(function WebPlayback() {
 
             </>
         )}
-
+            
         </>
     )
 })

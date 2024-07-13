@@ -14,7 +14,7 @@ router.get('/:id', async (req, res) => {
     var data = await resp.json()
     info.tracks = data
 
-    url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?include_groups=single,album,compilation&limit=30`
+    url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?include_groups=single,album,compilation&limit=50`
     resp = await fetch(url, {headers})
     data = await resp.json()
     info.albums = data

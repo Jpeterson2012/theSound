@@ -1,4 +1,5 @@
 //session storage variable p_image created here for fetch purpose
+//Session storage vars ref_id and ref_items created here
 
 import { useState } from "react";
 import { useEffect } from "react";
@@ -17,6 +18,10 @@ export default function Categories() {
     
 
     useEffect (() => {
+        if (sessionStorage.getItem("ref_id") === lastSegment) {
+            setClists(JSON.parse(sessionStorage.getItem("ref_items")))
+          }
+        else{
         const fetchcPlaylists = async () => {
             setLoading(true)
             const resp = await fetch(`http://localhost:8888/auth/cplaylists/${lastSegment}`)
@@ -35,13 +40,14 @@ export default function Categories() {
                 temp = JSON.parse(chunk).playlists,
                 a.push(...temp),  
                 setClists([...a]) )
-                : {}
+                : (sessionStorage.setItem("ref_id", lastSegment),  sessionStorage.setItem("ref_items", JSON.stringify(a)))
                 
             }
             // setClists(data)
             
         }
         fetchcPlaylists()
+    }
     }, []);
 
     const listPlaylists = clists?.map(a =>

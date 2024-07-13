@@ -1,3 +1,4 @@
+//Session storage vars ref_id and ref_items created here
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
