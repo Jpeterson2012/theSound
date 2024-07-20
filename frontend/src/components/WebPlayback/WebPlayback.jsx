@@ -54,7 +54,7 @@ function saved(uri,liked,playlists){
     }
 }
 
-const WebPlayback = memo(function WebPlayback() {
+const WebPlayback = memo(function WebPlayback() {    
     const [player, setPlayer] = useState(undefined);
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
@@ -80,7 +80,17 @@ const WebPlayback = memo(function WebPlayback() {
     const [isLoading, setIsLoading] = useState(false)
     const [open, setOpen] = useState(false);
     const onOpenModal = () => setOpen(true);
-    const onCloseModal = () => setOpen(false);
+    const onCloseModal = () => {
+        setOpen(false);
+        setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
+        var parts = current_track.album.uri.split(':');
+        var lastSegment = parts.pop() || parts.pop();
+        fetch(`http://localhost:8888/auth/update`, {
+            method: 'POST',
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({album_id: lastSegment, images: JSON.stringify(current_track.album.images), artists: JSON.stringify(current_track.artists), duration: duration, track_id: current_track.id, name: current_track.name})
+        })
+    }
     const closeIcon = (
         <img src={escape} style={{height: '44px', width: '44px'}}/>
     )
@@ -147,7 +157,8 @@ const WebPlayback = memo(function WebPlayback() {
                         sessionStorage.setItem("name", state.track_window.current_track.album.name)
                         sessionStorage.setItem("current", state.track_window.current_track.uri)
                         setPaused(state.paused);        
-                        setDuration(state.duration)            
+                        setDuration(state.duration)                                                
+                      
                     
                         player.getCurrentState().then( state => { 
                             !state ? setActive(false) : setActive(true)
@@ -214,19 +225,6 @@ const WebPlayback = memo(function WebPlayback() {
             
     }, []);
 
-    //try putting this inside range value of seek bar as arrow function!!!!!!!!!!!!
-    //also try useRef for remembering state on page reloads
-    is_active && player.getCurrentState().then(state => {
-            if (!state){console.error('error');return}
-            setTimeout(()=>{
-                setPos(state.position)
-            },1250)
-                 
-        })
-
-    
-    
-
     return (
         <>
         {isLoading ? <Loading yes={true}/> : (
@@ -252,13 +250,20 @@ const WebPlayback = memo(function WebPlayback() {
                             <div style={{display: 'flex', alignItems: 'center'}}>
                                 <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '100px', width: '100px', marginRight: '50px'}}/>
                                 <h3>Liked Songs</h3>
-                                <button>{(liked_songs?.tracks?.find((e)=>e.uri === current_track.uri) === undefined ? "Add" : "Remove")}</button>
+                                {/* <button>{(liked_songs?.tracks?.find((e)=>e.uri === current_track.uri) === undefined ? "Add" : "Remove")}</button> */}
+                                <input id='checkbox' type='checkbox'></input>
+                                {(()=>{
+                                    document.getElementById('checkbox') ? document.getElementById('checkbox').checked = true : null
+                                    console.log("hello")
+                                })()}
+                                
                             </div>
                             {playlists.map(a =>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
                                 <img className="fade-in-image" src={a.images.length == 1 ? a.images.map(s => s.url) : a.images.filter(s => s.height == 300).map(s => s.url)} alt={a.name} style={{height: '100px', width: '100px', marginRight: '50px'}}/>
                                 <h3>{a.name}</h3>
-                                <button>{(a.tracks?.find((e)=>e.uri === current_track?.uri) === undefined ? "Add" : "Remove")}</button>
+                                {/* <button>{(a.tracks?.find((e)=>e.uri === current_track?.uri) === undefined ? "Add" : "Remove")}</button> */}
+                                <input type='checkbox'></input>
                                 </div>    
                             )}
                             </div>                               
@@ -408,7 +413,17 @@ const WebPlayback = memo(function WebPlayback() {
                         
                     }} />            
 
-                    <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){ 
+                    <input id='seeker' type='range' min="0" max={duration} value={(()=>{
+                        
+                        
+                        window.setInterval(()=>{
+                            player.getCurrentState().then(state => {
+                                document.getElementById('seeker').value = state.position
+                            })
+                        },500)
+                        
+                        
+                    })()} onChange={function handleChange(e){ 
                         setPos(e.target.value)
                         player.seek(e.target.value)
                     }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> 

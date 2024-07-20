@@ -65,9 +65,9 @@ export default function Album({SpinComponent, active, paused}) {
     return (
       <>
         <div style={{display: 'flex', flexDirection: 'column', marginTop: '80px',marginBottom: '20px'}}>
-            <span className="fade-in-image" style={{marginLeft: '28vw', marginTop: '30px'}}>
+            <span className="fade-in-image" style={{marginLeft: '28vw', marginTop: '30px', marginBottom: '450px', position: 'relative'}}>
               <SpinComponent is_active={active} is_paused={paused}/>
-              <img src={sessionStorage.getItem("image")} style={{height: '359px', position: 'relative', right: '495px', bottom: '17px', zIndex: '1'}} />
+              <img src={sessionStorage.getItem("image")} style={{height: '359px', position: 'absolute', right: '440px', zIndex: '1'}} />
               {/* <Card 
               id={sessionStorage.getItem("id")}
               image={sessionStorage.getItem("image")}
