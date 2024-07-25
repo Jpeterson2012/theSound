@@ -82,14 +82,14 @@ const WebPlayback = memo(function WebPlayback() {
     const onOpenModal = () => setOpen(true);
     const onCloseModal = () => {
         setOpen(false);
-        setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
-        var parts = current_track.album.uri.split(':');
-        var lastSegment = parts.pop() || parts.pop();
-        fetch(`http://localhost:8888/auth/update`, {
-            method: 'POST',
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({album_id: lastSegment, images: JSON.stringify(current_track.album.images), artists: JSON.stringify(current_track.artists), duration: duration, track_id: current_track.id, name: current_track.name})
-        })
+        // setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
+        // var parts = current_track.album.uri.split(':');
+        // var lastSegment = parts.pop() || parts.pop();
+        // fetch(`http://localhost:8888/auth/update`, {
+        //     method: 'POST',
+        //     headers: {"Content-Type":"application/json"},
+        //     body: JSON.stringify({album_id: lastSegment, images: JSON.stringify(current_track.album.images), artists: JSON.stringify(current_track.artists), duration: duration, track_id: current_track.id, name: current_track.name})
+        // })
     }
     const closeIcon = (
         <img src={escape} style={{height: '44px', width: '44px'}}/>
@@ -251,19 +251,29 @@ const WebPlayback = memo(function WebPlayback() {
                                 <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '100px', width: '100px', marginRight: '50px'}}/>
                                 <h3>Liked Songs</h3>
                                 {/* <button>{(liked_songs?.tracks?.find((e)=>e.uri === current_track.uri) === undefined ? "Add" : "Remove")}</button> */}
-                                <input id='checkbox' type='checkbox'></input>
-                                {(()=>{
-                                    document.getElementById('checkbox') ? document.getElementById('checkbox').checked = true : null
-                                    console.log("hello")
-                                })()}
+                                <input id='checkbox' type='checkbox' ></input>
+                                {open ? (()=>{
+                                    setTimeout(()=>{
+                                        document.getElementById('checkbox').checked = true
+                                        console.log("hello")
+                                    },300)
+                                    
+                                })() : null}
                                 
                             </div>
-                            {playlists.map(a =>
+                            {playlists.map((a,i) =>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
                                 <img className="fade-in-image" src={a.images.length == 1 ? a.images.map(s => s.url) : a.images.filter(s => s.height == 300).map(s => s.url)} alt={a.name} style={{height: '100px', width: '100px', marginRight: '50px'}}/>
                                 <h3>{a.name}</h3>
                                 {/* <button>{(a.tracks?.find((e)=>e.uri === current_track?.uri) === undefined ? "Add" : "Remove")}</button> */}
-                                <input type='checkbox'></input>
+                                <input id={"checkbox" + i} type='checkbox'></input>
+                                {open ? (()=>{
+                                    setTimeout(()=>{
+                                        a.tracks?.find((e)=>e.uri === current_track?.uri) === undefined ? null : document.getElementById(`checkbox${i}`).checked = true
+                                        console.log("hello")
+                                    },300)
+                                    
+                                })() : null}
                                 </div>    
                             )}
                             </div>                               
@@ -417,8 +427,8 @@ const WebPlayback = memo(function WebPlayback() {
                         
                         
                         window.setInterval(()=>{
-                            player.getCurrentState().then(state => {
-                                document.getElementById('seeker').value = state.position
+                            player?.getCurrentState().then(state => {
+                                document.getElementById('seeker').value = state?.position
                             })
                         },500)
                         
