@@ -54,7 +54,9 @@ function saved(uri,liked,playlists){
     }
 }
 
-const WebPlayback = memo(function WebPlayback() {    
+const WebPlayback = memo(function WebPlayback() {
+    var submit1 = []
+    var submit2 = []    
     const [player, setPlayer] = useState(undefined);
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
@@ -79,9 +81,38 @@ const WebPlayback = memo(function WebPlayback() {
     const [users, setUsers] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [open, setOpen] = useState(false);
-    const onOpenModal = () => setOpen(true);
+    const onOpenModal = () => {setOpen(true); submit1 = [], submit2 = []}
     const onCloseModal = () => {
         setOpen(false);
+        console.log(submit1)
+        let temp = document.getElementById('checkbox').checked
+        if (submit1[0] !== temp){
+            // var parts = current_track.album.uri.split(':');
+            // var lastSegment = parts.pop() || parts.pop();
+
+            setLiked_songs({tracks: liked_songs?.tracks?.filter(a => a.uri !== current_track.uri)})
+            fetch(`http://localhost:8888/auth/update`, {
+                method: 'DELETE',
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({track_id: current_track.id})
+            })
+        }
+        // submit2.push(temp)
+        for (let i = 0; i < playlists.length; i++){
+            submit2.push(document.getElementById(`checkbox${i}`).checked)
+            if (submit1[i+1] !== document.getElementById(`checkbox${i}`).checked){
+                setTimeout(()=>{
+
+                
+                fetch(`http://localhost:8888/auth/update/${playlists[i].playlist_id}`, {
+                         method: 'POST',
+                         headers: {"Content-Type":"application/json"},
+                         body: JSON.stringify({code: 'hi'})
+                     })
+                },500)
+            }
+        }
+        console.log(submit2)
         // setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
         // var parts = current_track.album.uri.split(':');
         // var lastSegment = parts.pop() || parts.pop();
@@ -255,7 +286,7 @@ const WebPlayback = memo(function WebPlayback() {
                                 {open ? (()=>{
                                     setTimeout(()=>{
                                         document.getElementById('checkbox').checked = true
-                                        console.log("hello")
+                                        submit1.push(document.getElementById('checkbox').checked)
                                     },300)
                                     
                                 })() : null}
@@ -270,7 +301,7 @@ const WebPlayback = memo(function WebPlayback() {
                                 {open ? (()=>{
                                     setTimeout(()=>{
                                         a.tracks?.find((e)=>e.uri === current_track?.uri) === undefined ? null : document.getElementById(`checkbox${i}`).checked = true
-                                        console.log("hello")
+                                        submit1.push(document.getElementById(`checkbox${i}`).checked)
                                     },300)
                                     
                                 })() : null}

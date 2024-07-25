@@ -15,6 +15,15 @@ router.post('/', async (req, res) => {
       console.log(e)
     }
 })
+router.post('/:id', async (req, res) => {
+  try{
+    console.log(req.params.id)
+  }
+  catch(e){
+    console.log(e)
+  }
+})
+
 router.delete('/', async (req, res) => {
 
     try{
