@@ -18,6 +18,12 @@ router.post('/', async (req, res) => {
 router.post('/:id', async (req, res) => {
   try{
     console.log(req.params.id)
+    sql = `SELECT tracks FROM uplaylists WHERE playlist_id = '${req.params.id}'`
+    con.query(sql, (err,result) => {
+      if (err) throw err;
+      let temp = JSON.parse(result[0].tracks)
+      console.log(temp.items[0]?.name)
+    })
   }
   catch(e){
     console.log(e)

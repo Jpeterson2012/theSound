@@ -71,7 +71,16 @@ const WebPlayback = memo(function WebPlayback() {
         setAlbums(temp)
     }
     const [playlists, setPlaylists] = useState([])
-    function passPlaylist(temp){
+    function passPlaylist(index,track){
+        
+        const temp = playlists.map((a,i) => {
+            if (i === index) {
+                console.log("track added to " + a.name)
+                return {...a, tracks: [track, ...a.tracks]}
+            }
+            else
+                return a
+        })
         setPlaylists(temp)
     }
     const [liked_songs, setLiked_songs] = useState([])
@@ -102,14 +111,14 @@ const WebPlayback = memo(function WebPlayback() {
             submit2.push(document.getElementById(`checkbox${i}`).checked)
             if (submit1[i+1] !== document.getElementById(`checkbox${i}`).checked){
                 setTimeout(()=>{
-
-                
+                passPlaylist(i,{images: current_track.album.images, uri: current_track.uri, name: current_track.name, track_number: 0, duration_ms: duration, artists: current_track.artists})
+                console.log(playlists[i].tracks)
                 fetch(`http://localhost:8888/auth/update/${playlists[i].playlist_id}`, {
                          method: 'POST',
                          headers: {"Content-Type":"application/json"},
                          body: JSON.stringify({code: 'hi'})
                      })
-                },500)
+                },1000)
             }
         }
         console.log(submit2)
