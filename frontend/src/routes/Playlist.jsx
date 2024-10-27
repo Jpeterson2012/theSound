@@ -20,7 +20,6 @@ function listImages(last, ptracks) {
   }
 }
 function userPlaylists(ptracks, last, liked, liked_urls, paused, set_liked, setpTracks) {
-  console.log(ptracks)
   let key = 0
   return (
     ptracks?.tracks?.map(t =>

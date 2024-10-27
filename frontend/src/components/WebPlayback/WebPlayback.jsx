@@ -72,16 +72,22 @@ const WebPlayback = memo(function WebPlayback() {
     }
     const [playlists, setPlaylists] = useState([])
     function passPlaylist(index,track){
+        setTimeout(()=>{
+
         
-        const temp = playlists.map((a,i) => {
+        var temp = playlists.map((a,i) => {
             if (i === index) {
                 console.log("track added to " + a.name)
+                
                 return {...a, tracks: [track, ...a.tracks]}
             }
             else
                 return a
         })
+        console.log(temp)
         setPlaylists(temp)
+        console.log(playlists)
+    },1000)
     }
     const [liked_songs, setLiked_songs] = useState([])
     function passLiked(temp){
@@ -93,7 +99,7 @@ const WebPlayback = memo(function WebPlayback() {
     const onOpenModal = () => {setOpen(true); submit1 = [], submit2 = []}
     const onCloseModal = () => {
         setOpen(false);
-        console.log(submit1)
+        // console.log(submit1)
         let temp = document.getElementById('checkbox').checked
         if (submit1[0] !== temp){
             // var parts = current_track.album.uri.split(':');
@@ -112,7 +118,7 @@ const WebPlayback = memo(function WebPlayback() {
             if (submit1[i+1] !== document.getElementById(`checkbox${i}`).checked){
                 setTimeout(()=>{
                 passPlaylist(i,{images: current_track.album.images, uri: current_track.uri, name: current_track.name, track_number: 0, duration_ms: duration, artists: current_track.artists})
-                console.log(playlists[i].tracks)
+                // console.log(playlists[i].tracks)
                 fetch(`http://localhost:8888/auth/update/${playlists[i].playlist_id}`, {
                          method: 'POST',
                          headers: {"Content-Type":"application/json"},
@@ -121,7 +127,7 @@ const WebPlayback = memo(function WebPlayback() {
                 },1000)
             }
         }
-        console.log(submit2)
+        // console.log(submit2)
         // setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
         // var parts = current_track.album.uri.split(':');
         // var lastSegment = parts.pop() || parts.pop();
