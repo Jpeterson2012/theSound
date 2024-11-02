@@ -54,7 +54,7 @@ function saved(uri,liked,playlists){
     }
 }
 
-const WebPlayback = memo(function WebPlayback() {
+const WebPlayback = memo(function WebPlayback({user, album, play, liked}) {
     var submit1 = []
     var submit2 = []    
     const [player, setPlayer] = useState(undefined);
@@ -66,11 +66,11 @@ const WebPlayback = memo(function WebPlayback() {
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
 
-    const [albums, setAlbums] = useState([]);
+    const [albums, setAlbums] = useState(album);
     function passAlbum(temp){
         setAlbums(temp)
     }
-    const [playlists, setPlaylists] = useState([])
+    const [playlists, setPlaylists] = useState(play)
     function passPlaylist(index,track){
         setTimeout(()=>{
 
@@ -89,12 +89,12 @@ const WebPlayback = memo(function WebPlayback() {
         console.log(playlists)
     },1000)
     }
-    const [liked_songs, setLiked_songs] = useState([])
+    const [liked_songs, setLiked_songs] = useState(liked)
     function passLiked(temp){
         setLiked_songs(temp)
     }
-    const [users, setUsers] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
+    const [users, setUsers] = useState(user)
+    const [isLoading, setIsLoading] = useState(true)
     const [open, setOpen] = useState(false);
     const onOpenModal = () => {setOpen(true); submit1 = [], submit2 = []}
     const onCloseModal = () => {
@@ -173,10 +173,12 @@ const WebPlayback = memo(function WebPlayback() {
                         volume: 0.5
                     });
                     setPlayer(player);
+                    setIsLoading(false)
                     
                     player.addListener('ready', ({ device_id }) => {
                         console.log('Ready with Device ID', device_id);
-                        sessionStorage.setItem("device_id", device_id)
+                        sessionStorage.setItem("device_id", device_id);
+                        
                     });
 
                     player.addListener('not_ready', ({ device_id }) => {
@@ -220,54 +222,53 @@ const WebPlayback = memo(function WebPlayback() {
                         
             };
 ////////////////////////////////////////////Fetches user library here
-            const user = sessionStorage.getItem("username")
-            const album = sessionStorage.getItem("albums")
-            if (user && album){
-                setUsers(user);
-                setAlbums(JSON.parse(album))
-            }
-            else{
-                const fetchUsers = async () => {
-                try {
-                    var temp = await fetch("http://localhost:8888/auth/users")
-                .then((res) => {
-                    return res.json();
-                })
-                    return temp
-                }
-                catch (err) {}
-                }
-                const fetchAlbums = async () => {
-                try {
-                    var temp = await fetch("http://localhost:8888/auth/homepage")
-                .then((res) => {
-                    return res.json();
-                }).then((data) => {return data})
-                    return temp
-                }
-                catch (err) {}
-                }
+            // const user = sessionStorage.getItem("username")
+            // const album = sessionStorage.getItem("albums")
+            // if (user && album){
+            //     setUsers(user);
+            //     setAlbums(JSON.parse(album))
+            // }
+            // //Testing passing data as props here
+            // else{
+            //     const fetchUsers = async () => {
+            //     try {
+            //         var temp = await fetch("http://localhost:8888/auth/users")
+            //     .then((res) => {
+            //         return res.json();
+            //     })
+            //         return temp
+            //     }
+            //     catch (err) {}
+            //     }
+            //     const fetchAlbums = async () => {
+            //     try {
+            //         var temp = await fetch("http://localhost:8888/auth/homepage")
+            //     .then((res) => {
+            //         return res.json();
+            //     }).then((data) => {return data})
+            //         return temp
+            //     }
+            //     catch (err) {}
+            //     }
                 
-                const fetchBoth = async () => {
-                setIsLoading(true)
-                const tempUsers = await fetchUsers();
-                const tempAlbums = await fetchAlbums();
-                setIsLoading(false)
+            //     const fetchBoth = async () => {
+            //     setIsLoading(true)
+            //     const tempUsers = await fetchUsers();
+            //     const tempAlbums = await fetchAlbums();
+            //     setIsLoading(false)
                 
-                // console.log(tempAlbums)
-                setUsers(tempUsers.display_name)
-                setAlbums(tempAlbums.items)
-                setPlaylists(tempAlbums.items2)
-                setLiked_songs(tempAlbums.items3)
-                sessionStorage.setItem("username", tempUsers.display_name)
-                // localStorage.setItem("albums", JSON.stringify(tempAlbums))
-                console.log(tempAlbums)
-                }
-                fetchBoth()
-            }
+            //     // console.log(tempAlbums)
+            //     setUsers(tempUsers.display_name)
+            //     setAlbums(tempAlbums.items)
+            //     setPlaylists(tempAlbums.items2)
+            //     setLiked_songs(tempAlbums.items3)
+            //     sessionStorage.setItem("username", tempUsers.display_name)
+            //     // localStorage.setItem("albums", JSON.stringify(tempAlbums))
+            //     console.log(tempAlbums)
+            //     }
+            //     fetchBoth()
+            // }
         // }
-        
-
             
     }, []);
 
