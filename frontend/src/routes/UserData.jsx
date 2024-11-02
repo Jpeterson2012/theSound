@@ -89,7 +89,7 @@ export default function UserData() {
     return (
         <>
             {isLoading ? <Loading yes={true} /> : (
-                (<WebPlayback user={users} album={albums} play={playlists} liked={liked_songs} />)
+                (<WebPlayback users={users} albums={albums} playlists={playlists} liked_songs={liked_songs} passAlbum={passAlbum} passPlaylist={passPlaylist} passLiked={passLiked} setLiked_songs={setLiked_songs} />)
             )}        
         </>
         

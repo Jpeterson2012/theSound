@@ -54,7 +54,7 @@ function saved(uri,liked,playlists){
     }
 }
 
-const WebPlayback = memo(function WebPlayback({user, album, play, liked}) {
+const WebPlayback = memo(function WebPlayback({users, albums, playlists, liked_songs, passAlbum, passPlaylist, passLiked, setLiked_songs}) {
     var submit1 = []
     var submit2 = []    
     const [player, setPlayer] = useState(undefined);
@@ -66,34 +66,34 @@ const WebPlayback = memo(function WebPlayback({user, album, play, liked}) {
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
 
-    const [albums, setAlbums] = useState(album);
-    function passAlbum(temp){
-        setAlbums(temp)
-    }
-    const [playlists, setPlaylists] = useState(play)
-    function passPlaylist(index,track){
-        setTimeout(()=>{
+    // const [albums, setAlbums] = useState(album);
+    // function passAlbum(temp){
+    //     setAlbums(temp)
+    // }
+    // const [playlists, setPlaylists] = useState(play)
+    // function passPlaylist(index,track){
+    //     setTimeout(()=>{
 
         
-        var temp = playlists.map((a,i) => {
-            if (i === index) {
-                console.log("track added to " + a.name)
+    //     var temp = playlists.map((a,i) => {
+    //         if (i === index) {
+    //             console.log("track added to " + a.name)
                 
-                return {...a, tracks: [track, ...a.tracks]}
-            }
-            else
-                return a
-        })
-        console.log(temp)
-        setPlaylists(temp)
-        console.log(playlists)
-    },1000)
-    }
-    const [liked_songs, setLiked_songs] = useState(liked)
-    function passLiked(temp){
-        setLiked_songs(temp)
-    }
-    const [users, setUsers] = useState(user)
+    //             return {...a, tracks: [track, ...a.tracks]}
+    //         }
+    //         else
+    //             return a
+    //     })
+    //     console.log(temp)
+    //     setPlaylists(temp)
+    //     console.log(playlists)
+    // },1000)
+    // }
+    // const [liked_songs, setLiked_songs] = useState(liked)
+    // function passLiked(temp){
+    //     setLiked_songs(temp)
+    // }
+    // const [users, setUsers] = useState(user)
     const [isLoading, setIsLoading] = useState(true)
     const [open, setOpen] = useState(false);
     const onOpenModal = () => {setOpen(true); submit1 = [], submit2 = []}
