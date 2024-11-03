@@ -65,37 +65,9 @@ const WebPlayback = memo(function WebPlayback({users, albums, playlists, liked_s
     const [duration, setDuration] = useState(0)
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
-
-    // const [albums, setAlbums] = useState(album);
-    // function passAlbum(temp){
-    //     setAlbums(temp)
-    // }
-    // const [playlists, setPlaylists] = useState(play)
-    // function passPlaylist(index,track){
-    //     setTimeout(()=>{
-
-        
-    //     var temp = playlists.map((a,i) => {
-    //         if (i === index) {
-    //             console.log("track added to " + a.name)
-                
-    //             return {...a, tracks: [track, ...a.tracks]}
-    //         }
-    //         else
-    //             return a
-    //     })
-    //     console.log(temp)
-    //     setPlaylists(temp)
-    //     console.log(playlists)
-    // },1000)
-    // }
-    // const [liked_songs, setLiked_songs] = useState(liked)
-    // function passLiked(temp){
-    //     setLiked_songs(temp)
-    // }
-    // const [users, setUsers] = useState(user)
     const [isLoading, setIsLoading] = useState(true)
     const [open, setOpen] = useState(false);
+
     const onOpenModal = () => {setOpen(true); submit1 = [], submit2 = []}
     const onCloseModal = () => {
         setOpen(false);
@@ -146,8 +118,6 @@ const WebPlayback = memo(function WebPlayback({users, albums, playlists, liked_s
 
     useEffect(() => {
 ///////////////////////////Create Spotify web player client
-
-        // if (sessionStorage.getItem("loggedIn") !== true){
 
             const script = document.createElement("script");
             script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -228,47 +198,6 @@ const WebPlayback = memo(function WebPlayback({users, albums, playlists, liked_s
             //     setUsers(user);
             //     setAlbums(JSON.parse(album))
             // }
-            // //Testing passing data as props here
-            // else{
-            //     const fetchUsers = async () => {
-            //     try {
-            //         var temp = await fetch("http://localhost:8888/auth/users")
-            //     .then((res) => {
-            //         return res.json();
-            //     })
-            //         return temp
-            //     }
-            //     catch (err) {}
-            //     }
-            //     const fetchAlbums = async () => {
-            //     try {
-            //         var temp = await fetch("http://localhost:8888/auth/homepage")
-            //     .then((res) => {
-            //         return res.json();
-            //     }).then((data) => {return data})
-            //         return temp
-            //     }
-            //     catch (err) {}
-            //     }
-                
-            //     const fetchBoth = async () => {
-            //     setIsLoading(true)
-            //     const tempUsers = await fetchUsers();
-            //     const tempAlbums = await fetchAlbums();
-            //     setIsLoading(false)
-                
-            //     // console.log(tempAlbums)
-            //     setUsers(tempUsers.display_name)
-            //     setAlbums(tempAlbums.items)
-            //     setPlaylists(tempAlbums.items2)
-            //     setLiked_songs(tempAlbums.items3)
-            //     sessionStorage.setItem("username", tempUsers.display_name)
-            //     // localStorage.setItem("albums", JSON.stringify(tempAlbums))
-            //     console.log(tempAlbums)
-            //     }
-            //     fetchBoth()
-            // }
-        // }
             
     }, []);
 

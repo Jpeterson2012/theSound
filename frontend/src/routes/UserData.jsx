@@ -1,3 +1,5 @@
+//USE SESSION STORAGE TO PERSIST DATA BETWEEN RENDERS!!!!!!!!!!!!
+
 import { useState,useEffect } from 'react'
 import WebPlayback from '../components/WebPlayback/WebPlayback.jsx'
 import Loading from '../components/Loading/Loading.jsx'
@@ -15,19 +17,19 @@ export default function UserData() {
     const [playlists, setPlaylists] = useState([])
     function passPlaylist(index,track){
         setTimeout(()=>{
-
+          
         
         var temp = playlists.map((a,i) => {
             if (i === index) {
                 console.log("track added to " + a.name)
-                
-                return {...a, tracks: [track, ...a.tracks]}
+                setPlaylists({...a, tracks: [track, ...a.tracks]})
+                // return {...a, tracks: [track, ...a.tracks]}
             }
-            else
-                return a
+            // else
+            //     return a
         })
         console.log(temp)
-        setPlaylists(temp)
+        // setPlaylists(temp)
         console.log(playlists)
     },1000)
     }
@@ -39,10 +41,8 @@ export default function UserData() {
 
     useEffect(() => {
         const user = sessionStorage.getItem("username")
-            const album = sessionStorage.getItem("albums")
-            if (user && album){
+            if (user){
                 setUsers(user);
-                setAlbums(JSON.parse(album))
             }
             else{
                 const fetchUsers = async () => {
