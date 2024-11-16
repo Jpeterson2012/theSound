@@ -41,8 +41,15 @@ export default function UserData() {
 
     useEffect(() => {
         const user = sessionStorage.getItem("username")
+        const album = sessionStorage.getItem("albums")
+        const playlist = sessionStorage.getItem("playlists")
+        const liked = sessionStorage.getItem("liked")
             if (user){
                 setUsers(user);
+                setAlbums(JSON.parse(album))
+                setPlaylists(JSON.parse(playlist))
+                setLiked_songs(JSON.parse(liked))
+                setIsLoading(false)
             }
             else{
                 const fetchUsers = async () => {
@@ -79,6 +86,9 @@ export default function UserData() {
                 setPlaylists(tempAlbums.items2)
                 setLiked_songs(tempAlbums.items3)
                 sessionStorage.setItem("username", tempUsers.display_name)
+                sessionStorage.setItem("albums", JSON.stringify(tempAlbums.items))
+                sessionStorage.setItem("playlists", JSON.stringify(tempAlbums.items2))
+                sessionStorage.setItem("liked", JSON.stringify(tempAlbums.items3))
                 // localStorage.setItem("albums", JSON.stringify(tempAlbums))
                 // console.log(tempAlbums)
                 }
