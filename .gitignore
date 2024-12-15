@@ -9,10 +9,12 @@ lerna-debug.log*
 
 node_modules
 frontend/node_modules/
+frontendts/node_modules/
 backend/node_modules/
 backend/.env
 backend/ori/
 frontend/public/
+frontendts/public/
 dist
 dist-ssr
 *.local

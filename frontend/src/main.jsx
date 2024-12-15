@@ -9,24 +9,28 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import Home from './routes/Home.jsx';
 import './index.css'
 import UserData from './routes/UserData.jsx';
+import { Provider } from 'react-redux';
+import { store } from './App/store.js';
+
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <>
+  <>
     {/* <App /> */}
+    <Provider store={store}>
     <Router>
     <ScrollToTop />
           <Routes>
             <Route path='/' element={<App />} errorElement={<ErrorPage />} />
             <Route path = '/login' element={<Login />}/>
             <Route path='/app/*' element={<UserData />} />
-            
+
             {/* <Route path='*' element={<WebPlayback /> }/> */}
           </Routes>
         </Router>
-        
-    </>
+    </Provider>
   
+  </>
 )
 
 
