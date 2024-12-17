@@ -65,6 +65,7 @@ export default function UserData() {
                 const fetchAlbums = async () => {
                 try {
                     var temp = await fetch("http://localhost:8888/auth/homepage")
+                    // var temp = await fetch("http://localhost:8888/auth/homepage2/albums")
                 .then((res) => {
                     return res.json();
                 }).then((data) => {return data})
@@ -79,7 +80,6 @@ export default function UserData() {
                 const tempAlbums = await fetchAlbums();
                 setIsLoading(false)
                 console.log("done")
-                
                 // console.log(tempAlbums)
                 setUsers(tempUsers.display_name)
                 setAlbums(tempAlbums.items)
@@ -90,7 +90,6 @@ export default function UserData() {
                 sessionStorage.setItem("playlists", JSON.stringify(tempAlbums.items2))
                 sessionStorage.setItem("liked", JSON.stringify(tempAlbums.items3))
                 // localStorage.setItem("albums", JSON.stringify(tempAlbums))
-                // console.log(tempAlbums)
                 }
                 fetchBoth()
             }
