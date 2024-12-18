@@ -59,7 +59,8 @@ router.get('/albums', async (req, res) => {
                 }
                 records.token = process.env.access_token
                 records.items = items
-                res.send(records)
+                // res.send(records)
+                res.send(items)
                 
             })
             // getAlbums(con)
