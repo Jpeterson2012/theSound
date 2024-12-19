@@ -28,6 +28,7 @@ router.get('/', function(req, res, next) {
         // console.log(temp)
         //Checks if user is already in db. Adds if not
       var sql = `CREATE DATABASE IF NOT EXISTS ${temp}`
+      process.env['DB'] = temp
       con.query(sql, (err) => {
         if (err) throw err;
         // console.log(`Database for user ${data.display_name} created!`)

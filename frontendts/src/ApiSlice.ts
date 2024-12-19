@@ -34,3 +34,5 @@ export const apiSlice = createApi({
         })
     })
 })
+
+export const { useGetAlbumsQuery } = apiSlice
