@@ -31,8 +31,14 @@ export const apiSlice = createApi({
     endpoints: builder => ({
         getAlbums: builder.query<Album[], void>({
             query: () => '/homepage2/albums'
+        }),
+        getPlaylists: builder.query<Playlist[], void>({
+            query: () => '/homepage2/playlists'
+        }),
+        getLiked: builder.query<Liked[], void>({
+            query: () => '/homepage2/liked'
         })
     })
 })
 
-export const { useGetAlbumsQuery } = apiSlice
+export const { useGetAlbumsQuery, useGetPlaylistsQuery, useGetLikedQuery } = apiSlice

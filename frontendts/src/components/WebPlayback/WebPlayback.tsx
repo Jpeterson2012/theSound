@@ -426,16 +426,46 @@
 //     )
 // })
 // export default WebPlayback
-import { useGetAlbumsQuery } from "../../ApiSlice";
+import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetLikedQuery } from "../../ApiSlice";
+import { useEffect } from "react";
 
 export default function WebPlayback(){
+    useEffect(() => {
+        const user = sessionStorage.getItem("username")
+            if (!user){
+            const fetchUsers = async () => {
+                try {
+                    var temp = await fetch("http://localhost:8888/auth/users")
+                .then((res) => {
+                    return res.json();
+                })
+                    return temp
+                }
+                catch (err) {}
+                }
+            const fetchBaby = async () => {
+                const tempUsers = await fetchUsers()
+                sessionStorage.setItem("username", tempUsers.display_name)
+            }
+            fetchBaby()
+        }
+    })
     
+    // const {
+    //     data: albums = [],
+    //     isSuccess
+    // } = useGetAlbumsQuery()
+
     const {
-        data: albums = [],
+        data: playlists = [],
         isSuccess
-    } = useGetAlbumsQuery()
+    } = useGetPlaylistsQuery()
+    // const {
+    //     data: liked = [],
+    //     isSuccess
+    // } = useGetLikedQuery()
     
-    if (isSuccess) console.log(albums)
+    if (isSuccess) console.log(playlists)
     return(
         <>
         </>
