@@ -1,31 +1,8 @@
-import './Loading.css'
-import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import './Loading2.css'
 
-export default function Loading () {
-    const [isLoading, setIsLoading] = useState(true)
-
-    useEffect(() => {
-        const dataDone = async () => {
-            try {
-                var temp = await fetch("http://localhost:8888/auth/callback/emit")
-            .then((res) => {
-                return res.json();
-            })
-                return temp
-            }
-            catch (err) {}
-            }
-        const fetchBaby = async () => {
-            await dataDone()
-            setIsLoading(false)
-        }
-        fetchBaby()
-    },[])
-
+export default function Loading ({yes}: any) {
     return (
         <>
-            {isLoading ? 
             <div className="muzieknootjes">
                 <div className="noot-1">
                 &#9835; &#9833;
@@ -51,8 +28,8 @@ export default function Loading () {
                 <div className="noot-8">
                 &#9839;
                 </div>
-                <h2>Preparing your experience...</h2>
-            </div> : <Navigate to={'/app'} /> }
+            </div>
+            {yes ? <h2>Preparing your experience...</h2> : null}
         </>
     )
 }

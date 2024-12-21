@@ -1,27 +1,9 @@
 const { con } = require('../sql.js')
 var express = require('express');
 var router = express.Router();
-var inDB = false
-
-let sql = 'select exists (select 1 from ualbums) AS Output'
-function getData(){
-if (process.env.DB !== undefined){
-con.query(sql, function(err,result) {
-    //Check if album data already exits
-    if (err) throw err
-    var empty = result[0].Output
-    //If table already has data read relevent data and send to front end
-    if (empty == 1) inDB = true
-})
-}
-}
 
 router.get('/albums', async (req, res) => {
-    getData()
-    var url = ''
-    const headers = {
-        Authorization: 'Bearer ' + process.env.access_token
-    }
+    
     function getAlbums(){
         sql = 'SELECT album_id, images, name, release_date, uri, artists, label_name from ualbums'
         con.query(sql, function (err, result) {
@@ -41,42 +23,12 @@ router.get('/albums', async (req, res) => {
             res.send(items)
         })
     }
-    
-    if (inDB) getAlbums()
-    else{
-        const getStuff = async() => {
-            var pages = 0
-            //fetch user's saved albums
-            while(true) {
-                url = `https://api.spotify.com/v1/me/albums?offset=${pages}`
-                var resp = await fetch(url, {headers})
-                var data = await resp.json()
-                var values = []
-                data.items.map(a => values.push([a.album.total_tracks, a.album.id, JSON.stringify(a.album.images), a.album.name, a.album.release_date, a.album.uri, JSON.stringify(a.album.artists), JSON.stringify(a.album.tracks), a.album.label, a.album.popularity]))
-                var sql = "INSERT INTO ualbums (total_tracks,album_id, images, name, release_date, uri, artists, tracks, label_name, popularity) VALUES ?"
-                con.query(sql, [values], function(err, result) {
-                    if (err) throw err;
-                    console.log("Number of albums inserted: " + result.affectedRows);
-                })
-                pages += 20
-            
-                if(data.next == null) {
-                    break
-                } 
-            }
-            getAlbums()
-        }
-        getStuff()
-    }
-    
+
+    getAlbums()
 })
 
 router.get('/playlists', async (req, res) => {
-    getData()
-    var url = ''
-    const headers = {
-        Authorization: 'Bearer ' + process.env.access_token
-    }
+
     function getPlaylists(){
         var sql = 'SELECT playlist_id, images, name, public, uri, tracks from uplaylists'
         con.query(sql, function (err,result) {
@@ -102,56 +54,11 @@ router.get('/playlists', async (req, res) => {
         })
     }
 
-    if (inDB) getPlaylists()
-    else{
-        const getStuff = async() => {
-            //Fetch user's saved playlists
-            var pages = 0
-            while(true) {
-
-                url = `https://api.spotify.com/v1/me/playlists?offset=${pages}&limit=5`
-                var resp = await fetch(url, {headers})
-                var data = await resp.json()
-                
-                data.items.map(async a => {
-                    // values.push([a.id, JSON.stringify(a.images), a.name, a.public, JSON.stringify(a.tracks)])
-                    var values = []
-                    var trackInfo = []
-                    var trackJSON = {}
-                    
-                    const resp2 = await fetch(a.tracks.href, {headers})
-                    const data2 = await resp2.json()
-    
-                    data2.items.map(a => {a.track ? trackInfo.push(a.track) : null})
-                    trackJSON.items = trackInfo
-                    
-                    values.push([a.id, JSON.stringify(a.images), a.name, a.public, a.uri, JSON.stringify(trackJSON)])
-                    var sql = "INSERT INTO uplaylists (playlist_id, images, name, public, uri, tracks) VALUES ?"
-                    con.query(sql, [values], function(err, result) {
-                        if (err) throw err;
-                        console.log("Number of playlists inserted: " + result.affectedRows);
-                    })
-                    
-                })
-
-                pages += 5
-                if(data.next == null) {
-                    console.log("done")
-                    break
-                } 
-            }
-            getPlaylists()
-        }
-        getStuff()
-    }
+    getPlaylists()
 })
 
 router.get('/liked', async (req, res) => {
-    getData()
-    var url = ''
-    const headers = {
-        Authorization: 'Bearer ' + process.env.access_token
-    }
+    
     function getLiked(){
         var sql = 'select images, duration, track_id, name, artists from likedsongs'
         con.query(sql, function (err, result) {
@@ -177,30 +84,6 @@ router.get('/liked', async (req, res) => {
         })
     }
 
-    if (inDB) getLiked()
-    else{
-        const getStuff = async() => {
-            var pages = 0
-            while(true) {
-                url = `https://api.spotify.com/v1/me/tracks?offset=${pages}&limit=30`
-                var resp = await fetch(url, {headers})
-                var data = await resp.json()
-                var values = []
-                data.items.map(a => values.push([a.track.album.id, JSON.stringify(a.track.album.images), JSON.stringify(a.track.album.artists), a.track.duration_ms, a.track.id, a.track.name]))
-                var sql = "INSERT INTO likedsongs (album_id, images, artists, duration, track_id, name) VALUES ?"
-                con.query(sql, [values], function(err, result) {
-                    if (err) throw err;
-                    console.log("Number of liked songs inserted: " + result.affectedRows);
-                })
-                pages += 30
-            
-                if(data.next == null) {
-                    break
-                }
-            }
-            getLiked()
-        }
-        getStuff()
-    }
+     getLiked()
 })
 module.exports = router;

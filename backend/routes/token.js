@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-const { x } = require('../varListen.js')
 
 router.get('/', function(req, res) {
     // x.registerListener(function() {

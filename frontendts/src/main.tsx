@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop.tsx';
 import ErrorPage from './error-page.tsx'
 import Login from './routes/Login.tsx'
 import WebPlayback from './components/WebPlayback/WebPlayback.tsx'
+import Loading from './components/Loading/Loading.tsx'
 
 // createRoot(document.getElementById('root')!).render(
 //   <StrictMode>
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')!).render(
             <Routes>
               <Route path='/' element={<App />} errorElement={<ErrorPage />} />
               <Route path = '/login' element={<Login />}/>
+              <Route path = '/1' element={<Loading />} />
               <Route path='/app/*' element={<WebPlayback />} />
 
               {/* <Route path='*' element={<WebPlayback /> }/> */}

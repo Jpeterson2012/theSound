@@ -427,47 +427,71 @@
 // })
 // export default WebPlayback
 import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetLikedQuery } from "../../ApiSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+let a: string
 
 export default function WebPlayback(){
+
+    const [users, setUsers] = useState("")
     useEffect(() => {
-        const user = sessionStorage.getItem("username")
-            if (!user){
-            const fetchUsers = async () => {
-                try {
-                    var temp = await fetch("http://localhost:8888/auth/users")
-                .then((res) => {
-                    return res.json();
-                })
-                    return temp
-                }
-                catch (err) {}
-                }
-            const fetchBaby = async () => {
-                const tempUsers = await fetchUsers()
-                sessionStorage.setItem("username", tempUsers.display_name)
-            }
-            fetchBaby()
+        
+    // const fetchUsers = async () => {
+    //     try {
+    //         var temp = await fetch("http://localhost:8888/auth/users")
+    //     .then((res) => {
+    //         console.log(res.json())
+    //         return res.json();
+    //     }).then((data) => {
+    //         return data;
+    //     })
+    //         return temp
+    //     }
+    //     catch (err) {}
+    //     }
+    // const fetchBaby = async () => {
+    //     const tempUsers = await fetchUsers()
+    //     console.log(tempUsers.items)
+    //     sessionStorage.setItem("username", tempUsers.items)
+    // }
+    // fetchBaby()
+    const getUser = async () => {
+        try{
+        const res = await fetch("http://localhost:8888/auth/users")
+        
+        const data = await res.json()
+        return data
         }
+        catch (err){}
+    }
+    getUser().then(data => {
+        sessionStorage.setItem("username", data)
+        setUsers(data.items)
     })
+    },[])
     
     // const {
     //     data: albums = [],
     //     isSuccess
     // } = useGetAlbumsQuery()
 
-    const {
-        data: playlists = [],
-        isSuccess
-    } = useGetPlaylistsQuery()
     // const {
-    //     data: liked = [],
+    //     data: playlists = [],
     //     isSuccess
-    // } = useGetLikedQuery()
+    // } = useGetPlaylistsQuery()
+    const {
+        data: liked = [],
+        isSuccess
+    } = useGetLikedQuery()
     
-    if (isSuccess) console.log(playlists)
+    if (isSuccess) console.log(liked)
     return(
         <>
+        <h1>Hi</h1>
         </>
     )
+    // return (
+    //     <>
+    //     <h2>{users}</h2>
+    //     </>
+    // )
 }

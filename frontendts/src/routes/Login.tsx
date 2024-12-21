@@ -1,6 +1,6 @@
 import './Login.css'
 import logo from '../images/logo.png'
-import Loading from '../components/Loading/Loading.tsx'
+import Loading2 from '../components/Loading2/Loading2.tsx'
 
 
 export default function Login() {
@@ -9,7 +9,7 @@ export default function Login() {
     
   return (
     <>
-      <Loading />
+      <Loading2 />
       <div className='fade-in-image' style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <img src={logo} alt='Avatar' />
         <h1>Welcome to TheSound<sup>TM</sup></h1>
