@@ -1,0 +1,23 @@
+.lol {
+    font-weight: bolder;
+    font-size: large;
+    font-family: Arial,Helvetica, sans-serif;
+    background: linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+.fade-in-image{
+    animation: fadeIn 0.5s;
+}
+@keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+  
+  
+  
