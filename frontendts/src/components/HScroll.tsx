@@ -25,7 +25,7 @@ export default function HScroll({name}: any){
 }
 else{
     a = document.querySelectorAll(".temp")
-    a.forEach===((b: any) => 
+    a.forEach((b: any) => 
         b.style.display = 'none'
     )
     const scrollers = document.querySelectorAll(`.${name}`)
@@ -33,4 +33,8 @@ else{
         scroller.removeAttribute("data-animated");
     })
 }
+return(
+    <>
+    </>
+)
 }

@@ -6,6 +6,7 @@ import './Home.css'
 import Card from "../components/Card/Card.tsx";
 // import Local from "../components/Local/Local.jsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
+import { useGetAlbumsQuery, useGetPlaylistsQuery } from "../ApiSlice.ts"; 
 
 function Albums(listItems: any){
   return(
@@ -20,39 +21,39 @@ function Albums(listItems: any){
     </div>
   )
 }
-function albumSort(albums: any, set_albums: any, setSorted: any){
-  return(
-    <>
-    <button className="theme" onClick={function handleClick(){
-      let temp = [...albums]
-      temp.sort((a,b) => a.name.localeCompare(b.name))
-      set_albums(temp)
-      setSorted(true)
-    }}>A-Z</button>
+// function albumSort(albums: any, set_albums: any, setSorted: any){
+//   return(
+//     <>
+//     <button className="theme" onClick={function handleClick(){
+//       let temp = [...albums]
+//       temp.sort((a,b) => a.name.localeCompare(b.name))
+//       set_albums(temp)
+//       setSorted(true)
+//     }}>A-Z</button>
 
-    <button className="theme" onClick={function handleClick(){
-      let temp = [...albums]
-      temp.sort((a,b) => b.name.localeCompare(a.name))
-      set_albums(temp)
-      setSorted(true)
-    }}>Z-A</button>
+//     <button className="theme" onClick={function handleClick(){
+//       let temp = [...albums]
+//       temp.sort((a,b) => b.name.localeCompare(a.name))
+//       set_albums(temp)
+//       setSorted(true)
+//     }}>Z-A</button>
 
-    <button className="theme" onClick={function handleClick(){
-      let temp = [...albums]
-      temp.sort((a,b) => a.artists[0]?.name.localeCompare(b.artists[0]?.name))
-      set_albums(temp)
-      setSorted(true)
-    }}>Artist A-Z</button>
+//     <button className="theme" onClick={function handleClick(){
+//       let temp = [...albums]
+//       temp.sort((a,b) => a.artists[0]?.name.localeCompare(b.artists[0]?.name))
+//       set_albums(temp)
+//       setSorted(true)
+//     }}>Artist A-Z</button>
 
-    <button className="theme" onClick={function handleClick(){
-      let temp = [...albums]
-      temp.sort((a,b) => b.artists[0]?.name.localeCompare(a.artists[0]?.name))
-      set_albums(temp)
-      setSorted(true)
-    }}>Artist Z-A</button>
-    </>
-  )
-}
+//     <button className="theme" onClick={function handleClick(){
+//       let temp = [...albums]
+//       temp.sort((a,b) => b.artists[0]?.name.localeCompare(a.artists[0]?.name))
+//       set_albums(temp)
+//       setSorted(true)
+//     }}>Artist Z-A</button>
+//     </>
+//   )
+// }
 function Playlists(navigate: any, listPlaylists: any){
   return(
     <div style={{
@@ -75,25 +76,25 @@ function Playlists(navigate: any, listPlaylists: any){
     </div>
   )
 }
-function playlistSort(playlists: any, set_playlists: any, setSorted: any){
-  return(
-    <>
-      <button className="theme" onClick={function handleClick(){
-      let temp = [...playlists]
-      temp.sort((a,b) => a.name.localeCompare(b.name))
-      set_playlists(temp)
-      setSorted(true)
-    }}>A-Z</button>
+// function playlistSort(playlists: any, set_playlists: any, setSorted: any){
+//   return(
+//     <>
+//       <button className="theme" onClick={function handleClick(){
+//       let temp = [...playlists]
+//       temp.sort((a,b) => a.name.localeCompare(b.name))
+//       set_playlists(temp)
+//       setSorted(true)
+//     }}>A-Z</button>
 
-    <button className="theme" onClick={function handleClick(){
-      let temp = [...playlists]
-      temp.sort((a,b) => b.name.localeCompare(a.name))
-      set_playlists(temp)
-      setSorted(true)
-    }}>Z-A</button>
-    </>
-  )
-}
+//     <button className="theme" onClick={function handleClick(){
+//       let temp = [...playlists]
+//       temp.sort((a,b) => b.name.localeCompare(a.name))
+//       set_playlists(temp)
+//       setSorted(true)
+//     }}>Z-A</button>
+//     </>
+//   )
+// }
 function Podcasts(){
   return(
     <h4>Hello there</h4>
@@ -105,11 +106,20 @@ function Podcasts(){
 //   )
 // }
 
-export default function Home( {albums, set_albums, playlists, set_playlists}: any ) {
+export default function Home() {
     const navigate = useNavigate()
     const [html, setHtml] = useState<any>(null)
     const [sorted, setSorted] = useState(false)
     const [loading, setLoading] = useState(false)
+
+    const {
+        data: albums = [],
+        isSuccess
+        } = useGetAlbumsQuery()
+
+        const {
+        data: playlists = [],
+    } = useGetPlaylistsQuery()
 
     useEffect(() => {
       setSorted(false)
@@ -138,7 +148,7 @@ export default function Home( {albums, set_albums, playlists, set_playlists}: an
       setLoading(false)
 
     
-  }, [sorted]);
+  }, [isSuccess]);
   const listItems = albums?.map((a: any) => 
     <Card
       // key={a.id}
@@ -169,19 +179,19 @@ export default function Home( {albums, set_albums, playlists, set_playlists}: an
   )
   return (
     <>
-      {loading ? <Loading2 yes={true} /> : (<>
+      {!isSuccess ? <Loading2 yes={true} /> : (<>
       <div style={{marginTop: '170px'}}>
         <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
         <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
         <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
         {/* <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button> */}
-        <div className="dropdown" id="dropdown">
+        {/* <div className="dropdown" id="dropdown">
           <button className="dropbtn">Sort</button>
           <div className="dropdown-content">
             {(sessionStorage.getItem('home') === null || sessionStorage.getItem('home') === 'album') && albumSort(albums, set_albums, setSorted)}
             {sessionStorage.getItem('home') === 'playlist' && playlistSort(playlists, set_playlists, setSorted)}
           </div>
-        </div>
+        </div> */}
         
       </div>
       
