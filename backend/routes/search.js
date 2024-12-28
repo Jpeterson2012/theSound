@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
       temp.artists = temp2
       temp2 = []
       
-      data.playlists.items.map(a => temp2.push({name: a.name, id: a.id, images: a.images}))
+      data.playlists.items.map(a => a ? temp2.push({name: a.name, id: a.id, images: a.images}) : null)
       temp.playlists = temp2
       temp2 = []
       

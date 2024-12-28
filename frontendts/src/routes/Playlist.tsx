@@ -3,14 +3,15 @@ import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
 import './Playlist.css'
+import { useGetPlaylistsQuery, useGetLikedQuery } from "../ApiSlice.ts";
 
 function mainImage(url: string) {
-  return (<img src={url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>)
+  return (<img src={url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>)
 }
 
 function listImages(last: any, ptracks: any) {
   if (last == 'likedsongs'){
-    return (<img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>)
+    return (<img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>)
   }
   else{
     return (
@@ -19,7 +20,7 @@ function listImages(last: any, ptracks: any) {
     )
   }
 }
-function userPlaylists(ptracks: any, last: any, liked: any, liked_urls: any, paused: any, set_liked: any, setpTracks: any) {
+function userPlaylists(ptracks: any, last: any, liked: any, liked_urls: any, paused: any, setpTracks: any) {
   let key = 0
   return (
     ptracks?.tracks?.map((t: any) =>
@@ -50,7 +51,7 @@ function userPlaylists(ptracks: any, last: any, liked: any, liked_urls: any, pau
           var parts = t.uri.split(':');
           var lastSegment = parts.pop() || parts.pop();
 
-          set_liked({tracks: liked.tracks?.filter((a: any) => a.uri !== t.uri)})
+          // set_liked({tracks: liked.tracks?.filter((a: any) => a.uri !== t.uri)})
           // setpTracks({tracks: ptracks?.tracks?.filter(a => a.uri !== t.uri)})
           
 
@@ -90,7 +91,7 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
 }
 
 
-export default function Playlist({plists, liked, set_liked, SpinComponent, active, paused}: any) {
+export default function Playlist({SpinComponent, active, paused}: any) {
   var parts = window.location.href.split('/');
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
   var liked_uris: any = []
@@ -98,6 +99,14 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
   const [loading, setLoading] = useState(false)
   const [u_plist, setU_plist] = useState(true)
   const [total, setTotal] = useState(null)
+
+  const {
+        data: plists = [],
+        isSuccess
+    } = useGetPlaylistsQuery()
+    const {
+        data: liked = [],
+    } = useGetLikedQuery()
   
   useEffect (() => {
     
@@ -141,11 +150,11 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
   }
   }
     
-  }, [sessionStorage.getItem("playlist_name"),liked]);
+  }, [sessionStorage.getItem("playlist_name"),isSuccess]);
 
   return (
-    <div style={{marginTop: '120px'}}>
-    <span className="fade-in-image" style={{marginLeft: '24vw'}}>
+    <div style={{marginTop: '30px'}}>
+    <span className="fade-in-image" style={{marginLeft: '1vw', position: 'relative'}}>
           <SpinComponent is_active={active} is_paused={paused}/>
           {u_plist ? listImages(lastSegment, ptracks) : <img src={sessionStorage.getItem("p_image")!} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>}
         </span>
@@ -236,7 +245,7 @@ export default function Playlist({plists, liked, set_liked, SpinComponent, activ
 
 
             <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
-            {u_plist ? userPlaylists(ptracks, lastSegment, liked, liked_uris, paused, set_liked, setpTracks) : regPlaylists(ptracks, lastSegment, liked_uris, paused)}
+            {u_plist ? userPlaylists(ptracks, lastSegment, liked, liked_uris, paused, setpTracks) : regPlaylists(ptracks, lastSegment, liked_uris, paused)}
             
           </div>
         </div>

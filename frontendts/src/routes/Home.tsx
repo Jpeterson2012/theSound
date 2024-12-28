@@ -180,7 +180,7 @@ export default function Home() {
   return (
     <>
       {!isSuccess ? <Loading2 yes={true} /> : (<>
-      <div style={{marginTop: '170px'}}>
+      <div style={{marginTop: '50px'}}>
         <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
         <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
         <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>

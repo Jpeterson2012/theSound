@@ -56,13 +56,14 @@ h2{
 .customOverlay {
   background: rgba(36, 123, 160, 0.7);
 }
-.customModal{
+.react-responsive-modal-modal.customModal{
   margin: 0px;
   padding: 0px;
   min-width: 75vw;
   min-height: 800px;
   overflow: hidden;
   margin-bottom: 150px;
+  background: rgb(33, 33, 33);
 }
 .fade-in-image{
   animation: fadeIn 0.5s;

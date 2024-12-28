@@ -18,11 +18,10 @@ interface Playlist {
     tracks: []
 }
 interface Liked {
-    images: []
-    duration_ms: number
-    uri: string
-    name: string
-    artists: []
+    tracks: []
+}
+interface User {
+    items: string
 }
 
 export const apiSlice = createApi({
@@ -35,10 +34,13 @@ export const apiSlice = createApi({
         getPlaylists: builder.query<Playlist[], void>({
             query: () => '/homepage2/playlists'
         }),
-        getLiked: builder.query<Liked[], void>({
+        getLiked: builder.query<Liked, void>({
             query: () => '/homepage2/liked'
+        }),
+        getUser: builder.query<User, void>({
+            query: () => '/users'
         })
     })
 })
 
-export const { useGetAlbumsQuery, useGetPlaylistsQuery, useGetLikedQuery } = apiSlice
+export const { useGetAlbumsQuery, useGetPlaylistsQuery, useGetLikedQuery, useGetUserQuery } = apiSlice

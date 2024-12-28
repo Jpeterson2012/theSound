@@ -4,7 +4,7 @@ var router = express.Router();
 router.get('/:id', async (req, res) => {
     // console.log(req.params.id)
     // console.log(req.params.id)
-    
+    console.log(`PlaylistID:${req.params.id}`)
     
     const headers = {
         Authorization: 'Bearer ' + process.env.access_token
@@ -15,6 +15,7 @@ router.get('/:id', async (req, res) => {
         url = `https://api.spotify.com/v1/browse/categories/${req.params.id}/playlists?offset=${pages}&limit=5`
         var resp = await fetch(url, {headers})
         var data = await resp.json()
+        console.log(data)
         let temp = {}
         let temp2 = []
         data.playlists.items?.map(a => temp2.push({name: a.name, images: a.images, uri: a.uri, primary_color: a.primary_color, description: a.description}))

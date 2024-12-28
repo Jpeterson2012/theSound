@@ -27,15 +27,15 @@ export default function Categories() {
             const resp = await fetch(`http://localhost:8888/auth/cplaylists/${lastSegment}`)
             // const data = await resp.json()
             setLoading(false)
-            let reader = resp.body!.getReader()
+            let reader = resp.body?.getReader()
             let result
             let temp
             let a = []
             let decoder = new TextDecoder('utf8')
             while(!result?.done){
-                result = await reader.read()
-                let chunk = decoder.decode(result.value)
-                // console.log(chunk ? JSON.parse(chunk) : {})
+                result = await reader?.read()
+                let chunk = decoder.decode(result?.value)
+                console.log(chunk ? JSON.parse(chunk) : {})
                 chunk ? (
                 temp = JSON.parse(chunk).playlists,
                 a.push(...temp),  

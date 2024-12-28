@@ -8,6 +8,7 @@ import Track from '../Track/Track';
 import escape from '../../images/escape.jpg'
 import search from '../../images/search.png'
 import space from '../../images/music.gif'
+import { useGetUserQuery } from '../../ApiSlice';
 
 function getTracks(ptracks: any) {
     var key = 0
@@ -113,14 +114,17 @@ export default function Logo () {
     const closeIcon = (
         <img src={escape} style={{height: '44px', width: '44px'}}/>
       );
-
+    const {
+            data: user,
+            isSuccess
+            } = useGetUserQuery()
+    
     useEffect(() => {
-
     }, [tracks])
 
     return(
         <div style={{display: 'flex', position: 'absolute', right: '140px', top: '30px', alignItems: 'center'}}>
-            <h2 style={{marginRight: '57vw'}}>{sessionStorage.getItem("username")}</h2>
+            <h2 style={{marginRight: '57vw'}}>{isSuccess ? user!.items : 'hi'}</h2>
 
             <h2 style={{position: 'absolute', left: '25vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
               if (window.history?.length && window.history.length > 1) navigate(-1)

@@ -79,7 +79,7 @@ router.get('/liked', async (req, res) => {
             // tracks.tracks = items        
             // records.items = tracks
             // res.send(records)
-            tracks = items
+            tracks.tracks = items
             res.send(tracks)
         })
     }
