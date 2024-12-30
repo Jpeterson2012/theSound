@@ -1,4 +1,43 @@
-.lol {
+.topDiv{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.albumImage{
+    height: 359px;
+    position: absolute;
+    right: 440px;
+    top: 18px;
+    z-index: 1;
+}
+.topDiv h2{
+    margin-left: auto;
+    margin-right: auto;
+}
+.artistName{
+    font-weight: bolder;
+}
+.albumDescription{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    color: rgb(90, 210, 216);
+}
+.innerDescription{
+    display: flex;
+    margin-right: 10px;
+}
+.desc1{
+    margin-right: 5px;
+}
+.tinyArtist{
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.lol, .lol2 {
     font-weight: bolder;
     font-size: large;
     font-family: Arial,Helvetica, sans-serif;
@@ -7,6 +46,10 @@
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
 }
+.lol2{
+    margin-left: 65vw;
+}
+
 .fade-in-image2{
     animation: fadeIn 0.5s;
     margin-left: 28vw;
@@ -26,6 +69,12 @@
 @media(min-height: 1000px){
     .fade-in-image2{
         margin-left: 23vw;
+    }
+    .lol2{
+        margin-left: 56vw;
+    }
+    .topDiv{
+        margin-top: 0px;
     }
   }
   

@@ -123,15 +123,15 @@ export default function Logo () {
     }, [tracks])
 
     return(
-        <div style={{display: 'flex', position: 'absolute', right: '140px', top: '30px', alignItems: 'center'}}>
-            <h2 style={{marginRight: '57vw'}}>{isSuccess ? user!.items : 'hi'}</h2>
+        <div className='mainLogo'>
+            <h2 className='userName'>{isSuccess ? user!.items : 'hi'}</h2>
 
             <h2 style={{position: 'absolute', left: '25vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
               if (window.history?.length && window.history.length > 1) navigate(-1)
               else navigate('/app/', {replace: true})
             }}>{"<"}</h2>
 
-            <img src={search} style={{cursor: 'pointer', width: '70px', height: '70px', position: 'absolute', left: '35vw'}} onClick={function handleClick(){onOpenModal()}} />
+            <img className='searchimg' src={search} onClick={function handleClick(){onOpenModal()}} />
 
             <h2 style={{position: 'absolute', right: '30vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
               if (window.history?.length && window.history.length > 1) navigate(1)

@@ -64,10 +64,10 @@ export default function Album({SpinComponent, active, paused}: any) {
     )
     return (
       <>
-        <div style={{display: 'flex', flexDirection: 'column', marginTop: '10px',marginBottom: '20px'}}>
+        <div className="topDiv">
             <span className="fade-in-image2">
               <SpinComponent is_active={active} is_paused={paused}/>
-              <img src={sessionStorage.getItem("image")!} style={{height: '359px', position: 'absolute', right: '440px', zIndex: '1'}} />
+              <img className="albumImage" src={sessionStorage.getItem("image")!}/>
               {/* <Card 
               id={sessionStorage.getItem("id")}
               image={sessionStorage.getItem("image")}
@@ -80,26 +80,26 @@ export default function Album({SpinComponent, active, paused}: any) {
               <>
             <h2>{zip.map((s: any,i: number,row: any) =>
             <>
-              <a onClick={function handleClick() {
+              <a className="artistName" onClick={function handleClick() {
                 navigate(`/app/artist/${s[1]}`)
-              }} style={{fontWeight: 'bolder'}}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a> 
+              }}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a> 
               </>
             )}</h2>
-            <div style={{display: 'flex', alignItems: 'center', marginBottom: '20px'}}>
-              <div style={{display: 'flex', marginRight: '10px'}}>
-                <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
-                <h5 style={{color: 'rgb(90, 210, 216)'}}>{tracks.albums?.total_tracks === 1 ? tracks.albums?.total_tracks + " Song" : tracks.albums?.total_tracks + " Songs" }</h5>
+            <div className="albumDescription">
+              <div className="innerDescription">
+                <h5 className="desc1">{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
+                <h5>{tracks.albums?.total_tracks === 1 ? tracks.albums?.total_tracks + " Song" : tracks.albums?.total_tracks + " Songs" }</h5>
               </div>
               
               {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
-              {tracks.images?.map((a: any) => <img src={a.find((b: any) => b.height > 160).url} style={{borderRadius: '50%', height: '40px', width: '40px'}} />)}
+              {tracks.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
             </div>
             </>
             )} 
             
             
 
-            <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
+            <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol2">Duration</span></div>
           </div>
         {isLoading ? <Loading2 yes={true} /> : (
           <>

@@ -10,6 +10,17 @@
     z-index: 1;
     position: relative;
     animation: fadeIn 0.5s;
+
+    font-size: 17px;
+    color: rgb(90, 210, 216);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    
+    /* display: flex;
+    flex-direction: column; */
+
+    
   }
   .card:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
@@ -18,18 +29,17 @@ a {
   cursor: pointer;
 }
 
+
 img {
   border-radius: 10px;
 }
-
-h4, p {
+p {
   color: rgb(90, 210, 216);
   font-size: 17px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden; 
-}
-
+} 
 @keyframes fadeIn {
   0%{
       opacity: 0;

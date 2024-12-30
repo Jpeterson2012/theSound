@@ -24,21 +24,18 @@ export default function Card( {id, image, name, artist, a_id}: any ) {
                 navigate(`/app/album/${id}`)
             }}> <img src={image} alt="Avatar" style={{width:'80%',height:'190px'}}/>
             </a>
-            <div className="container">
-                 <h4><b>{name}</b></h4>
 
-                <p><b>{zip.map((s: any,i: any,row: any) =>
-                    <>
-                    <a onClick={function handleClick() {
-                        navigate(`/app/artist/${s[1]}`)
-                    }} style={{color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a>
-                    <span hidden>{key++}</span>
-                    </>
-                    )}</b></p>
+            <p><b>{zip.map((s: any,i: any,row: any) =>
+                <>
+                <a onClick={function handleClick() {
+                    navigate(`/app/artist/${s[1]}`)
+                }} style={{color: 'rgb(90, 210, 216)', fontWeight: 'bold'}}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a>
+                <span hidden>{key++}</span>
+                </>
+            )}</b></p>                
                 
-                
-            </div>
-            
+            <p><b className='cardName'>{name}</b></p>
+        
         </div>
     );
 }

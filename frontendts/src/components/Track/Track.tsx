@@ -35,18 +35,18 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                     })
                 
             }}>
-            <div style={{display: 'flex', alignItems: 'center'}}>
-                {!pause ? <span style={{margin: '0px', padding: '0px', position: 'absolute', left: '140px'}} >{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
-                <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
-                    <h2 style={{margin: '0px', padding: '0px', fontSize: '20px',maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}} >{name}</h2>
-                    <h4 style={{position: 'absolute', maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{artist.map((a: any,i: number,row: any) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
+            <div className="main" style={{display: 'flex', alignItems: 'center'}}>
+                {!pause ? <span className="mbar">{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
+                <div className="innerMain">
+                    <h2>{name}</h2>
+                    <h4>{artist.map((a: any,i: number,row: any) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
                 </div>
             
             </div>
             <br></br>
             <br></br>
             </a>
-            <span style={{position: 'absolute', left: '81vw', fontWeight: 'bold', color: 'rgb(90, 210, 216)'}}>{timeCalc(duration)}</span>
+            <span className="songLength">{timeCalc(duration)}</span>
       </div>
     )
 }

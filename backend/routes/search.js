@@ -16,15 +16,15 @@ router.get('/:id', async (req, res) => {
       var data = await resp.json()
       let temp = {}
       let temp2 = []
-      data.albums.items.map(a => temp2.push({name: a.name, id: a.id, images: a.images, artists: a.artists, url: a.url}))
+      data.albums.items.map(a => a ? temp2.push({name: a.name, id: a.id, images: a.images, artists: a.artists, url: a.url}) : null)
       temp.albums = temp2
       temp2 = []
     
-      data.tracks.items.map(a => temp2.push({name: a.name, album_name: a.album.name, artists: a.artists, images: a.album.images, url: a.album.uri, track_number: a.track_number, duration_ms: a.duration_ms}))      
+      data.tracks.items.map(a => a ? temp2.push({name: a.name, album_name: a.album.name, artists: a.artists, images: a.album.images, url: a.album.uri, track_number: a.track_number, duration_ms: a.duration_ms}) : null)      
       temp.tracks = temp2
       temp2 = []
       
-      data.artists.items.map(a => temp2.push({name: a.name, id: a.id, images: a.images}))
+      data.artists.items.map(a => a ?temp2.push({name: a.name, id: a.id, images: a.images}) : null)
       temp.artists = temp2
       temp2 = []
       

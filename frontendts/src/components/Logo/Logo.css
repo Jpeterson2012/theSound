@@ -6,6 +6,17 @@ h2{
     -webkit-background-clip: text;
 }
 
+.mainLogo{
+  display: flex;
+  position: absolute;
+  right: 140px;
+  top: 30px;
+  align-items: center;
+}
+.userName{
+  margin-right: 57vw;
+}
+
 .search {
   width: 100%;
   position: relative;
@@ -74,5 +85,24 @@ h2{
   }
   100%{
       opacity: 1;
+  }
+}
+.searchimg{
+  cursor: pointer;
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  left: 34vw;
+}
+
+@media(min-height: 1000px){
+  .mainLogo{
+    right: 260px;
+  }
+  .userName{
+    margin-right: 67vw;
+  }
+  .searchimg{
+    left: 36vw;
   }
 }
