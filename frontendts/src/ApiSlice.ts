@@ -1,4 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createSelector } from '@reduxjs/toolkit'
+import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
 
 interface Album {
     album_id: string
@@ -45,5 +47,14 @@ export const apiSlice = createApi({
         })
     })
 })
+
+// type getPlaylistfromResultArg = TypedUseQueryStateResult<Playlists[],any,any>
+
+// const selectOnePlaylist = createSelector(
+//     (res: getPlaylistfromResultArg) => res.data,
+//     (res: getPlaylistfromResultArg, userId: string) => userId,
+//     (data, userId) => data?.filter(plist => plist.playlist_id === userId)
+// )
+
 
 export const { useGetAlbumsQuery, useGetPlaylistsQuery, useGetLikedQuery, useGetUserQuery } = apiSlice

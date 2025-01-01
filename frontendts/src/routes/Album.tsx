@@ -13,7 +13,7 @@ export default function Album({SpinComponent, active, paused}: any) {
     var parts = window.location.href.split('/');
     var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
     const [tracks, setTracks] = useState<any>([]);
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     var zip = JSON.parse(sessionStorage.getItem("artist")!).map(function(e: any,i: number){
       return [e, JSON.parse(sessionStorage.getItem("artist_id")!)[i]]
     })
@@ -22,6 +22,7 @@ export default function Album({SpinComponent, active, paused}: any) {
     useEffect (() => {
       if (sessionStorage.getItem("ref_id") === lastSegment) {
         setTracks(JSON.parse(sessionStorage.getItem("ref_items")!))
+        setIsLoading(false)
       }
       else{
       const fetchTracks = async () => {
@@ -36,7 +37,7 @@ export default function Album({SpinComponent, active, paused}: any) {
             catch (err) {}
       }
       const assignTracks = async () => {
-        setIsLoading(true)
+        // setIsLoading(true)
         const tempTracks = await fetchTracks()
         setIsLoading(false)
         // console.log(tempTracks)

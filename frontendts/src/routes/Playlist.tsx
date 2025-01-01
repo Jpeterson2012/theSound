@@ -1,11 +1,15 @@
 //Session storage vars ref_id and ref_items created here
-import { useState, useEffect } from "react";
+
+//Working on fixing fetched playlists. attempting to split user and regular
+import { useState, useEffect, useMemo } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
 import './Playlist.css'
 import { useGetPlaylistsQuery, useGetLikedQuery, Playlists } from "../ApiSlice.ts";
-import { createSelector } from "@reduxjs/toolkit";
-import type { TypedUseQueryStateResult } from "@reduxjs/toolkit/query/react";
+import { createSelector } from '@reduxjs/toolkit'
+import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
+import RPlaylist from "./RPlaylist.tsx";
+
 
 function mainImage(url: string) {
   return (<img src={url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>)
@@ -24,17 +28,17 @@ function listImages(last: any, ptracks: any) {
 }
 {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
 {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
-function userPlaylists(ptracks: any, last: any, liked: any, liked_urls: any, paused: any, setpTracks: any) {
+function userPlaylists(userLists: any, liked_urls: any, paused: any) {
   let key = 0
   return (
-    ptracks?.tracks?.map((t: any) =>
+    userLists?.tracks?.map((t: any) =>
 
       <div style={{display: 'flex', alignItems: 'center'}}>
 
           <p hidden>{liked_urls.push(t.uri)}</p>
           <img src={t.images.filter((t: any)=>t.height == 64).map((s: any) => s.url)} style={{height: '64px', width: '64px'}}/>
           <PTrack 
-          uri={ptracks.uri}
+          uri={userLists.uri}
           name={t.name}
           number={key}
           duration={t.duration_ms}
@@ -69,29 +73,29 @@ function userPlaylists(ptracks: any, last: any, liked: any, liked_urls: any, pau
   )
 }
 
-function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
-  let key = 0
-  return (
-    ptracks?.map((t: any) => 
+// function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
+//   let key = 0
+//   return (
+//     ptracks?.map((t: any) => 
 
-      <div style={{display: 'flex', alignItems: 'center'}} >
-          <p hidden>{liked_urls.push(t.uri)}</p>  
-          <img src={t.album?.filter((t: any)=>t.height == 64).map((s: any) => s.url)} />
-          <PTrack 
-          uri={"spotify:playlist:" + last}
-          name={t.name}
-          number={key}
-          duration={t.duration_ms}
-          liked={liked_urls}
-          artist={t.artists}
-          t_uri={t.uri}
-          pause={paused}
-          />
-        <p hidden>{key++}</p>
-      </div>
-    )
-  )
-}
+//       <div style={{display: 'flex', alignItems: 'center'}} >
+//           <p hidden>{liked_urls.push(t.uri)}</p>  
+//           <img src={t.album?.filter((t: any)=>t.height == 64).map((s: any) => s.url)} />
+//           <PTrack 
+//           uri={"spotify:playlist:" + last}
+//           name={t.name}
+//           number={key}
+//           duration={t.duration_ms}
+//           liked={liked_urls}
+//           artist={t.artists}
+//           t_uri={t.uri}
+//           pause={paused}
+//           />
+//         <p hidden>{key++}</p>
+//       </div>
+//     )
+//   )
+// }
 
 
 export default function Playlist({SpinComponent, active, paused}: any) {
@@ -99,78 +103,85 @@ export default function Playlist({SpinComponent, active, paused}: any) {
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
   var liked_uris: any = []
   const [ptracks, setpTracks] = useState<any>([]);
-  const [loading, setLoading] = useState(false)
-  const [u_plist, setU_plist] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [u_plist, setU_plist] = useState(false)
   const [total, setTotal] = useState(null)
 
-  const { data: plists = [], isSuccess: psuccess} = useGetPlaylistsQuery()
+  // const {data: plists = [], isSuccess: psuccess} = useGetPlaylistsQuery()
   const {data: liked = [], isSuccess: lsuccess} = useGetLikedQuery()
-
-  //Redux selectin value from results
-  // type getPlaylistFromResult = TypedUseQueryStateResult<Playlists[], any, any>
-
-  // const selectPlaylist = createSelector(
-  //   (res: getPlaylistFromResult) => res.data,
-  //   (res: getPlaylistFromResult, pId: string) => pId,
-  //   (data, pId) => data?.filter(plists => plists.playlist_id === pId)
-  // )
-
-  // const { singlePlaylist } = useGetPlaylistsQuery(undefined, {
-  //   selectFromResult: result => ({
-  //     ...result,
-  //     singlePlaylist: selectPlaylist(result, lastSegment!)
-  //   })
-  // })
   
-  useEffect (() => {
+
+type getPlaylistfromResultArg = TypedUseQueryStateResult<Playlists[],any,any>
+
+const selectOnePlaylist = createSelector(
+    (res: getPlaylistfromResultArg) => res.data,
+    (res: getPlaylistfromResultArg, userId: string) => userId,
+    (data, userId) => data?.filter(plist => plist.playlist_id === userId)
+)
+const { singlePlist, isSuccess: psuccess } = useGetPlaylistsQuery(undefined, {
+  selectFromResult: result => ({
+    ...result,
+    singlePlist: selectOnePlaylist(result, lastSegment!)
+  })
+})
+  
+  
+  useEffect (() => {    
+
+    console.log(singlePlist?.length)
+    console.log(singlePlist)
     
-    setLoading(true)
-    
-    lastSegment == 'likedsongs' ? setpTracks(liked) : setpTracks(plists?.find((e: any) => e.playlist_id === lastSegment))
-    setLoading(false)
-    
-    if ((plists?.find((e: any) => e.playlist_id === lastSegment)) === undefined && lastSegment !== 'likedsongs') {
-      setU_plist(false)
-      
-      if (sessionStorage.getItem("ref_id") === lastSegment) {
-        setpTracks(JSON.parse(sessionStorage.getItem("ref_items")!))
-        setTotal(JSON.parse(sessionStorage.getItem("ref_items")!).length)
-      }
-      else{
-     const fetchpTracks = async () => {
-      setLoading(true)
-      const resp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
+    if (singlePlist?.length !== 0 || lastSegment === 'likedsongs') {
+      setU_plist(true)
       setLoading(false)
-      let reader = resp.body!.getReader()
-      let result
-      let temp
-      let a = []
-      let decoder = new TextDecoder('utf8')
-      while(!result?.done){
-          result = await reader.read()
-          let chunk = decoder.decode(result.value)
-          console.log(chunk ? JSON.parse(chunk) : {})
-          chunk ? (
-          total ? null : setTotal(JSON.parse(chunk).total),
-          temp = JSON.parse(chunk).items,
-          a.push(...temp),  
-          setpTracks([...a]) )
-          : (sessionStorage.setItem("ref_id", lastSegment!),  sessionStorage.setItem("ref_items", JSON.stringify(a)))
-          
-      }
-      
     }
-    fetchpTracks()
-  }
-  }
+    // else{
+    //   if(lsuccess && psuccess) setLoading(false)
+    // }
+      
+  //     if (sessionStorage.getItem("ref_id") === lastSegment) {
+  //       setpTracks(JSON.parse(sessionStorage.getItem("ref_items")!))
+  //       setTotal(JSON.parse(sessionStorage.getItem("ref_items")!).length)
+  //       setLoading(false)
+  //     }
+  //     else{
+  //    const fetchpTracks = async () => {
+  //     // setLoading(true)
+  //     const resp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
+  //     setLoading(false)
+  //     let reader = resp.body!.getReader()
+  //     let result
+  //     let temp
+  //     let a = []
+  //     let decoder = new TextDecoder('utf8')
+  //     while(!result?.done){
+  //         result = await reader.read()
+  //         let chunk = decoder.decode(result.value)
+  //         // console.log(chunk ? JSON.parse(chunk) : {})
+  //         chunk ? (
+  //         total ? null : setTotal(JSON.parse(chunk).total),
+  //         temp = JSON.parse(chunk).items,
+  //         a.push(...temp),  
+  //         setpTracks([...a]) )
+  //         : (sessionStorage.setItem("ref_id", lastSegment!),  sessionStorage.setItem("ref_items", JSON.stringify(a)))
+          
+  //     }
+      
+  //   }
+  //   fetchpTracks()
+  // }
+  // }
+  // else{
+  //   if (lsuccess && psuccess) setLoading(false)
+  // }
     
-  }, [sessionStorage.getItem("playlist_name"),psuccess, lsuccess]);
+  }, [sessionStorage.getItem("playlist_name"), psuccess, lsuccess]);
 
   return (
     <div style={{marginTop: '30px'}}>
     <span className="fade-in-imageP">
           <SpinComponent is_active={active} is_paused={paused}/>
-          {u_plist ? listImages(lastSegment, ptracks) : <img src={sessionStorage.getItem("p_image")!} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>}
+          {u_plist ? listImages(lastSegment, lastSegment == 'likedsongs' ? liked : singlePlist![0]) : <img src={sessionStorage.getItem("p_image")!} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>}
         </span>
       {loading ? <Loading2 yes={true} /> : (
         
@@ -259,7 +270,7 @@ export default function Playlist({SpinComponent, active, paused}: any) {
 
 
             <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lolP">Duration</span></div>
-            {u_plist ? userPlaylists(ptracks, lastSegment, liked, liked_uris, paused, setpTracks) : regPlaylists(ptracks, lastSegment, liked_uris, paused)}
+            {u_plist ? userPlaylists(lastSegment == 'likedsongs' ? liked : singlePlist![0], liked_uris, paused) : <RPlaylist lastSegment={lastSegment} paused={paused} />}
             
           </div>
         </div>

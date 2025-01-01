@@ -412,8 +412,8 @@ export default function WebPlayback() {
                         
                         
                         window.setInterval(()=>{
-                            player!.getCurrentState().then((state: any) => {
-                                (document.getElementById('seeker') as HTMLInputElement)!.value = state?.position
+                            player?.getCurrentState().then((state: any) => {
+                                (document.getElementById('seeker') as HTMLInputElement).value = state?.position
                             })
                         },500)
                         
