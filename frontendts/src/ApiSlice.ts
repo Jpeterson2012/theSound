@@ -9,7 +9,7 @@ interface Album {
     artists: []
     label_name: string
 }
-interface Playlist {
+interface Playlists {
     playlist_id: string
     images: []
     name: string
@@ -24,14 +24,17 @@ interface User {
     items: string
 }
 
+export type { Playlists }
+
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8888/auth' }),
+    keepUnusedDataFor: 180,
     endpoints: builder => ({
         getAlbums: builder.query<Album[], void>({
             query: () => '/homepage2/albums'
         }),
-        getPlaylists: builder.query<Playlist[], void>({
+        getPlaylists: builder.query<Playlists[], void>({
             query: () => '/homepage2/playlists'
         }),
         getLiked: builder.query<Liked, void>({

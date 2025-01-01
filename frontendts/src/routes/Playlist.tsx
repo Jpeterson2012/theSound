@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
 import './Playlist.css'
-import { useGetPlaylistsQuery, useGetLikedQuery } from "../ApiSlice.ts";
+import { useGetPlaylistsQuery, useGetLikedQuery, Playlists } from "../ApiSlice.ts";
+import { createSelector } from "@reduxjs/toolkit";
+import type { TypedUseQueryStateResult } from "@reduxjs/toolkit/query/react";
 
 function mainImage(url: string) {
   return (<img src={url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>)
@@ -20,15 +22,16 @@ function listImages(last: any, ptracks: any) {
     )
   }
 }
+{/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
+{/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
 function userPlaylists(ptracks: any, last: any, liked: any, liked_urls: any, paused: any, setpTracks: any) {
   let key = 0
   return (
     ptracks?.tracks?.map((t: any) =>
 
       <div style={{display: 'flex', alignItems: 'center'}}>
-          {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
-          {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
-          {liked_urls.push(t.uri)}
+
+          <p hidden>{liked_urls.push(t.uri)}</p>
           <img src={t.images.filter((t: any)=>t.height == 64).map((s: any) => s.url)} style={{height: '64px', width: '64px'}}/>
           <PTrack 
           uri={ptracks.uri}
@@ -41,7 +44,7 @@ function userPlaylists(ptracks: any, last: any, liked: any, liked_urls: any, pau
           pause={paused}
           />
         <p hidden>{key++}</p>
-        <h1 id="deleteSong" style={{position: 'absolute', left: '180px', cursor: 'pointer'}} onClick={function handleClick(){
+        <h1 id="deleteSong" onClick={function handleClick(){
           let temp = document.getElementById('deleteSong')!
           temp.style.animation = 'hithere 1s ease'
           setTimeout(()=>{
@@ -72,7 +75,7 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
     ptracks?.map((t: any) => 
 
       <div style={{display: 'flex', alignItems: 'center'}} >
-          {liked_urls.push(t.uri)}
+          <p hidden>{liked_urls.push(t.uri)}</p>  
           <img src={t.album?.filter((t: any)=>t.height == 64).map((s: any) => s.url)} />
           <PTrack 
           uri={"spotify:playlist:" + last}
@@ -100,13 +103,24 @@ export default function Playlist({SpinComponent, active, paused}: any) {
   const [u_plist, setU_plist] = useState(true)
   const [total, setTotal] = useState(null)
 
-  const {
-        data: plists = [],
-        isSuccess
-    } = useGetPlaylistsQuery()
-    const {
-        data: liked = [],
-    } = useGetLikedQuery()
+  const { data: plists = [], isSuccess: psuccess} = useGetPlaylistsQuery()
+  const {data: liked = [], isSuccess: lsuccess} = useGetLikedQuery()
+
+  //Redux selectin value from results
+  // type getPlaylistFromResult = TypedUseQueryStateResult<Playlists[], any, any>
+
+  // const selectPlaylist = createSelector(
+  //   (res: getPlaylistFromResult) => res.data,
+  //   (res: getPlaylistFromResult, pId: string) => pId,
+  //   (data, pId) => data?.filter(plists => plists.playlist_id === pId)
+  // )
+
+  // const { singlePlaylist } = useGetPlaylistsQuery(undefined, {
+  //   selectFromResult: result => ({
+  //     ...result,
+  //     singlePlaylist: selectPlaylist(result, lastSegment!)
+  //   })
+  // })
   
   useEffect (() => {
     
@@ -150,13 +164,13 @@ export default function Playlist({SpinComponent, active, paused}: any) {
   }
   }
     
-  }, [sessionStorage.getItem("playlist_name"),isSuccess]);
+  }, [sessionStorage.getItem("playlist_name"),psuccess, lsuccess]);
 
   return (
     <div style={{marginTop: '30px'}}>
-    <span className="fade-in-image" style={{marginLeft: '1vw', position: 'relative'}}>
+    <span className="fade-in-imageP">
           <SpinComponent is_active={active} is_paused={paused}/>
-          {u_plist ? listImages(lastSegment, ptracks) : <img src={sessionStorage.getItem("p_image")!} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '490px', bottom: '14px'}}/>}
+          {u_plist ? listImages(lastSegment, ptracks) : <img src={sessionStorage.getItem("p_image")!} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>}
         </span>
       {loading ? <Loading2 yes={true} /> : (
         
@@ -164,9 +178,9 @@ export default function Playlist({SpinComponent, active, paused}: any) {
         
         
           
-          <div style={{marginBottom: '60px'}}>
+          <div style={{marginBottom: '60px', marginTop: '40px'}}>
             
-            <h2>{sessionStorage.getItem("playlist_name")}</h2>
+            <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>
             <div className="dropdown" id="dropdown" style={{right: '-300px'}}>
                   <button className="dropbtn">Sort</button>
                   <div className="dropdown-content">
@@ -244,7 +258,7 @@ export default function Playlist({SpinComponent, active, paused}: any) {
             
 
 
-            <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lol" style={{marginLeft: '65vw'}}>Duration</span></div>
+            <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lolP">Duration</span></div>
             {u_plist ? userPlaylists(ptracks, lastSegment, liked, liked_uris, paused, setpTracks) : regPlaylists(ptracks, lastSegment, liked_uris, paused)}
             
           </div>

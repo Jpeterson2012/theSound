@@ -64,57 +64,55 @@ export default function Album({SpinComponent, active, paused}: any) {
     )
     return (
       <>
-        <div className="topDiv">
-            <span className="fade-in-image2">
-              <SpinComponent is_active={active} is_paused={paused}/>
-              <img className="albumImage" src={sessionStorage.getItem("image")!}/>
-              {/* <Card 
-              id={sessionStorage.getItem("id")}
-              image={sessionStorage.getItem("image")}
-              name={sessionStorage.getItem("albumname")}
-              artist={sessionStorage.getItem("artist")}
-              /> */}
-              
-            </span>
-            {isLoading ? <Loading2 yes={true} /> : (
-              <>
-            <h2>{zip.map((s: any,i: number,row: any) =>
-            <>
-              <a className="artistName" onClick={function handleClick() {
-                navigate(`/app/artist/${s[1]}`)
-              }}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a> 
-              </>
-            )}</h2>
-            <div className="albumDescription">
-              <div className="innerDescription">
-                <h5 className="desc1">{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
-                <h5>{tracks.albums?.total_tracks === 1 ? tracks.albums?.total_tracks + " Song" : tracks.albums?.total_tracks + " Songs" }</h5>
-              </div>
-              
-              {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
-              {tracks.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
-            </div>
-            </>
-            )} 
-            
-            
 
-            <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol2">Duration</span></div>
-          </div>
         {isLoading ? <Loading2 yes={true} /> : (
           <>
-           
-          
-          {listItems}
-          <div style={{display: 'flex', flexDirection: 'column', marginTop: '50px', marginBottom: '50px'}}>
-          {tracks.images?.map((a: any) => <img src={a.find((b: any) => b.height > 160).url} style={{width: '90px', height: '90px'}} />)}
-          </div>
-          
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {tracks.albums?.release_date}</h5>
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ tracks.albums?.copyrights[0]?.text} </h5>
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {tracks.albums?.label}</h5>
-          <p style={{marginBottom: '50px'}}></p>
+
+            <div className="topDiv">
+              <span className="fade-in-image2">
+                <SpinComponent is_active={active} is_paused={paused}/>
+                <img className="albumImage" src={sessionStorage.getItem("image")!}/>
+
+              </span>
+
+
+              <h2>{zip.map((s: any,i: number,row: any) =>
+                <a className="artistName" onClick={function handleClick() {
+                  navigate(`/app/artist/${s[1]}`)
+                }}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a>             
+              )}</h2>
+
+              <div className="albumDescription">
+                <div className="innerDescription">
+                  <h5 className="desc1">{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
+                  <h5>{tracks.albums?.total_tracks === 1 ? tracks.albums?.total_tracks + " Song" : tracks.albums?.total_tracks + " Songs" }</h5>
+                </div>
+
+                {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
+                {tracks.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
+              </div>
+
+            
+
+
+
+
+              <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol2">Duration</span></div>
+            </div>
+            
+
+            {listItems}
+            <div style={{display: 'flex', flexDirection: 'column', marginTop: '50px', marginBottom: '50px'}}>
+              {tracks.images?.map((a: any) => <img src={a.find((b: any) => b.height > 160).url} style={{width: '90px', height: '90px'}} />)}
+            </div>
+            
+            <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {tracks.albums?.release_date}</h5>
+            <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ tracks.albums?.copyrights[0]?.text} </h5>
+            <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {tracks.albums?.label}</h5>
+            <p style={{marginBottom: '50px'}}></p>
+
           </>
+
         )}
 
       </>
