@@ -1,6 +1,7 @@
 import './RPlaylist.css'
-import { useEffect, useState } from 'react'
-import PTrack from '../components/PTrack/PTrack';
+import { useState, useEffect, useMemo } from "react";
+import PTrack from "../components/PTrack/PTrack.tsx";
+import Loading2 from "../components/Loading2/Loading2.tsx";
 
 function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
   let key = 0
@@ -26,13 +27,14 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
   )
 }
 
-export default function RPlaylist({lastSegment, paused}: any){
+export default function RPlaylist({SpinComponent, lastSegment, active, paused}: any){
     const [ptracks, setpTracks] = useState<any>([]);
-    const [loading, setLoading] = useState(true)
     const [total, setTotal] = useState(null)
+    const [loading, setLoading] = useState(true)
     var liked_uris: any = []
 
     useEffect (() => {                
+      // console.log(loading)
           
         if (sessionStorage.getItem("ref_id") === lastSegment) {
           setpTracks(JSON.parse(sessionStorage.getItem("ref_items")!))
@@ -69,10 +71,40 @@ export default function RPlaylist({lastSegment, paused}: any){
       }, [sessionStorage.getItem("playlist_name")]);
 
     return(
-        <>
-        {regPlaylists(ptracks, lastSegment, liked_uris, paused)}
-        </>    
-    )
-
-
+            <>        
+                {loading ? <Loading2 yes={true} /> : (
+                    <>
+                    <div style={{marginTop: '30px'}}>
+                        <span className="fade-in-imageP">
+                            <SpinComponent is_active={active} is_paused={paused}/>
+                            <img src={sessionStorage.getItem("p_image")!} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>
+                        </span>
+    
+                        <div>
+            
+            
+              
+                            <div style={{marginBottom: '60px', marginTop: '40px'}}>
+                
+                                <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>
+                                <div style={{display: 'flex', marginRight: '10px'}}>
+                                    <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
+                                    <h5 style={{color: 'rgb(90, 210, 216)'}}> Songs</h5>
+    
+                    
+                                </div>
+    
+                                <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lolP">Duration</span></div>
+                                {regPlaylists(ptracks, lastSegment, liked_uris, paused) }
+                
+                            </div>
+                        </div>
+    
+                    </div>
+                    </>
+                )}
+            </>
+        )
 }
+
+
