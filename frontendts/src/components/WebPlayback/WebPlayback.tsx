@@ -1,3 +1,5 @@
+//Session storage variable uplist created here
+
 import { useState, useEffect } from 'react';
 import './WebPlayback.css'
 import { Routes, Route, useNavigate } from "react-router-dom"
@@ -65,6 +67,8 @@ function saved(uri: any,liked: any,playlists: any){
 }
 
 export default function WebPlayback() {
+    // sessionStorage.setItem("uplist", "false")
+
     var submit1: boolean[] = []
     var submit2: boolean[] = []    
     const [player, setPlayer] = useState<any>(undefined);

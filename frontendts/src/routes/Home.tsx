@@ -65,6 +65,7 @@ function Playlists(navigate: any, listPlaylists: any){
     }}>
       <a onClick={function handleClick() {
         sessionStorage.setItem("playlist_name", "Liked Songs")
+        sessionStorage.setItem("uplist", "true")
         navigate('/app/playlist/likedsongs')
       }}>
       <div style={{display: 'flex', alignItems: 'center'}}>
@@ -164,6 +165,7 @@ export default function Home() {
     <>
 
       <a onClick={function handleClick() {
+        sessionStorage.setItem("uplist", "true")
         sessionStorage.setItem("playlist_name", a.name)
         navigate(`/app/playlist/${a.playlist_id}`)
       }}>

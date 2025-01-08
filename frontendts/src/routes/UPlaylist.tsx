@@ -96,7 +96,7 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
 
     useEffect(()=>{
         if(truth) setLoading(false)
-    },[])
+    },[lsuccess])
 
     
 

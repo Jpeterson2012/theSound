@@ -80,6 +80,7 @@ function getTracks(ptracks: any) {
       <>
 
       <a onClick={function handleClick() {
+        sessionStorage.setItem("uplist", "false")
         sessionStorage.setItem("playlist_name", a.name)
         sessionStorage.setItem("p_image", a.images.length == 1 ? a.images.map((s:any) => s.url) : a.images.filter((s:any) => s.height == 60).map((s:any) => s.url))
         nav(`/app/playlist/${a.id}`)
