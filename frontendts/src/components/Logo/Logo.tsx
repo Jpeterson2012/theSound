@@ -99,6 +99,8 @@ function getTracks(ptracks: any) {
     )
   }
 
+let counter = 0
+
 export default function Logo () {
     const navigate = useNavigate()
 
@@ -110,7 +112,25 @@ export default function Logo () {
 
     const [open, setOpen] = useState(false);
     const onOpenModal = () => setOpen(true);
-    const onCloseModal = () => {setOpen(false); setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([])};
+    const onCloseModal = () => {setOpen(false); setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0};
+
+    const fetchSearch = async () => {
+
+      try {
+        var temp = await fetch(`http://localhost:8888/auth/search/${(document.getElementById("searchTerm") as HTMLInputElement).value},${counter}`)
+      .then((res) => {
+        // console.log(res.json())
+        return res.json();
+      }).then((data) => {
+        setTracks([...tracks,...data.tracks])
+        setAlbums([...albums,...data.albums])
+        setArtist([...artist,...data.artists])
+        setPlist([...plist,...data.playlists])
+      })
+        return temp
+      }
+      catch (err) {}
+    }
     
     const closeIcon = (
         <img src={escape} style={{height: '44px', width: '44px'}}/>
@@ -139,62 +159,14 @@ export default function Logo () {
                 else navigate('/app/', {replace: true})
             }}>{">"}</h2>
 
-
-            {/* <div className="wrap">
-                <div className="search">
-                    <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
-                    <button type="button" className="searchButton" onClick={function handleSubmit() {
-                        
-                        onOpenModal();
-                        // console.log(document.getElementById("searchTerm").value);
-                        const fetchSearch = async () => {
-                            const resp = await fetch(`http://localhost:8888/auth/search/${document.getElementById("searchTerm").value}`)
-                            // const data = await resp.json()
-                            let reader = resp.body.getReader()
-                            let result
-                            let temp
-                            let temp2
-                            let t_arr = []
-                            let al_arr = []
-                            let ar_arr = []
-                            let p_arr = []
-                            let decoder = new TextDecoder('utf8')
-                            while(!result?.done){
-                                result = await reader.read()
-                                let chunk = decoder.decode(result.value)
-                                // console.log(chunk ? JSON.parse(chunk) : {})
-                                chunk ? (
-                                    temp = JSON.parse(chunk),
-                                    temp2 = temp.tracks,
-                                    t_arr.push(...temp2),  
-                                    setTracks([...t_arr]),
-                                    temp2 = temp.albums,
-                                    al_arr.push(...temp2),
-                                    setAlbums([...al_arr]),
-                                    temp2 = temp.artists,
-                                    ar_arr.push(...temp2),
-                                    setArtist([...ar_arr]),
-                                    temp2 = temp.playlists,
-                                    p_arr.push(...temp2),
-                                    setPlist([...p_arr])
-                                    )
-                                    : {}
-                            }
-                            // console.log(data)
-                        }
-                        fetchSearch()
-                         return false
-                         }}>
-                        <i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}}></i>
-                    </button>
-                </div>
-            </div> */}
             <a onClick={function handleClick() {navigate('/app/discover')}}>
                 <h2 style={{position: 'relative', right: '5vw'}} >Discover</h2>
             </a>
             <a onClick={function handleClick() {navigate('/app')}}>
                 <img style={{width: '80px', height: '80px'}} src={logo} alt="Avatar"/>
             </a>
+
+
 
             <div>
             
@@ -205,47 +177,14 @@ export default function Logo () {
                     <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
                     <button type="button" className="searchButton" onClick={function handleSubmit(){
 
-                      setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([])
+                      setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0;
+                      
 
                       console.log((document.getElementById("searchTerm") as HTMLInputElement).value);
                       let t = document.getElementById('modalbuttons')!
                       t.style.display = 'flex'
                       t.style.animation = 'fadeIn 0.5s'
-                      const fetchSearch = async () => {
-                          const resp = await fetch(`http://localhost:8888/auth/search/${(document.getElementById("searchTerm") as HTMLInputElement).value}`)
-                          // const data = await resp.json()
-                          let reader = resp.body!.getReader()
-                          let result
-                          let temp
-                          let temp2
-                          let t_arr = []
-                          let al_arr = []
-                          let ar_arr = []
-                          let p_arr = []
-                          let decoder = new TextDecoder('utf8')
-                          while(!result?.done){
-                              result = await reader.read()
-                              let chunk = decoder.decode(result.value)
-                              // console.log(chunk ? JSON.parse(chunk) : {})
-                              chunk ? (
-                                  temp = JSON.parse(chunk),
-                                  temp2 = temp.tracks,
-                                  t_arr.push(...temp2),  
-                                  setTracks([...t_arr]),
-                                  temp2 = temp.albums,
-                                  al_arr.push(...temp2),
-                                  setAlbums([...al_arr]),
-                                  temp2 = temp.artists,
-                                  ar_arr.push(...temp2),
-                                  setArtist([...ar_arr]),
-                                  temp2 = temp.playlists,
-                                  p_arr.push(...temp2),
-                                  setPlist([...p_arr])
-                                  )
-                                  : {}
-                          }
-                          // console.log(data)
-                      }
+                      
                       fetchSearch()
                        return false
                     }}><i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}} ></i></button>
@@ -262,8 +201,15 @@ export default function Logo () {
                     </div>
 
                     <div style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginTop: '40px'}}>{html ? html : getTracks(tracks)}</div>
+
+                    <button onClick={function handleSubmit(){
+                      counter += 10
+                      fetchSearch()
+                    }} style={{marginLeft: 'auto', marginRight: 'auto'}} >Load More</button>
                 </Modal>
             </div>
         </div>
     )
 }
+
+

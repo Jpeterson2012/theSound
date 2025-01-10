@@ -1,12 +1,12 @@
 //Session storage vars ref_id and ref_items created here
 
 //Working on fixing fetched playlists. attempting to split user and regular
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
 import { useGetPlaylistsQuery, useGetLikedQuery, Playlists } from "../ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
-import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
+import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import './UPlaylist.css'
 
 function mainImage(url: string) {
@@ -75,7 +75,7 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
     const [loading, setLoading] = useState(true)
     var liked_uris: any = []
 
-    const {data: liked = [], isSuccess: lsuccess} = useGetLikedQuery()
+    const {data: liked, isSuccess: lsuccess} = useGetLikedQuery()
   
     type getPlaylistfromResultArg = TypedUseQueryStateResult<Playlists[],any,any>
     
@@ -119,7 +119,7 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
                             <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>
                             <div style={{display: 'flex', marginRight: '10px'}}>
                                 <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
-                                <h5 style={{color: 'rgb(90, 210, 216)'}}> Songs</h5>
+                                <h5 style={{color: 'rgb(90, 210, 216)'}}>{lastSegment == 'likedsongs' ? liked?.tracks?.length : singlePlist![0].tracks.length} Songs</h5>
 
                 
                             </div>
