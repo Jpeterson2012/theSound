@@ -104,7 +104,7 @@ let counter = 0
 export default function Logo () {
     const navigate = useNavigate()
 
-    const [html, setHtml] = useState(null)
+    const [html, setHtml] = useState<any>(null)
     const [tracks, setTracks] = useState<any>([]);
     const [albums, setAlbums] = useState<any>([]);
     const [plist, setPlist] = useState<any>([]);
@@ -122,10 +122,18 @@ export default function Logo () {
         // console.log(res.json())
         return res.json();
       }).then((data) => {
+        if (counter !== 0){
         setTracks([...tracks,...data.tracks])
         setAlbums([...albums,...data.albums])
         setArtist([...artist,...data.artists])
         setPlist([...plist,...data.playlists])
+        }
+        else{
+          setTracks([...data.tracks])
+          setAlbums([...data.albums])
+          setArtist([...data.artists])
+          setPlist([...data.playlists])
+        }
       })
         return temp
       }
@@ -141,6 +149,25 @@ export default function Logo () {
             } = useGetUserQuery()
     
     useEffect(() => {
+      switch(sessionStorage.getItem('searchHome')){
+        case 'tracks':
+          setHtml(getTracks(tracks))
+          break
+        case 'albums':
+          setHtml(getAlbums(albums, navigate, onCloseModal))
+          break
+        case 'artists':
+          setHtml(getArtists(artist, navigate, onCloseModal))
+          break
+        case 'playlists':
+          setHtml(getPlaylists(plist, navigate, onCloseModal))
+          break
+        // case 'local':
+        //   setHtml(localSong())
+        //   break
+        default:
+          setHtml(getTracks(tracks))
+      }
     }, [tracks])
 
     return(
@@ -178,7 +205,6 @@ export default function Logo () {
                     <button type="button" className="searchButton" onClick={function handleSubmit(){
 
                       setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0;
-                      
 
                       console.log((document.getElementById("searchTerm") as HTMLInputElement).value);
                       let t = document.getElementById('modalbuttons')!
@@ -194,18 +220,19 @@ export default function Logo () {
 
 
                     <div id='modalbuttons' style={{display: 'none', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '5vw'}}>
-                        <button onClick={() => setHtml(getTracks(tracks))}>Tracks</button>
-                        <button onClick={() => setHtml(getAlbums(albums, navigate, onCloseModal))}>Albums</button>
-                        <button onClick={() => setHtml(getArtists(artist, navigate, onCloseModal))}>Artists</button>
-                        <button onClick={() => setHtml(getPlaylists(plist, navigate, onCloseModal))}>Playlists</button>
+                        <button onClick={() => {setHtml(getTracks(tracks)), sessionStorage.setItem('searchHome', 'tracks')}}>Tracks</button>
+                        <button onClick={() => {setHtml(getAlbums(albums, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'albums')}}>Albums</button>
+                        <button onClick={() => {setHtml(getArtists(artist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'artists')}}>Artists</button>
+                        <button onClick={() => {setHtml(getPlaylists(plist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'playlists')}}>Playlists</button>
                     </div>
 
                     <div style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginTop: '40px'}}>{html ? html : getTracks(tracks)}</div>
+                    
 
-                    <button onClick={function handleSubmit(){
+                    {tracks.length > 0 ? <button onClick={function handleSubmit(){
                       counter += 10
                       fetchSearch()
-                    }} style={{marginLeft: 'auto', marginRight: 'auto'}} >Load More</button>
+                    }} style={{marginLeft: 'auto', marginRight: 'auto'}} >Load More</button> : null}
                 </Modal>
             </div>
         </div>

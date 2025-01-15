@@ -38,15 +38,15 @@ const { pListIDs, isSuccess: isuccess } = useGetPlaylistsQuery(undefined, {
       if (isuccess){
       if ((pListIDs?.find((e:any)=> e === lastSegment) === undefined) || lastSegment !== 'likedsongs') setU_plist(false)
       
-      console.log(lastSegment)
-      console.log(pListIDs?.find((e:any)=> e === lastSegment))
-      console.log(u_plist)
+      // console.log(lastSegment)
+      // console.log(pListIDs?.find((e:any)=> e === lastSegment))
+      // console.log(u_plist)
 }
       
     
   }, []);
 
-  console.log(sessionStorage.getItem("uplist"))
+  // console.log(sessionStorage.getItem("uplist"))
 
   return (
       <>

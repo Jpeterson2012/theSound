@@ -18,6 +18,7 @@ import HScroll from '../HScroll.tsx';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import escape from '../../images/escape.jpg'
+import SeekBar from '../Seekbar/SeekBar.tsx';
 
 declare global {
     interface Window{
@@ -66,17 +67,21 @@ function saved(uri: any,liked: any,playlists: any){
     }
 }
 
+
 export default function WebPlayback() {
     // sessionStorage.setItem("uplist", "false")
 
     var submit1: boolean[] = []
     var submit2: boolean[] = []    
     const [player, setPlayer] = useState<any>(undefined);
-    const [is_paused, setPaused] = useState(false);
+    const [is_paused, setPaused] = useState<any>(false);
     const [is_active, setActive] = useState(false);
     const [current_track, setTrack] = useState(track);
     const [pos, setPos] = useState<any>(0)
-    const [duration, setDuration] = useState(0)
+
+    const [duration, setDuration] = useState<any>(0)
+    const [sPosition, setSPosition] = useState<any>(0)
+
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
@@ -189,7 +194,12 @@ export default function WebPlayback() {
                         sessionStorage.setItem("name", state.track_window.current_track.album.name)
                         sessionStorage.setItem("current", state.track_window.current_track.uri)
                         setPaused(state.paused);        
-                        setDuration(state.duration)                                                
+                        setDuration(state.duration)                        
+                        setSPosition(state.position) 
+
+                        
+
+                        
                       
                     
                         player.getCurrentState().then( (state: any) => { 
@@ -412,7 +422,7 @@ export default function WebPlayback() {
                         
                     }} />            
 
-                    <input id='seeker' type='range' min="0" max={duration} value={(()=>
+                    {/* <input id='seeker' type='range' min="0" max={duration} value={(()=>
                         
                         
                         window.setInterval(()=>{
@@ -420,13 +430,20 @@ export default function WebPlayback() {
                                 (document.getElementById('seeker') as HTMLInputElement).value = state?.position
                             })
                         },500)
-                        
+                        window.setInterval(()=> {let p = sPosition; p += is_paused ? 0 : 300},300)
                         
                     )()} onChange={function handleChange(e){ 
                         setPos(e.target.value)
                         player.seek(e.target.value)
-                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> 
+                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} />  */}
+                    
+                    {/* <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){ 
+                        setPos(e.target.value)
+                        player.seek(e.target.value)
+                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> */}
 
+                    <SeekBar position={sPosition} duration={duration} player={player} paused={is_paused} />
+                    
                     </div>
                     
                     
@@ -434,7 +451,7 @@ export default function WebPlayback() {
 
             </>
         )}
-            
+        
         </>
     )
 }
