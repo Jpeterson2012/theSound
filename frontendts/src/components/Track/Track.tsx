@@ -11,7 +11,7 @@ function timeCalc (ms: number) {
     else return `${mins}.${secs}`
 }
 
-export default function Track ( {uri, name, number, duration, album_name, artist, t_uri, pause}: any ) {
+export default function Track ( {uri, name, number, duration, album_name, artist, t_uri, pause, mbarVal}: any ) {
     return (
         <div style={{display: 'flex'}}>
             <a onClick={function handleClick () {
@@ -36,7 +36,7 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                 
             }}>
             <div className="main" style={{display: 'flex', alignItems: 'center'}}>
-                {!pause ? <span className="mbar">{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
+                {!pause ? <span className="mbar" style={mbarVal ? {marginTop: '40px'} : {}} >{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
                 <div className="innerMain">
                     <h2>{name}</h2>
                     <h4>{artist.map((a: any,i: number,row: any) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>

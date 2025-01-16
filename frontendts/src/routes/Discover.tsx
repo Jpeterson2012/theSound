@@ -8,7 +8,7 @@ import './Discover.css'
 function customRender(name: any, item: any){
     return (
         <>
-            <h2>{name}</h2>
+            <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{name}</h2>
             <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -79,10 +79,10 @@ export default function Discover() {
             sessionStorage.setItem("c_name", a.name)
             navigate(`/app/categories/${a.id}`)
         }}>
-            <div style={{width: '200px',height: '305px', marginBottom: '50px'}}>
+            <div style={{width: '200px',height: '305px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 
                 <img className="fade-in-image" src={a.icons.map((s: any) => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
-                <h4><b>{a.name}</b></h4>
+                <h4 style={{marginTop: '200px'}} ><b>{a.name}</b></h4>
                 
             </div>
         </a>
@@ -120,7 +120,7 @@ export default function Discover() {
 
 
     return (
-        <div style={{marginTop: '170px'}}>
+        <div style={{marginTop: '70px'}}>
         {customRender("Categories", listCategories)}
         {customRender("New Releases", listReleases)}
         {customRender("Popular Playlists", listPlaylists)}

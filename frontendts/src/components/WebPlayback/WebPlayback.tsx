@@ -80,7 +80,7 @@ export default function WebPlayback() {
     const [pos, setPos] = useState<any>(0)
 
     const [duration, setDuration] = useState<any>(0)
-    const [sPosition, setSPosition] = useState<any>(0)
+    
 
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
@@ -190,17 +190,14 @@ export default function WebPlayback() {
                         if (!state) {
                             return;
                         }
-                        setTrack(state.track_window.current_track);
+                        setTrack(state.track_window.current_track);                        
+                        setPaused(state.paused);        
+                        setDuration(state.duration)        
+                        setPos(state.position)      
+                        
                         sessionStorage.setItem("name", state.track_window.current_track.album.name)
                         sessionStorage.setItem("current", state.track_window.current_track.uri)
-                        setPaused(state.paused);        
-                        setDuration(state.duration)                        
-                        setSPosition(state.position) 
-
-                        
-
-                        
-                      
+                                                                                               
                     
                         player.getCurrentState().then( (state: any) => { 
                             !state ? setActive(false) : setActive(true)
@@ -442,7 +439,7 @@ export default function WebPlayback() {
                         player.seek(e.target.value)
                     }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> */}
 
-                    <SeekBar position={sPosition} duration={duration} player={player} paused={is_paused} />
+                    <SeekBar duration={duration} player={player} paused={is_paused} />
                     
                     </div>
                     

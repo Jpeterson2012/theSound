@@ -68,6 +68,7 @@ export default function Artist({paused}: any) {
       artist={t.artists}
       t_uri={t.uri}
       pause={paused}
+      mbarVal={true}
     />
     <p hidden>{count++}</p>
     </div>

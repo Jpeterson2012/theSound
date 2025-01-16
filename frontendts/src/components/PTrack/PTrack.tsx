@@ -1,5 +1,6 @@
 //session storage variable name set here
 import musicBar from "../musicBar/musicBar.tsx"
+import './PTrack.css'
 
 function timeCalc (ms: number) {
     const temp = Math.round(ms / 1000)
@@ -31,15 +32,15 @@ export default function PTrack ( {uri, name, number, duration, liked, artist, t_
                 
             }}>
             <div>
-            {!pause ? <span style={{margin: '0px', padding: '0px', position: 'absolute', left: '160px'}} >{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
-                <div style={{position: 'relative', display: 'flex', marginRight: '300px', textAlign: 'left', color: 'rgb(90, 210, 216)' }}>
-                    <h2 style={{textAlign: 'left', margin: '0px', padding: '0px', fontSize: '20px', maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{name}</h2>
-                    <h4 style={{position: 'absolute',maxWidth: '700px', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{artist?.map((a: any,i: number,row: any) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
+            {!pause ? <span className="mbar2">{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
+                <div className="ptrackInfo">
+                    <h2 className="ptrackName">{name}</h2>
+                    <h4 className="ptrackArtist">{artist?.map((a: any,i: number,row: any) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
                 </div>
             </div>
             
             </a>
-            <span style={{position: 'absolute', left: '83.5vw', fontWeight: 'bold', color: 'rgb(90, 210, 216)'}}>{timeCalc(duration)}</span>
+            <span className="ptrackDur">{timeCalc(duration)}</span>
       </div>
     )
 }
