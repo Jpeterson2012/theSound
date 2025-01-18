@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
         if (err) throw err;
         // console.log('User Playlist table created!')
       })
-      sql = "CREATE TABLE IF NOT EXISTS likedsongs (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images MEDIUMTEXT, artists MEDIUMTEXT, duration VARCHAR(10), track_id VARCHAR(30), name VARCHAR(100))"
+      sql = "CREATE TABLE IF NOT EXISTS likedsongs (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images MEDIUMTEXT, artists MEDIUMTEXT, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(100))"
       con.query(sql, (err) => {
         if (err) throw err;
         // console.log('Liked songs table created!')
@@ -160,7 +160,7 @@ router.get('/', async (req, res) => {
                   var resp = await fetch(url, {headers})
                   var data = await resp.json()
                   var values = []
-                  data.items.map(a => values.push([a.track.album.id, JSON.stringify(a.track.album.images), JSON.stringify(a.track.album.artists), a.track.duration_ms, a.track.id, a.track.name]))
+                  data.items.map(a => values.push([a.track.album.id, JSON.stringify(a.track.album.images), JSON.stringify(a.track.album.artists), a.track.duration_ms, `spotify:track:${a.track.id}`, a.track.name]))
                   var sql = "INSERT INTO likedsongs (album_id, images, artists, duration, track_id, name) VALUES ?"
                   con.query(sql, [values], function(err, result) {
                       if (err) throw err;

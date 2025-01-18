@@ -1,5 +1,5 @@
 //Session storage variable uplist created here
-
+//Fix current track session variable situation at some point
 import { useState, useEffect } from 'react';
 import './WebPlayback.css'
 import { Routes, Route, useNavigate } from "react-router-dom"
@@ -16,9 +16,8 @@ import repeat from '../../images/repeat.png'
 import repeat1 from '../../images/repeat1.png'
 import HScroll from '../HScroll.tsx';
 import 'react-responsive-modal/styles.css';
-import { Modal } from 'react-responsive-modal';
-import escape from '../../images/escape.jpg'
 import SeekBar from '../Seekbar/SeekBar.tsx';
+import AddLiked from '../AddLiked/AddLiked.tsx';
 
 declare global {
     interface Window{
@@ -60,19 +59,11 @@ function Spin({is_active, is_paused}: any){
         </>
     )
 }
-function saved(uri: any,liked: any,playlists: any){
-    (liked.tracks.find((e: any)=>e.uri === uri)) === undefined ? console.log("not in liked") : console.log("in liked")
-    for(let i = 0; i < playlists.length; i++){
-        (playlists[i].tracks.find((e: any)=>e.uri === uri)) === undefined ? console.log(`not in playlist: ${playlists[i].name}`) : console.log(`in playlist: ${playlists[i].name}`)
-    }
-}
 
 
 export default function WebPlayback() {
     // sessionStorage.setItem("uplist", "false")
 
-    var submit1: boolean[] = []
-    var submit2: boolean[] = []    
     const [player, setPlayer] = useState<any>(undefined);
     const [is_paused, setPaused] = useState<any>(false);
     const [is_active, setActive] = useState(false);
@@ -85,52 +76,7 @@ export default function WebPlayback() {
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
-    const [open, setOpen] = useState(false);
-
-    const onOpenModal = () => {setOpen(true); submit1 = [], submit2 = []}
-    const onCloseModal = () => {
-        setOpen(false);
-        // console.log(submit1)
-        let temp = (document.getElementById('checkbox') as HTMLInputElement).checked
-        // if (submit1[0] !== temp){
-        //     // var parts = current_track.album.uri.split(':');
-        //     // var lastSegment = parts.pop() || parts.pop();
-
-        //     setLiked_songs({tracks: liked_songs?.tracks?.filter(a => a.uri !== current_track.uri)})
-        //     fetch(`http://localhost:8888/auth/update`, {
-        //         method: 'DELETE',
-        //         headers: {"Content-Type":"application/json"},
-        //         body: JSON.stringify({track_id: current_track.id})
-        //     })
-        // }
-        // submit2.push(temp)
-        // for (let i = 0; i < playlists.length; i++){
-        //     submit2.push(document.getElementById(`checkbox${i}`).checked)
-        //     if (submit1[i+1] !== document.getElementById(`checkbox${i}`).checked){
-        //         setTimeout(()=>{
-        //         passPlaylist(i,{images: current_track.album.images, uri: current_track.uri, name: current_track.name, track_number: 0, duration_ms: duration, artists: current_track.artists})
-        //         // console.log(playlists[i].tracks)
-        //         fetch(`http://localhost:8888/auth/update/${playlists[i].playlist_id}`, {
-        //                  method: 'POST',
-        //                  headers: {"Content-Type":"application/json"},
-        //                  body: JSON.stringify({code: 'hi'})
-        //              })
-        //         },1000)
-        //     }
-        // }
-        // console.log(submit2)
-        // setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
-        // var parts = current_track.album.uri.split(':');
-        // var lastSegment = parts.pop() || parts.pop();
-        // fetch(`http://localhost:8888/auth/update`, {
-        //     method: 'POST',
-        //     headers: {"Content-Type":"application/json"},
-        //     body: JSON.stringify({album_id: lastSegment, images: JSON.stringify(current_track.album.images), artists: JSON.stringify(current_track.artists), duration: duration, track_id: current_track.id, name: current_track.name})
-        // })
-    }
-    const closeIcon = (
-        <img src={escape} style={{height: '44px', width: '44px'}}/>
-    )
+    
     
 
     const navigate = useNavigate()
@@ -197,6 +143,7 @@ export default function WebPlayback() {
                         
                         sessionStorage.setItem("name", state.track_window.current_track.album.name)
                         sessionStorage.setItem("current", state.track_window.current_track.uri)
+                        sessionStorage.setItem("currentTrack",JSON.stringify(state.track_window.current_track))
                                                                                                
                     
                         player.getCurrentState().then( (state: any) => { 
@@ -237,45 +184,7 @@ export default function WebPlayback() {
                 </Routes>    
                 
                 <div className='wrapper'>
-
-                    <div id="snackbar">Added to Liked Songs <button style={{border: 'none'}} onClick={function handleClick(){
-                        onOpenModal()
-                    }}>Change</button></div>
-                    <div>            
-                        <Modal open={open} onClose={onCloseModal} center classNames={{overlay: 'customOverlay', modal: 'customModal'}} closeIcon={closeIcon}>
-                            <div>
-                            <div style={{display: 'flex', alignItems: 'center'}}>
-                                <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '100px', width: '100px', marginRight: '50px'}}/>
-                                <h3>Liked Songs</h3>
-                                {/* <button>{(liked_songs?.tracks?.find((e)=>e.uri === current_track.uri) === undefined ? "Add" : "Remove")}</button> */}
-                                <input id='checkbox' type='checkbox' ></input>
-                                {open ? (()=> 
-                                    setTimeout(()=>{
-                                        (document.getElementById('checkbox') as HTMLInputElement ).checked = true
-                                        submit1.push((document.getElementById('checkbox') as HTMLInputElement).checked)
-                                    },300)
-                                    
-                                )() : null}
-                                
-                            </div>
-                            {/* {playlists.map((a: any,i: any) =>
-                                <div style={{display: 'flex', alignItems: 'center'}}>
-                                <img className="fade-in-image" src={a.images.length == 1 ? a.images.map((s:any) => s.url) : a.images.filter((s:any) => s.height == 300).map((s:any) => s.url)} alt={a.name} style={{height: '100px', width: '100px', marginRight: '50px'}}/>
-                                <h3>{a.name}</h3>
-                                <input id={"checkbox" + i} type='checkbox'></input>
-                                {open ? (()=>
-                                    setTimeout(()=>{
-                                        a.tracks?.find((e: any)=>e.uri === current_track?.uri) === undefined ? null : (document.getElementById(`checkbox${i}`) as HTMLInputElement ).checked = true
-                                        submit1.push((document.getElementById(`checkbox${i}`) as HTMLInputElement).checked)
-                                    },300)
-                                    
-                                )() : null}
-                                </div>    
-                            )} */}
-                            </div>                               
-                        </Modal>
-                    </div>
-
+            
                         <div className="main-wrapper">
                             <a onClick={function handleClick() {
                                 var parts = current_track.album.uri.split(':');
@@ -295,7 +204,7 @@ export default function WebPlayback() {
                                 sessionStorage.setItem("image", current_track.album.images?.filter((s:any) => s.height == 640).map((s:any) => s.url))
                                 // sessionStorage.setItem("name", current_track.album.name)
                                 sessionStorage.setItem("albumname", current_track.album.name)
-                                console.log(sessionStorage.getItem("name")!.length)
+                                // console.log(sessionStorage.getItem("name")!.length)
 
                                 navigate(`/app/album/${lastSegment}`)
                             }}>
@@ -328,29 +237,9 @@ export default function WebPlayback() {
                                 </div>
                                 
                             </div>
-                            {/* { !is_active ? null : (
-                            <h2 id='addSong' style={{height: '35px', width: '35px', marginLeft: '15px', cursor: 'pointer', border: '2px solid white', borderRadius: '50%'}} onClick={function handleClick(){
-                                let temp = document.getElementById('addSong')!
-                                temp.style.animation = 'hithere 1s ease'
-                                setTimeout(()=>{
-                                    temp.style.removeProperty('animation')
-                                }, 750)
-
-                                var x = document.getElementById("snackbar");
-                                x!.className = "show";
-                                setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 4000);
-
-                                
-                                setLiked_songs({tracks: [{album_id: current_track.album.uri, images: current_track.album.images, artists: current_track.artists, duration_ms: duration, uri: current_track.uri, name: current_track.name}, ...liked_songs.tracks]})
-                                var parts = current_track.album.uri.split(':');
-                                var lastSegment = parts.pop() || parts.pop();
-                                fetch(`http://localhost:8888/auth/update`, {
-                                    method: 'POST',
-                                    headers: {"Content-Type":"application/json"},
-                                    body: JSON.stringify({album_id: lastSegment, images: JSON.stringify(current_track.album.images), artists: JSON.stringify(current_track.artists), duration: duration, track_id: current_track.id, name: current_track.name})
-                                })
-                            }}>{(liked_songs.tracks.find((e:any)=>e.uri === current_track.uri) === undefined ? "+" : "✓")}</h2>
-                        )} */}
+                            
+                            {/* Replaced old modal method for adding to playlists here */}
+                            <AddLiked active={is_active} trackUri={current_track} duration={duration} />                        
                             
                         </div>
                     
@@ -417,28 +306,9 @@ export default function WebPlayback() {
                         }, 750)
                         
                         
-                    }} />            
-
-                    {/* <input id='seeker' type='range' min="0" max={duration} value={(()=>
-                        
-                        
-                        window.setInterval(()=>{
-                            player?.getCurrentState().then((state: any) => {
-                                (document.getElementById('seeker') as HTMLInputElement).value = state?.position
-                            })
-                        },500)
-                        window.setInterval(()=> {let p = sPosition; p += is_paused ? 0 : 300},300)
-                        
-                    )()} onChange={function handleChange(e){ 
-                        setPos(e.target.value)
-                        player.seek(e.target.value)
-                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} />  */}
+                    }} />                                
                     
-                    {/* <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){ 
-                        setPos(e.target.value)
-                        player.seek(e.target.value)
-                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> */}
-
+                    {/* Replaced old music seek bar method here */}
                     <SeekBar duration={duration} player={player} paused={is_paused} />
                     
                     </div>

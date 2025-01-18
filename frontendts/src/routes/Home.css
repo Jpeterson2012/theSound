@@ -2,7 +2,7 @@
   animation: fadeIn 0.5s;
 }
 .homeButtons{
-  animation: fadeIn 1.5s;
+  animation: fadeIn 0.5s;
   position: relative;
 }
 @keyframes fadeIn {

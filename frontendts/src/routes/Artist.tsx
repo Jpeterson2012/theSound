@@ -126,7 +126,7 @@ export default function Artist({paused}: any) {
       <h1>{artists.artists?.name}</h1>
         {/* <img src={artists.artists?.images.filter(t=>t.height == 320).map(s => s.url)} /> */}
         <img className="fade-in-image" src={artists.artists?.images.length == 0 ? 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg' : artists.artists?.images[1]?.url} alt={artists.artists?.name} style={{height: '320px', width: '320px'}} />
-        <h4>{artists.artists?.followers.total.toLocaleString()} followers</h4>
+        <p style={{margin: '20px auto'}} >{artists.artists?.followers.total.toLocaleString()} followers</p>
         <div style={{display: 'flex', justifyContent: 'space-evenly', alignItems: 'center'}}>
             <p className="headers">Genres:</p>
             {artists.artists?.genres.map((s: any) => <p>{s}</p>)}

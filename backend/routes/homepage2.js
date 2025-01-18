@@ -57,6 +57,34 @@ router.get('/playlists', async (req, res) => {
     getPlaylists()
 })
 
+router.get('/playlists/:id', async (req, res) => {
+    function getPlaylist(){
+        var sql = `SELECT playlist_id, images, name, public, uri, tracks from uplaylists WHERE playlist_id = '${req.params.id}'`
+        con.query(sql, function(err,result) {
+            console.log(result[0].name)
+            if (err) throw err
+            // var items = []
+            var temp ={}
+                temp.playlist_id = result[0].playlist_id
+                temp.images = JSON.parse(result[0].images)
+                temp.name = result[0].name
+                temp.public = result[0].public
+                temp.uri = result[0].uri
+                var temp2 = JSON.parse(result[0].tracks)
+                
+                var temp3 = []
+                temp2.items?.map(a => {
+                    temp3.push({images:( a.album?.images ? a.album?.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
+                })
+                temp.tracks = temp3
+                // items.push(temp)
+
+                res.send(temp)
+        })
+    }
+    getPlaylist()
+})
+
 router.get('/liked', async (req, res) => {
     
     function getLiked(){
@@ -68,9 +96,10 @@ router.get('/liked', async (req, res) => {
             for (let i = 0; i < result.length; i++){
                 var temp ={}
                 var tracks = {}
+                //temp.album_id = result[i].album_id
                 temp.images = JSON.parse(result[i].images)
                 temp.duration_ms = result[i].duration
-                temp.uri = "spotify:track:" + result[i].track_id
+                temp.uri = result[i].track_id
                 temp.name = result[i].name
                 temp.artists = JSON.parse(result[i].artists)
                 

@@ -63,3 +63,23 @@ export default function SeekBar({duration, player, paused}: any){
         }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} />
     )
 }
+
+{/* <input id='seeker' type='range' min="0" max={duration} value={(()=>
+                        
+                        
+                        window.setInterval(()=>{
+                            player?.getCurrentState().then((state: any) => {
+                                (document.getElementById('seeker') as HTMLInputElement).value = state?.position
+                            })
+                        },500)
+                        window.setInterval(()=> {let p = sPosition; p += is_paused ? 0 : 300},300)
+                        
+                    )()} onChange={function handleChange(e){ 
+                        setPos(e.target.value)
+                        player.seek(e.target.value)
+                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} />  */}
+                    
+                    {/* <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){ 
+                        setPos(e.target.value)
+                        player.seek(e.target.value)
+                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> */}

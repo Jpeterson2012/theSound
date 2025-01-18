@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { createSelector } from '@reduxjs/toolkit'
-import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
+
 
 interface Album {
     album_id: string
@@ -17,10 +16,26 @@ interface Playlists {
     name: string
     public: boolean
     uri: string
-    tracks: []
+    tracks: any[]
+}
+interface pTrack {
+    images: []
+    uri: string
+    name: string
+    track_number: number
+    duration_ms: string
+    artists: []
 }
 interface Liked {
-    tracks: []
+    tracks: any[]
+}
+interface likedSong{
+    album_id: string
+    images: []
+    artists: []
+    duration_ms: string
+    uri: string
+    name: string    
 }
 interface User {
     items: string
@@ -39,8 +54,77 @@ export const apiSlice = createApi({
         getPlaylists: builder.query<Playlists[], void>({
             query: () => '/homepage2/playlists'
         }),
+        getPlaylist: builder.query<Playlists, string>({
+            query: playId => `/homepage2/playlists/${playId}`
+        }),
+        addPTrack: builder.mutation<Playlists, {pID: any, initialP: pTrack}>({
+            query: ({pID, initialP}) => ({
+                url: `/update/${pID}`,
+                method: 'POST',
+                body: initialP
+            }),
+            async onQueryStarted({pID, initialP}, lifecycleApi){
+                const getPPatchResult = lifecycleApi.dispatch(
+                    apiSlice.util.updateQueryData('getPlaylists',undefined,draft => {
+                        // console.log(pID)
+                        // console.log(initialP)
+                        const temp = draft.find(p => p.playlist_id === pID)
+                        if (temp) temp.tracks.unshift(initialP)
+                    })
+                )
+                try {
+                    await lifecycleApi.queryFulfilled
+                }
+                catch{
+                    getPPatchResult.undo()
+                }
+            }
+        }),
         getLiked: builder.query<Liked, void>({
             query: () => '/homepage2/liked'
+        }),
+        addNewLiked: builder.mutation<Liked, likedSong>({
+            query: initialSong => ({
+                url: '/update',
+                method: 'POST',
+                body: initialSong
+            }),
+            async onQueryStarted(initialSong, lifecycleApi){
+                const getLikedPatchResult = lifecycleApi.dispatch(
+                    apiSlice.util.updateQueryData('getLiked',undefined,draft => {
+                        draft?.tracks?.unshift(initialSong)
+                    })
+                )
+                try {
+                    await lifecycleApi.queryFulfilled
+                }
+                catch{
+                    getLikedPatchResult.undo()
+                }
+            }
+        }),
+        deleteNewLiked: builder.mutation<Liked, {name: any}>({
+            query: ({name}) => ({
+                url: '/update',
+                method: 'DELETE',
+                body: {name}
+            }),
+            async onQueryStarted({name}, lifecycleApi){
+                const deleteLikedPatchResult = lifecycleApi.dispatch(
+                    apiSlice.util.updateQueryData('getLiked',undefined,draft => {            
+                        console.log(name)            
+                        let temp = draft?.tracks?.filter((a:any) => a.name !== name)                        
+                        draft.tracks = [...temp]
+                        // draft?.tracks?.filter((a:any) => a.name !== deleteSong.name)
+                    })
+                )
+                try {
+                    await lifecycleApi.queryFulfilled
+                }
+                catch{
+                    deleteLikedPatchResult.undo()
+                }
+            }
         }),
         getUser: builder.query<User, void>({
             query: () => '/users'
@@ -57,4 +141,13 @@ export const apiSlice = createApi({
 // )
 
 
-export const { useGetAlbumsQuery, useGetPlaylistsQuery, useGetLikedQuery, useGetUserQuery } = apiSlice
+export const { 
+    useGetAlbumsQuery, 
+    useGetPlaylistsQuery,
+    useGetPlaylistQuery, 
+    useGetLikedQuery, 
+    useGetUserQuery,
+    useAddNewLikedMutation,
+    useAddPTrackMutation, 
+    useDeleteNewLikedMutation,
+} = apiSlice

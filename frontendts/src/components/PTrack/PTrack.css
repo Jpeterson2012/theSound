@@ -2,7 +2,7 @@
     margin: 0px;
     padding: 0px;
     position: absolute;
-    left: 160px;
+    left: 150px;
 }
 .ptrackInfo{
     position: relative;
@@ -19,6 +19,7 @@
     max-width: 700px;
     text-overflow: ellipsis;
     white-space: nowrap;
+    overflow: hidden;
 }
 .ptrackArtist{
     position: absolute;
@@ -34,6 +35,6 @@
 }
 @media(min-height: 1000px){
     .mbar2{
-      left: 600px;
+      left: 560px;
     }
   }

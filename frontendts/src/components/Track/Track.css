@@ -27,12 +27,14 @@ h2{
   max-width: 700px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: hidden;
 }
 h4{
   position: absolute;
   /* max-width: 700px; */
   text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: hidden;
 }
 .songLength{
   position: absolute;
