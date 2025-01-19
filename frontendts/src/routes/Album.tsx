@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './Album.css'
 import Loading2 from "../components/Loading2/Loading2.tsx"
 import Track from "../components/Track/Track.tsx";
+import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation } from "../ApiSlice.ts";
 
 
 
@@ -17,6 +18,11 @@ export default function Album({SpinComponent, active, paused}: any) {
     var zip = JSON.parse(sessionStorage.getItem("artist")!).map(function(e: any,i: number){
       return [e, JSON.parse(sessionStorage.getItem("artist_id")!)[i]]
     })
+
+    const [addAlbum] = useAddAlbumMutation()
+    const [deleteAlbum] = useDeleteAlbumMutation()
+    const {data: albums} = useGetAlbumsQuery()
+    let found = albums?.find((e: any) => e?.album_id === lastSegment)
     
 
     useEffect (() => {
@@ -86,11 +92,27 @@ export default function Album({SpinComponent, active, paused}: any) {
               <div className="albumDescription">
                 <div className="innerDescription">
                   <h5 className="desc1">{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type } &#8226;</h5>
-                  <h5>{tracks.albums?.total_tracks === 1 ? tracks.albums?.total_tracks + " Song" : tracks.albums?.total_tracks + " Songs" }</h5>
+                  <h5>{tracks.albums?.total_tracks === 1 ? tracks.albums?.total_tracks + " Song" : tracks.albums?.total_tracks + " Songs" }</h5>              
                 </div>
 
                 {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
                 {tracks.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
+                <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
+
+                  let temp = document.getElementById('addAlbum')!
+                  temp.style.animation = 'hithere 1s ease'
+                  setTimeout(()=>{
+                      temp.style.removeProperty('animation')
+                  }, 750)  
+
+                  if (found === undefined){
+                    addAlbum({album_id: lastSegment!, images: tracks?.albums?.images, name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, label_name: tracks?.albums?.label})
+                  }
+                  else{
+                    deleteAlbum({aID: lastSegment!})
+                  }                  
+
+                }}>{found === undefined ? "+" : "✓"}</p>
               </div>
 
             

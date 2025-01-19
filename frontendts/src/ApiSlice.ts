@@ -7,7 +7,7 @@ interface Album {
     name: string
     release_date: string
     uri: string
-    artists: []
+    artists: any[]
     label_name: string
 }
 interface Playlists {
@@ -41,7 +41,7 @@ interface User {
     items: string
 }
 
-export type { Playlists }
+export type { Playlists, Album }
 
 export const apiSlice = createApi({
     reducerPath: 'api',
@@ -50,6 +50,49 @@ export const apiSlice = createApi({
     endpoints: builder => ({
         getAlbums: builder.query<Album[], void>({
             query: () => '/homepage2/albums'
+        }),
+        addAlbum: builder.mutation<Album, Album>({
+            query: initalAlbum => ({
+                url: '/update/album',
+                method: 'POST',
+                body: initalAlbum
+            }),
+            async onQueryStarted(initialAlbum, lifecycleApi){
+                const getAlbumPatchResult = lifecycleApi.dispatch(
+                    apiSlice.util.updateQueryData('getAlbums',undefined,draft => {
+                        
+                        draft?.unshift(initialAlbum)
+                    })
+                )
+                try {
+                    await lifecycleApi.queryFulfilled
+                }
+                catch{
+                    getAlbumPatchResult.undo()
+                }
+            }
+        }),
+        deleteAlbum: builder.mutation<Album, {aID: string}>({
+            query: ({aID}) => ({
+                url: '/update/album',
+                method: 'DELETE',
+                body: {aID}
+            }),
+            async onQueryStarted({aID}, lifecycleApi){
+                const deleteAlbumPatchResult = lifecycleApi.dispatch(
+                    apiSlice.util.updateQueryData('getAlbums',undefined,draft => {
+                        let temp = draft.findIndex(a => a.album_id === aID)
+                        draft.splice(temp,1)
+                    //    draft = draft.filter(a => a.album_id !== aID)
+                    })
+                )
+                try {
+                    await lifecycleApi.queryFulfilled
+                }
+                catch{
+                    deleteAlbumPatchResult.undo()
+                }
+            }
         }),
         getPlaylists: builder.query<Playlists[], void>({
             query: () => '/homepage2/playlists'
@@ -170,6 +213,8 @@ export const {
     useGetPlaylistQuery, 
     useGetLikedQuery, 
     useGetUserQuery,
+    useAddAlbumMutation,
+    useDeleteAlbumMutation,
     useAddNewLikedMutation,
     useAddPTrackMutation, 
     useDeleteNewLikedMutation,

@@ -2,6 +2,34 @@ var express = require('express');
 var router = express.Router();
 const { con } = require('../sql.js')
 
+router.post('/album', async (req, res) => {
+  try{
+    // console.log(req.body)
+    var sql = `INSERT INTO ualbums (album_id, images, name, release_date, uri, artists, label_name) VALUES ('${req.body.album_id}','${JSON.stringify(req.body.images)}','${req.body.name}','${req.body.release_date}','${req.body.uri}','${JSON.stringify(req.body.artists)}','${req.body.label_name}')`
+    con.query(sql, (err) => {
+      if (err) throw err
+      console.log('Album added!')
+    })
+  }
+  catch(e){
+    console.error(e)
+  }
+})
+
+router.delete('/album', async (req, res) => {
+  try{
+    // console.log(req.body)
+    sql = `DELETE FROM ualbums WHERE album_id = "${req.body.aID}"`
+    con.query(sql, (err) => {
+      if (err) throw err;
+      console.log('Album deleted!')
+    })
+}
+catch(e){
+  console.log(e)
+}
+})
+
 router.post('/liked', async (req, res) => {
     
     try{
@@ -17,6 +45,22 @@ router.post('/liked', async (req, res) => {
       console.log(e)
     }
 })
+
+router.delete('/liked', async (req, res) => {
+
+  try{
+      sql = `DELETE FROM likedsongs WHERE name = "${req.body.name}"`
+    con.query(sql, (err) => {
+      if (err) throw err;
+      console.log('Song deleted!')
+    })
+  }
+  catch(e){
+    console.log(e)
+  }
+
+})
+
 router.post('/playlist/:id', async (req, res) => {
   try{
     // console.log(req.params.id)
@@ -42,21 +86,6 @@ router.post('/playlist/:id', async (req, res) => {
   catch(e){
     console.log(e)
   }
-})
-
-router.delete('/liked', async (req, res) => {
-
-    try{
-        sql = `DELETE FROM likedsongs WHERE name = "${req.body.name}"`
-      con.query(sql, (err) => {
-        if (err) throw err;
-        console.log('Song deleted!')
-      })
-    }
-    catch(e){
-      console.log(e)
-    }
-
 })
 
 router.delete('/playlist/:id', async (req, res) => {

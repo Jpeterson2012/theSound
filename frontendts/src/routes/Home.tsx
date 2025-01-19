@@ -8,6 +8,7 @@ import Card from "../components/Card/Card.tsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
 import { useGetAlbumsQuery, useGetPlaylistsQuery } from "../ApiSlice.ts"; 
 
+
 function Albums(listItems: any){
   return(
     <div style={{
@@ -25,6 +26,7 @@ function albumSort(albums: any,setSorted: any){
   return(
     <>
     <button className="theme" onClick={function handleClick(){
+      console.log('clicked')
       // let temp = [...albums]
       // temp.sort((a,b) => a.name.localeCompare(b.name))
       // set_albums(temp)
@@ -32,24 +34,27 @@ function albumSort(albums: any,setSorted: any){
     }}>A-Z</button>
 
     <button className="theme" onClick={function handleClick(){
+      console.log('clicked')
       // let temp = [...albums]
       // temp.sort((a,b) => b.name.localeCompare(a.name))
       // set_albums(temp)
-      // setSorted(1)
+      setSorted(2)
     }}>Z-A</button>
 
     <button className="theme" onClick={function handleClick(){
+      console.log('clicked')
       // let temp = [...albums]
       // temp.sort((a,b) => a.artists[0]?.name.localeCompare(b.artists[0]?.name))
       // set_albums(temp)
-      setSorted(1)
+      setSorted(3)
     }}>Artist A-Z</button>
 
     <button className="theme" onClick={function handleClick(){
+      console.log('clicked')
       // let temp = [...albums]
       // temp.sort((a,b) => b.artists[0]?.name.localeCompare(a.artists[0]?.name))
       // set_albums(temp)
-      setSorted(1)
+      setSorted(4)
     }}>Artist Z-A</button>
     </>
   )
@@ -112,17 +117,35 @@ export default function Home() {
     const [html, setHtml] = useState<any>(null)
     const [sorted, setSorted] = useState(0)
     const [loading, setLoading] = useState(false)
+      
+    const {data: albums = [],isSuccess} = useGetAlbumsQuery()
 
-    const {
-        data: albums = [],
-        isSuccess
-        } = useGetAlbumsQuery()
+    const sortedAlbums = (() => {
+      const sortedAlbums = albums.slice()
+      switch(sorted){
+        case 0:
+          return sortedAlbums
+        case 1:
+          sortedAlbums.sort((a,b) => a.name.localeCompare(b.name))
+          return sortedAlbums
+        case 2:
+          sortedAlbums.sort((a,b) => b.name.localeCompare(a.name))
+          return sortedAlbums
+        case 3:
+          sortedAlbums.sort((a,b) => a.artists[0].name.localeCompare(b.artists[0].name))
+          return sortedAlbums
+        case 4:
+          sortedAlbums.sort((a,b) => b.artists[0].name.localeCompare(a.artists[0].name))
+          return sortedAlbums
+        default:
+          return sortedAlbums
+      }      
+    })
 
-        const {
-        data: playlists = [],
-    } = useGetPlaylistsQuery()
+    const {data: playlists = []} = useGetPlaylistsQuery()
 
     useEffect(() => {
+      
       // setSorted(false)
       
       // let temp = sessionStorage.getItem('home')
@@ -132,7 +155,7 @@ export default function Home() {
       setLoading(true)
       switch(sessionStorage.getItem('home')){
         case 'album':
-          setHtml(Albums(sorted == 0 ? listItems : listItems2))
+          setHtml(Albums(listItems2))
           break
         case 'playlist':
           setHtml(Playlists(navigate,listPlaylists))
@@ -144,16 +167,16 @@ export default function Home() {
         //   setHtml(localSong())
         //   break
         default:
-          setHtml(Albums(listItems))
+          setHtml(Albums(listItems2))
       }
       setLoading(false)
 
     
-  }, [isSuccess]);
+  }, [isSuccess,sorted]);
   const listItems = albums?.map((a: any) => 
     <Card
       // key={a.id}
-      id={a.album_id}
+      id={a?.album_id}
       uri={a.uri}
       image={a.images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}
       name={a.name}
@@ -161,12 +184,9 @@ export default function Home() {
       a_id={a.artists.map((t: any) => t.id)}
     />
   )
-  const sortedAlbums = useMemo(() => {
-    const sortedAlbums = albums.slice()
-    sortedAlbums.sort((a,b) => b.name.localeCompare(a.name))
-    return sortedAlbums
-  },[albums])
-  const listItems2 = sortedAlbums?.map((a: any) => 
+  
+
+  const listItems2 = sortedAlbums()?.map((a: any) => 
     <Card
       // key={a.id}
       id={a.album_id}
@@ -202,7 +222,7 @@ export default function Home() {
     <>
       {!isSuccess ? <Loading2 yes={true} /> : (<>
       <div className="homeContainer">
-        <button className="homeButtons" onClick={() => {setHtml(Albums(sorted == 0 ? listItems : listItems2)),sessionStorage.setItem('home','album')}}>Albums</button>
+        <button className="homeButtons" onClick={() => {setHtml(Albums(listItems2)),sessionStorage.setItem('home','album')}}>Albums</button>
         <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
         <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
         {/* <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button> */}
