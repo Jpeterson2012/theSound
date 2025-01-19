@@ -30,9 +30,12 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
         for (let i = 0; i < playlists!.length; i++){
             submit2.push((document.getElementById(`checkbox${i}`) as HTMLInputElement).checked)
             if (submit1[i+1] !== (document.getElementById(`checkbox${i}`) as HTMLInputElement).checked){
-                let p_id = playlists![i].playlist_id
+                setTimeout(() => {
+                    let p_id = playlists![i].playlist_id
                 let ptrackData = {images: currentTrack.album.images, uri: currentTrack.uri, name: currentTrack.name, track_number: 0, duration_ms: duration, artists: currentTrack.artists}
                 addpTrack({pID: p_id, initialP: ptrackData})
+                },500)
+                
                 
             }
         }

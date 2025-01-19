@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
-import { useGetPlaylistsQuery, useGetLikedQuery, Playlists, useDeleteNewLikedMutation } from "../ApiSlice.ts";
+import { useGetPlaylistsQuery, useGetLikedQuery, Playlists, useDeleteNewLikedMutation, useDeletePTrackMutation } from "../ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import './UPlaylist.css'
@@ -26,7 +26,7 @@ function listImages(last: any, ptracks: any) {
 }
 {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
 {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
-function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, lastSegment: any) {
+function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, removePTrack: any, lastSegment: any) {
   let key = 0
   return (
     userLists?.tracks?.map((t: any) =>
@@ -46,17 +46,17 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
           pause={paused}
           />
         <p hidden>{key++}</p>
-        {lastSegment === 'likedsongs' ? <h1 id="deleteSong" onClick={function handleClick(){
+        <h1 id="deleteSong" onClick={function handleClick(){
           let temp = document.getElementById('deleteSong')!
           temp.style.animation = 'hithere 1s ease'
           setTimeout(()=>{
               temp.style.removeProperty('animation')
           }, 750)
                 
-          removeSong({name: t.name})
+          lastSegment === 'likedsongs' ? removeSong({name: t.name}) : removePTrack({pID: userLists.playlist_id, name: t.name})
 
         
-        }}>-</h1> : null}
+        }}>-</h1>
       </div>
     )
   )
@@ -68,6 +68,7 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
 
     const {data: liked, isSuccess: lsuccess} = useGetLikedQuery()
     const [removeSong] = useDeleteNewLikedMutation()
+    const [removePTrack] = useDeletePTrackMutation()
   
     type getPlaylistfromResultArg = TypedUseQueryStateResult<Playlists[],any,any>
     
@@ -117,7 +118,7 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
                             </div>
 
                             <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lolP">Duration</span></div>
-                            {userPlaylists(lastSegment == 'likedsongs' ? liked : singlePlist![0], liked_uris, paused,removeSong, lastSegment) }
+                            {userPlaylists(lastSegment == 'likedsongs' ? liked : singlePlist![0], liked_uris, paused,removeSong, removePTrack, lastSegment) }
             
                         </div>
                     </div>

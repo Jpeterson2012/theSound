@@ -46,7 +46,7 @@ export type { Playlists }
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8888/auth' }),
-    keepUnusedDataFor: 180,
+    keepUnusedDataFor: 60 * 60,
     endpoints: builder => ({
         getAlbums: builder.query<Album[], void>({
             query: () => '/homepage2/albums'
@@ -59,15 +59,15 @@ export const apiSlice = createApi({
         }),
         addPTrack: builder.mutation<Playlists, {pID: any, initialP: pTrack}>({
             query: ({pID, initialP}) => ({
-                url: `/update/${pID}`,
+                url: `/update/playlist/${pID}`,
                 method: 'POST',
                 body: initialP
             }),
             async onQueryStarted({pID, initialP}, lifecycleApi){
                 const getPPatchResult = lifecycleApi.dispatch(
                     apiSlice.util.updateQueryData('getPlaylists',undefined,draft => {
-                        // console.log(pID)
-                        // console.log(initialP)
+                        console.log(pID)
+                        console.log(initialP)
                         const temp = draft.find(p => p.playlist_id === pID)
                         if (temp) temp.tracks.unshift(initialP)
                     })
@@ -85,7 +85,7 @@ export const apiSlice = createApi({
         }),
         addNewLiked: builder.mutation<Liked, likedSong>({
             query: initialSong => ({
-                url: '/update',
+                url: '/update/liked',
                 method: 'POST',
                 body: initialSong
             }),
@@ -103,9 +103,32 @@ export const apiSlice = createApi({
                 }
             }
         }),
+        deletePTrack: builder.mutation<Playlists, {pID: any, name: any}>({
+            query: ({pID, name}) => ({
+                url: `/update/playlist/${pID}`,
+                method: 'DELETE',
+                body: {name}
+            }),
+            async onQueryStarted({pID, name}, lifecycleApi){
+                const deletePTrackResult = lifecycleApi.dispatch(
+                    apiSlice.util.updateQueryData('getPlaylists',undefined,draft => {
+                        let temp = draft.find(p => p.playlist_id === pID)
+                        if (temp) {
+                            temp.tracks = temp.tracks.filter(a => a.name !== name)
+                        } 
+                    })
+                )
+                try{
+                    await lifecycleApi.queryFulfilled
+                }
+                catch{
+                    deletePTrackResult.undo()
+                }
+            }
+        }),
         deleteNewLiked: builder.mutation<Liked, {name: any}>({
             query: ({name}) => ({
-                url: '/update',
+                url: '/update/liked',
                 method: 'DELETE',
                 body: {name}
             }),
@@ -150,4 +173,5 @@ export const {
     useAddNewLikedMutation,
     useAddPTrackMutation, 
     useDeleteNewLikedMutation,
+    useDeletePTrackMutation,
 } = apiSlice
