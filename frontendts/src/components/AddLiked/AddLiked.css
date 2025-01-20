@@ -1,14 +1,14 @@
 /* Modal customization */
-.customOverlay2 {
-    background: rgba(36, 123, 160, 0.7);
+#modal2 {
+    /* background: rgba(36, 123, 160, 0.7) !important; */
   }
-  .customModal2{
-    margin: 0px;
-    padding: 0px;
-    min-width: 600px;
-    min-height: 800px;
+  #modal2{
+    margin: 0px !important;
+    padding: 0px !important;
+    min-width: 600px !important;
+    min-height: 800px !important;
     overflow: hidden;
-    margin-bottom: 150px;
+    margin-bottom: 150px !important;
   }
   input[type=checkbox]{
     /* appearance: none; */

@@ -40,8 +40,18 @@ interface likedSong{
 interface User {
     items: string
 }
+interface Devices {
+    id: string
+    is_active: boolean
+    is_private_session: boolean
+    is_restricted: boolean
+    name: string
+    type: string
+    volume_percent: number
+    supports_volume: boolean
+}
 
-export type { Playlists, Album }
+export type { Playlists, Album, Devices }
 
 export const apiSlice = createApi({
     reducerPath: 'api',
@@ -194,7 +204,10 @@ export const apiSlice = createApi({
         }),
         getUser: builder.query<User, void>({
             query: () => '/users'
-        })
+        }),
+        getDevices: builder.query<Devices[], void>({
+            query: () => '/player'
+        }),
     })
 })
 
@@ -219,4 +232,5 @@ export const {
     useAddPTrackMutation, 
     useDeleteNewLikedMutation,
     useDeletePTrackMutation,
+    useGetDevicesQuery,
 } = apiSlice

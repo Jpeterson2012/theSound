@@ -76,7 +76,7 @@ router.post('/playlist/:id', async (req, res) => {
       
       temp.items.push(temp2)
       // console.log(temp.items)
-      sql = `UPDATE uplaylists SET tracks = '${JSON.stringify(temp)}' WHERE playlist_id = '${req.params.id}' `
+      sql = `UPDATE uplaylists SET tracks = "${JSON.stringify(temp)}" WHERE playlist_id = '${req.params.id}'`
       con.query(sql, (err,result) => {
         if (err) throw err;
         console.log("Track added!")

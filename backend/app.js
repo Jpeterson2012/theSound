@@ -27,6 +27,7 @@ var shuffleRouter = require('./routes/shuffle')
 var localRouter = require('./routes/local')
 var updateRouter = require('./routes/update')
 var homepage2Router = require('./routes/homepage2')
+var playerRouter = require('./routes/player')
 
 var app = express();
 
@@ -60,6 +61,7 @@ app.use('/auth/shuffle', shuffleRouter);
 app.use('/auth/local', localRouter);
 app.use('/auth/update', updateRouter)
 app.use('/auth/homepage2', homepage2Router);
+app.use('/auth/player', playerRouter);
 // const AuthRoutes = require('./routes/AuthRoutes');
 // app.use('/api', cors(), AuthRoutes);
 // app.listen(PORT, () => {

@@ -13,6 +13,7 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
     const [addNewsong] = useAddNewLikedMutation()
     const [addpTrack] = useAddPTrackMutation()
     let found = liked?.tracks.find((e:any)=>e.uri === currentTrack.uri)
+    let found2 = liked?.tracks?.find((e:any)=>e.name === currentTrack?.name && e.artists[0].name === currentTrack?.artists[0].name)
     var submit1: boolean[] = []
     var submit2: boolean[] = []
 
@@ -56,7 +57,7 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                     
 
                     <div>             
-                        <Modal open={open} onClose={onCloseModal} center classNames={{overlay: 'customOverlay2', modal: 'customModal2'}} closeIcon={closeIcon}>                            
+                        <Modal modalId='modal2' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>                            
                             <div style={{display: 'flex', alignItems: 'center'}}>
                                 <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '80px', width: '80px', marginRight: '50px'}}/>
                                 <h3 style={{fontSize: '15px'}} >Liked Songs</h3>
@@ -106,7 +107,7 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                                 console.error('Failed to save the post: ', err)
                             }
                         }
-                        if (found === undefined){
+                        if (found === undefined && found2 === undefined){
                             handleSubmit()
                             let temp = document.getElementById('addSong')!
                             temp.style.animation = 'hithere 1s ease'
@@ -122,7 +123,7 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                         }
 
                         
-                    }}>{found === undefined ? "+" : "✓"}</p>
+                    }}>{found === undefined && found2 === undefined ? "+" : "✓"}</p>
                 </>
             )}
         </>

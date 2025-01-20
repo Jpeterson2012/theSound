@@ -19,6 +19,14 @@ import 'react-responsive-modal/styles.css';
 import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
+import { useGetDevicesQuery, Devices } from '../../ApiSlice.ts';
+import { createSelector } from '@reduxjs/toolkit'
+import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
+
+import 'react-responsive-modal/styles.css';
+import { Modal } from 'react-responsive-modal';
+import escape from '../../images/escape.jpg'
+import device from '../../images/device.png'
 
 declare global {
     interface Window{
@@ -77,8 +85,34 @@ export default function WebPlayback() {
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
-    let pVol: any = "1"
+
+    const [currentDev, setCurrentDev] = useState<any>("TheSound")
+
+    const {data: devices = [], isSuccess: dSuccess} = useGetDevicesQuery()
     
+    type getDevicefromResultArg = TypedUseQueryStateResult<Devices[],any,any>
+
+    const selectDevice = createSelector(
+        (res: getDevicefromResultArg) => res.data,        
+        (data) => data?.filter(plist => plist.is_active === true)
+    )
+
+    const { mainDevice } = useGetDevicesQuery(undefined, {
+      selectFromResult: result => ({
+        ...result,
+        mainDevice: selectDevice(result)
+      })
+    })
+
+    let pVol: any = "1"
+
+    const [open, setOpen] = useState(false);
+
+    const onOpenModal = () => {setOpen(true)}
+    const onCloseModal = () => {setOpen(false)}
+    const closeIcon = (
+        <img src={escape} style={{height: '44px', width: '44px'}}/>
+    )
     
 
     const navigate = useNavigate()
@@ -161,13 +195,6 @@ export default function WebPlayback() {
                     player.connect();
                         
             };
-////////////////////////////////////////////Fetches user library here
-            // const user = sessionStorage.getItem("username")
-            // const album = sessionStorage.getItem("albums")
-            // if (user && album){
-            //     setUsers(user);
-            //     setAlbums(JSON.parse(album))
-            // }
             
     }, []);
 
@@ -273,7 +300,7 @@ export default function WebPlayback() {
                                     
                                 }
                         }}/>
-                        <input id='volumeBar' type='range' min={0} max={1}  step={0.05} style={{position: 'absolute', bottom: '14px',right: '290px'}} onChange={function handleChange(e){
+                        <input id='volumeBar' type='range' min={0} max={1} step={0.05} style={{position: 'absolute', bottom: '14px',right: '290px'}} onChange={function handleChange(e){
                             let temp2 = document.getElementById("volumeIcon")!
                             e.target.value === "0" ? temp2.style.opacity = '0' : temp2.style.opacity = e.target.value
                             player?.setVolume(e.target.value)
@@ -347,6 +374,41 @@ export default function WebPlayback() {
                     
                     {/* Replaced old music seek bar method here */}
                     <SeekBar duration={duration} player={player} paused={is_paused} />
+
+                    <img src={device} onClick={function handleClick(){      
+                        onOpenModal()                  
+                        dSuccess ? console.log(devices) : null                                                
+                    }} style={{position: 'absolute', right: '-42vw', height: '42px', cursor: 'pointer'}} />
+
+                    <Modal modalId='modal1' open={open} onClose={onCloseModal} closeIcon={closeIcon} >
+                        <div style={{marginTop: '60px'}}>
+                            <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Current Device</p>
+                            {/* <p>{mainDevice!.name}</p> */}
+                            <p>{currentDev}</p>
+                            <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Select Another Device</p>
+                            <a onClick={function handleClick(){
+                                    setCurrentDev("TheSound")
+                                    fetch(`http://localhost:8888/auth/player/${sessionStorage.getItem("device_id")}`, {
+                                        method: 'POST',
+                                        headers: {"Content-Type":"application/json"},                                        
+                                    })
+                                }}>
+                                   <p>TheSound</p> 
+                                </a> 
+                            {devices.map(a =>
+                                a.name === "TheSound" ? null : <a onClick={function handleClick(){
+                                    setCurrentDev(a.name)
+                                    fetch(`http://localhost:8888/auth/player/${a.id}`, {
+                                        method: 'POST',
+                                        headers: {"Content-Type":"application/json"},                                        
+                                    })
+                                }}>
+                                   <p>{a.name}</p> 
+                                </a> 
+                                
+                            )}
+                        </div>
+                    </Modal>
                     
                     </div>
                     

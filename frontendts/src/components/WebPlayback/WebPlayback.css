@@ -239,6 +239,21 @@ input[type=range]{
     width: 1rem;
   }
 
+  #modal1{
+    background:linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%) !important;
+  }
+  #modal1{
+    margin: 0px;
+    padding:  10px !important;
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    min-width: 250px !important;
+    min-height: 100vw !important;
+    overflow: hidden;
+    /* margin-bottom: 150px; */
+  }
+
 
   @media(min-height: 1000px){
     .scrollbar1, .scrollbar2{

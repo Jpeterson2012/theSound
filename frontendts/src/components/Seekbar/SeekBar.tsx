@@ -60,7 +60,7 @@ export default function SeekBar({duration, player, paused}: any){
         <input id='seeker' type='range' min="0" max={duration} value={pos} step="100" onChange={function handleChange(e){ 
             setPos(e.target.value)
             player.seek(e.target.value)
-        }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} />
+        }} style={{position: 'absolute', left: '280px', bottom: '12px', width: '500px'}} />
     )
 }
 

@@ -64,10 +64,10 @@ h2{
   margin-right: 40%;
   transform: translate(-50%, -50%);
 }
-.customOverlay {
-  background: rgba(36, 123, 160, 0.7);
+#modal3 {
+  /* background: rgba(36, 123, 160, 0.7) !important; */
 }
-.react-responsive-modal-modal.customModal{
+#modal3{
   margin: 0px;
   padding: 0px;
   min-width: 75vw;

@@ -53,7 +53,7 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
               temp.style.removeProperty('animation')
           }, 750)
                 
-          lastSegment === 'likedsongs' ? removeSong({name: t.name}) : removePTrack({pID: userLists.playlist_id, name: t.name})
+          lastSegment === 'likedsongs' ? setTimeout(() => { removeSong({name: t.name}) },500) : setTimeout(() => { removePTrack({pID: userLists.playlist_id, name: t.name}) },500)
 
         
         }}>-</h1>

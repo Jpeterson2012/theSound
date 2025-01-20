@@ -110,10 +110,14 @@ export default function Album({SpinComponent, active, paused}: any) {
                   setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 4000);  
 
                   if (found === undefined){
-                    addAlbum({album_id: lastSegment!, images: tracks?.albums?.images, name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, label_name: tracks?.albums?.label})
+                    setTimeout(() => {
+                      addAlbum({album_id: lastSegment!, images: tracks?.albums?.images, name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, label_name: tracks?.albums?.label})
+                    },500)
                   }
                   else{
-                    deleteAlbum({aID: lastSegment!})
+                    setTimeout(() => {
+                      deleteAlbum({aID: lastSegment!})
+                    },500)                    
                   }                  
 
                 }}>{found === undefined ? "+" : "✓"}</p>
