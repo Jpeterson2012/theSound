@@ -18,6 +18,7 @@ import HScroll from '../HScroll.tsx';
 import 'react-responsive-modal/styles.css';
 import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
+import volume from '../../images/volume.png'
 
 declare global {
     interface Window{
@@ -76,6 +77,7 @@ export default function WebPlayback() {
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+    let pVol: any = "1"
     
     
 
@@ -218,6 +220,9 @@ export default function WebPlayback() {
                                 <div className="now-playing__name" style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}><p style={{margin: '0px', padding: '0px', gap: '1rem'}}>{
                                     current_track.name
                                     }</p>
+                                    {/* <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>{
+                                    current_track.name
+                                    }</p> */}
                                     <p className='temp' style={{margin: '0px', padding: '0px'}}>{current_track.name}</p>
                                     {current_track.name ? <HScroll name={"scrollbar1"}/> : null}</div>
                                 </div>
@@ -228,10 +233,10 @@ export default function WebPlayback() {
                                             navigate(`/app/artist/${s.uri.split(':').pop()}`)
                                             }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
                                         </p>
-                                        <p className='temp' style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s:any,i:number,row:any) => <a onClick={function handleClick(){ 
+                                        {/* <p className='temp' style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s:any,i:number,row:any) => <a onClick={function handleClick(){ 
                                             navigate(`/app/artist/${s.uri.split(':').pop()}`)
                                             }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
-                                        </p>
+                                        </p> */}
                                         {current_track.name ? <HScroll name={'scrollbar2'} /> : null}
                                     </div>
                                 </div>
@@ -244,6 +249,38 @@ export default function WebPlayback() {
                         </div>
                     
                     <div className='buttonWrapper'>
+                        <div>
+                        <img id="volumeIcon" src={volume} style={{position: 'absolute',right: '430px',bottom: '8px', height: '30px', cursor: 'pointer'}} 
+                            onMouseEnter={(() => {
+                                document.getElementById("volumeIcon")!.style.opacity = '1'
+                            })} 
+                            onMouseLeave={(()=>{
+                                player.getVolume().then((a:any) => document.getElementById("volumeIcon")!.style.opacity = a === 0 ? '0' : pVol)
+                            })} 
+                            onClick={function handleClick(){
+                                let temp = (document.getElementById('volumeBar') as HTMLInputElement)
+                                let temp2 = document.getElementById("volumeIcon")!
+                                if(temp.value === "0") {
+                                    player?.setVolume(+pVol)
+                                    temp.value = pVol
+                                    temp2.style.opacity = "1"
+                                } 
+                                else{ 
+                                    player?.setVolume(0)
+                                    pVol = temp.value
+                                    temp.value = "0"
+                                    temp2.style.opacity = "0"
+                                    
+                                }
+                        }}/>
+                        <input id='volumeBar' type='range' min={0} max={1}  step={0.05} style={{position: 'absolute', bottom: '14px',right: '290px'}} onChange={function handleChange(e){
+                            let temp2 = document.getElementById("volumeIcon")!
+                            e.target.value === "0" ? temp2.style.opacity = '0' : temp2.style.opacity = e.target.value
+                            player?.setVolume(e.target.value)
+                            pVol = e.target.value
+                        }} />
+                        </div>
+                    
                     <img id='toggle1' src={repeated < 2 ? repeat : repeat1} style={{position: 'absolute', right: '250px', bottom: '12px', height: '20px', cursor: 'pointer', opacity: repeated === 0 ? '0.5' : 1}} onClick={function handleClick(){   
                         let temp = document.getElementById('toggle1')!
                         temp.style.animation = 'hithere 1s ease'  

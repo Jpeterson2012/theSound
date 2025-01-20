@@ -137,7 +137,7 @@ export default function Logo () {
       })
         return temp
       }
-      catch (err) {}
+      catch (err) {console.log(err)}
     }
     
     const closeIcon = (

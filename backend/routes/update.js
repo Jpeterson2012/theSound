@@ -5,7 +5,7 @@ const { con } = require('../sql.js')
 router.post('/album', async (req, res) => {
   try{
     // console.log(req.body)
-    var sql = `INSERT INTO ualbums (album_id, images, name, release_date, uri, artists, label_name) VALUES ('${req.body.album_id}','${JSON.stringify(req.body.images)}','${req.body.name}','${req.body.release_date}','${req.body.uri}','${JSON.stringify(req.body.artists)}','${req.body.label_name}')`
+    var sql = `INSERT INTO ualbums (album_id, images, name, release_date, uri, artists, label_name) VALUES ('${req.body.album_id}','${JSON.stringify(req.body.images)}',"${req.body.name}",'${req.body.release_date}','${req.body.uri}','${JSON.stringify(req.body.artists)}','${req.body.label_name}')`
     con.query(sql, (err) => {
       if (err) throw err
       console.log('Album added!')

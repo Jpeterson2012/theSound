@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
         if (err) throw err;
         // console.log('User Playlist table created!')
       })
-      sql = "CREATE TABLE IF NOT EXISTS likedsongs (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images MEDIUMTEXT, artists MEDIUMTEXT, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(100))"
+      sql = "CREATE TABLE IF NOT EXISTS likedsongs (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images MEDIUMTEXT, artists MEDIUMTEXT, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(200))"
       con.query(sql, (err) => {
         if (err) throw err;
         // console.log('Liked songs table created!')

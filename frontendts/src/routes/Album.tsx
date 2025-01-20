@@ -97,13 +97,17 @@ export default function Album({SpinComponent, active, paused}: any) {
 
                 {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
                 {tracks.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
+                <div id="snackbar2">{found !== undefined ? "Added to Library!" : "Removed From Library"}</div>
                 <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
 
                   let temp = document.getElementById('addAlbum')!
                   temp.style.animation = 'hithere 1s ease'
                   setTimeout(()=>{
                       temp.style.removeProperty('animation')
-                  }, 750)  
+                  }, 750)
+                  var x = document.getElementById("snackbar2");
+                  x!.className = "show";
+                  setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 4000);  
 
                   if (found === undefined){
                     addAlbum({album_id: lastSegment!, images: tracks?.albums?.images, name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, label_name: tracks?.albums?.label})

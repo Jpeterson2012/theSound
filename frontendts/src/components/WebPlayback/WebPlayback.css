@@ -1,57 +1,63 @@
 .scrollbar1{
-    max-width: 500px;
+    max-width: 270px;
     color: rgb(90, 210, 216);
-      /* text-overflow: ellipsis; */
-      /* white-space: nowrap; */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    
       /* overflow: hidden; */
   }
   .scrollbar2{
-    max-width: 500px;
+    max-width: 270px;
     color: rgb(90, 210, 216);
+    overflow: hidden;
   }
   .now-playing__name, .now-playing__artist {
     display: flex;
     flex-wrap: wrap;
-    width: max-content;
+    /* width: max-content; */
       /* color: rgb(90, 210, 216); */
       /* text-overflow: ellipsis; */
       /* white-space: nowrap; */
       /* overflow: hidden;  */
   }
-  .scrollbar1[data-animated="true"] {
+  /* .scrollbar1 {
     overflow: hidden;
     -webikit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
     mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent)
   }
-  .scrollbar2[data-animated="true"] {
+  .scrollbar2 {
     overflow: hidden;
     -webikit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
     mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent)
-  }
-  .scrollbar1[data-animated="true"] .now-playing__name{
-    width: max-content;
-    animation: scroll var(--_animation-duration, 40s)
+  } */
+  .scrollbar1 .now-playing__name{
+    /* width: max-content;
+    animation: scroll 40s linear reverse infinite; */
+    /* animation: scroll var(--_animation-duration, 10s)
     var(--_animation-duration, reverse) linear infinite;
+    animation-delay: 5s; */
   }
-  .scrollbar2[data-animated="true"] .now-playing__artist{
-    width: max-content;
-    animation: scroll var(--_animation-duration, 40s)
-    var(--_animation-duration, forwards) linear infinite;
+  .scrollbar2 .now-playing__artist{
+    /* width: max-content;
+    animation: scroll 40s linear infinite; */
+    /* animation: scroll var(--_animation-duration, 50s)
+    var(--_animation-duration, forwards) linear infinite; */
   }
-  .now-playing__side[data-direction="right"]{
+  /* .now-playing__side[data-direction="right"]{
     --_animation-direction: reverse
-  }
-  @keyframes scroll {
+  } */
+  /* @keyframes scroll {
     to{
       transform: translate(-50%);
     }
-  }
+  } */
   
   .main-wrapper img {
       height: 60px;
   }
   .wrapper {
-      z-index: 3;
+      z-index: 1;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -85,27 +91,6 @@
       color: rgb(90, 210, 216);
   }
   
-    /* body {
-      font-family: "Lato", sans-serif;
-      font-weight: 100;
-      font-size: 16px;
-      color: #333;
-      text-align: center;
-      background: #eee;
-    } */
-    /* .playing {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: auto;
-      transform: translateX(-50%) translateY(-50%);
-    } */
-    /* .playing:after {
-      content: "Now Playing.";
-      display: block;
-      width: 100%;
-      margin-top: 10px;
-    } */
   
     /* Music bar animation */
     .bar {
@@ -220,6 +205,48 @@
     70% { transform: rotate(0deg) scale(1.2); }
     100% { transform: scale(1); }
   }
+input[type=range]{
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    background: #7a19e9;
+    border-radius: 16px;
+    height: 0.5rem;
+  }
+  input[type=range]::-moz-range-track{
+    background: #7a19e9;
+    border-radius: 16px;
+    height: 0.5rem;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0px;
+    margin-top: -10px;
+    background-color: rgb(90, 210, 216);
+    height: 1.5rem;
+    width: 1rem;    
+  }
+  /* rgb(90, 210, 216) */
+  input[type="range"]::-moz-range-thumb {
+    border: none;
+    border-radius: 0;
+    background-color: rgb(90, 210, 216);
+    height: 2rem;
+    width: 1rem;
+  }
+
+
+  @media(min-height: 1000px){
+    .scrollbar1, .scrollbar2{
+      max-width: 750px;
+    }
+  }
+
+  
   
   
   
