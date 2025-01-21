@@ -20,7 +20,7 @@ import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
 import { useGetDevicesQuery, Devices } from '../../ApiSlice.ts';
-import { createSelector } from '@reduxjs/toolkit'
+import { createSelector, current } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
 
 import 'react-responsive-modal/styles.css';
@@ -69,6 +69,41 @@ function Spin({is_active, is_paused}: any){
     )
 }
 
+function playbackState(uri: string, setPaused: any, currentDev: any){
+    let url = "http://localhost:8888/auth/player"
+    switch(uri){
+        case '/pause':
+            fetch(url + uri + `/${currentDev.id}`, {
+                method: 'POST',
+                headers: {"Content-Type":"application/json"}                
+            })
+            setPaused(true)
+            break
+        case '/play':
+            fetch(url + uri + `/${currentDev.id}`, {
+                method: 'POST',
+                headers: {"Content-Type":"application/json"},                
+            })
+            setPaused(false)
+            break
+        case '/previous':
+            fetch(url + uri + `/${currentDev.id}`, {
+                method: 'POST',
+                headers: {"Content-Type":"application/json"},                
+            })
+            break
+        case '/next':
+            fetch(url + uri + `/${currentDev.id}`, {
+                method: 'POST',
+                headers: {"Content-Type":"application/json"},                
+            })
+            break
+        default:
+            break
+
+    }
+}
+
 
 export default function WebPlayback() {
     // sessionStorage.setItem("uplist", "false")
@@ -86,7 +121,7 @@ export default function WebPlayback() {
     const [repeated, setRepeated] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
 
-    const [currentDev, setCurrentDev] = useState<any>("TheSound")
+    const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)})
 
     const {data: devices = [], isSuccess: dSuccess} = useGetDevicesQuery()
     
@@ -341,15 +376,15 @@ export default function WebPlayback() {
                             </div>
                         ))}
 
-                    <button className="btn-spotify" onClick={() => { pos > 3000 ? player!.seek(0) : player!.previousTrack() }} >
+                    <button className="btn-spotify" onClick={() => { currentDev.name === "TheSound" ? (pos > 3000 ? player!.seek(0) : player!.previousTrack()) : playbackState('/previous', null, currentDev) }} >
                         &lt;&lt;
                     </button>
 
-                    <button className="btn-spotify" style={{maxWidth: '85px', minWidth: '85px'}} onClick={() => { player!.togglePlay() }} >
+                    <button className="btn-spotify" style={{maxWidth: '85px', minWidth: '85px'}} onClick={() => { currentDev.name === "TheSound" ? player!.togglePlay() : (is_paused ? playbackState('/play', setPaused, currentDev) : playbackState('/pause', setPaused, currentDev)) }} >
                         { is_paused ? "PLAY" : "PAUSE" }
                     </button>
 
-                    <button className="btn-spotify" onClick={() => { player!.nextTrack() }} >
+                    <button className="btn-spotify" onClick={() => { currentDev.name === "TheSound" ? player!.nextTrack() : playbackState('/next', null, currentDev) }} >
                         &gt;&gt;
                     </button>
 
@@ -384,10 +419,10 @@ export default function WebPlayback() {
                         <div style={{marginTop: '60px'}}>
                             <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Current Device</p>
                             {/* <p>{mainDevice!.name}</p> */}
-                            <p>{currentDev}</p>
+                            <p>{currentDev.name}</p>
                             <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Select Another Device</p>
                             <a onClick={function handleClick(){
-                                    setCurrentDev("TheSound")
+                                    setCurrentDev({name: "TheSound", id: sessionStorage.getItem("device_id")})
                                     fetch(`http://localhost:8888/auth/player/${sessionStorage.getItem("device_id")}`, {
                                         method: 'POST',
                                         headers: {"Content-Type":"application/json"},                                        
@@ -397,7 +432,7 @@ export default function WebPlayback() {
                                 </a> 
                             {devices.map(a =>
                                 a.name === "TheSound" ? null : <a onClick={function handleClick(){
-                                    setCurrentDev(a.name)
+                                    setCurrentDev({name: a.name, id: a.id})
                                     fetch(`http://localhost:8888/auth/player/${a.id}`, {
                                         method: 'POST',
                                         headers: {"Content-Type":"application/json"},                                        
