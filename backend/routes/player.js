@@ -28,7 +28,7 @@ router.post('/:id', async(req,res) => {
             method: 'PUT',
             headers: headers,
             body: `{"device_ids": ["${req.params.id}"]}`
-        }).then(res => console.log(`Status Text: ${res.statusText}, Status: ${res.status}`))
+        }).then(res.send("201"))
     
         
     }

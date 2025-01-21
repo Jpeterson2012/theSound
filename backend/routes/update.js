@@ -10,6 +10,7 @@ router.post('/album', async (req, res) => {
       if (err) throw err
       console.log('Album added!')
     })
+    res.send("201")
   }
   catch(e){
     console.error(e)
@@ -24,6 +25,7 @@ router.delete('/album', async (req, res) => {
       if (err) throw err;
       console.log('Album deleted!')
     })
+    res.send("204")
 }
 catch(e){
   console.log(e)
@@ -40,6 +42,7 @@ router.post('/liked', async (req, res) => {
         if (err) throw err;
         console.log('Song added!')
       })
+    res.send("201")
     }
     catch(e){
       console.log(e)
@@ -54,6 +57,7 @@ router.delete('/liked', async (req, res) => {
       if (err) throw err;
       console.log('Song deleted!')
     })
+    res.send("204")
   }
   catch(e){
     console.log(e)
@@ -76,12 +80,13 @@ router.post('/playlist/:id', async (req, res) => {
       
       temp.items.push(temp2)
       // console.log(temp.items)
-      sql = `UPDATE uplaylists SET tracks = "${JSON.stringify(temp)}" WHERE playlist_id = '${req.params.id}'`
+      sql = `UPDATE uplaylists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}'`
       con.query(sql, (err,result) => {
         if (err) throw err;
         console.log("Track added!")
       })
     })
+    res.send("201")
   }
   catch(e){
     console.log(e)
@@ -98,12 +103,13 @@ router.delete('/playlist/:id', async (req, res) => {
       if (err) throw err;
       let temp = JSON.parse(result[0].tracks)
       temp.items = temp.items.filter(a => a.name !== req.body.name)
-      sql = `UPDATE uplaylists SET tracks = '${JSON.stringify(temp)}' WHERE playlist_id = '${req.params.id}' `
+      sql = `UPDATE uplaylists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}' `
       con.query(sql, (err,result) => {
         if (err) throw err;
         console.log("Track removed!")
       })
     })
+    res.send("204")
   }
   catch(e){
     console.log(e)
