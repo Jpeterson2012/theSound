@@ -1,13 +1,25 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 
-interface Album {
+interface Albums {
+    album_type: string
+    total_tracks: number
     album_id: string
-    images: []
+    images: any[]
     name: string
     release_date: string
     uri: string
     artists: any[]
+    tracks: {
+        href: string
+        items: []
+        limit: number
+        next: any
+        offset: number
+        previous: any
+        total: number
+    }
+    copyrights: any[]
     label_name: string
 }
 interface Playlists {
@@ -51,17 +63,17 @@ interface Devices {
     supports_volume: boolean
 }
 
-export type { Playlists, Album, Devices }
+export type { Playlists, Albums, Devices }
 
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8888/auth' }),
     keepUnusedDataFor: 60 * 60,
     endpoints: builder => ({
-        getAlbums: builder.query<Album[], void>({
+        getAlbums: builder.query<Albums[], void>({
             query: () => '/homepage2/albums'
         }),
-        addAlbum: builder.mutation<Album, Album>({
+        addAlbum: builder.mutation<Albums, Albums>({
             query: initalAlbum => ({
                 url: '/update/album',
                 method: 'POST',
@@ -82,7 +94,7 @@ export const apiSlice = createApi({
                 }
             }
         }),
-        deleteAlbum: builder.mutation<Album, {aID: string}>({
+        deleteAlbum: builder.mutation<Albums, {aID: string}>({
             query: ({aID}) => ({
                 url: '/update/album',
                 method: 'DELETE',
@@ -119,8 +131,7 @@ export const apiSlice = createApi({
             async onQueryStarted({pID, initialP}, lifecycleApi){
                 const getPPatchResult = lifecycleApi.dispatch(
                     apiSlice.util.updateQueryData('getPlaylists',undefined,draft => {
-                        console.log(pID)
-                        console.log(initialP)
+                        
                         const temp = draft.find(p => p.playlist_id === pID)
                         if (temp) temp.tracks.unshift(initialP)
                     })
@@ -206,6 +217,7 @@ export const apiSlice = createApi({
             query: () => '/users'
         }),
         getDevices: builder.query<Devices[], void>({
+            keepUnusedDataFor:  10,
             query: () => '/player'
         }),
     })

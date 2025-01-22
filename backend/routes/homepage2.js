@@ -5,19 +5,23 @@ var router = express.Router();
 router.get('/albums', async (req, res) => {
     
     function getAlbums(){
-        sql = 'SELECT album_id, images, name, release_date, uri, artists, label_name from ualbums'
+        sql = 'SELECT album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name from ualbums'
         con.query(sql, function (err, result) {
             if (err) throw err;
             var items = []
             for (let i = 0; i < result.length; i++) {
                 var temp = {}
+                temp.album_type = result[i].album_type
+                temp.total_tracks = result[i].total_tracks
                 temp.album_id = result[i].album_id
                 temp.images = JSON.parse(result[i].images)
                 temp.name = result[i].name
                 temp.release_date = result[i].release_date
                 temp.uri = result[i].uri
                 temp.artists = JSON.parse(result[i].artists)
-                temp.label_name = result[i].label_name
+                temp.tracks = JSON.parse(result[i].tracks)
+                temp.copyrights = JSON.parse(result[i].copyrights)
+                temp.label_name = result[i].label_name                
                 items.push(temp)
             }
             res.send(items)

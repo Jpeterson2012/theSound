@@ -61,7 +61,7 @@ router.get('/', async (req, res) => {
         if (err) throw err;
         // console.log('Database selected!')
       })
-      sql = "CREATE TABLE IF NOT EXISTS ualbums (id INT AUTO_INCREMENT PRIMARY KEY, total_tracks SMALLINT(2), album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, label_name VARCHAR(75), popularity SMALLINT(3))"
+      sql = "CREATE TABLE IF NOT EXISTS ualbums (id INT AUTO_INCREMENT PRIMARY KEY, album_type VARCHAR(30), total_tracks SMALLINT(2), album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, copyrights MEDIUMTEXT, label_name VARCHAR(75))"
       con.query(sql, (err) => {
         if (err) throw err;
         // console.log('User Album table created!')
@@ -141,8 +141,8 @@ router.get('/', async (req, res) => {
                   var resp = await fetch(url, {headers})
                   var data = await resp.json()
                   var values = []
-                  data.items.map(a => values.push([a.album.total_tracks, a.album.id, JSON.stringify(a.album.images), a.album.name, a.album.release_date, a.album.uri, JSON.stringify(a.album.artists), JSON.stringify(a.album.tracks), a.album.label, a.album.popularity]))
-                  var sql = "INSERT INTO ualbums (total_tracks,album_id, images, name, release_date, uri, artists, tracks, label_name, popularity) VALUES ?"
+                  data.items.map(a => values.push([a.album.album_type, a.album.total_tracks, a.album.id, JSON.stringify(a.album.images), a.album.name, a.album.release_date, a.album.uri, JSON.stringify(a.album.artists), JSON.stringify(a.album.tracks), JSON.stringify(a.album.copyrights), a.album.label]))
+                  var sql = "INSERT INTO ualbums (album_type,total_tracks,album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name) VALUES ?"
                   con.query(sql, [values], function(err, result) {
                       if (err) throw err;
                       console.log("Number of albums inserted: " + result.affectedRows);

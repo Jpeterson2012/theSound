@@ -259,6 +259,10 @@ input[type=range]{
     .scrollbar1, .scrollbar2{
       max-width: 750px;
     }
+    svg{
+      width: 500px;
+      height: 490px;
+    }
   }
 
   

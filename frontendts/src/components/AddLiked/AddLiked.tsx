@@ -1,5 +1,5 @@
 import './AddLiked.css'
-import { useGetLikedQuery, useGetPlaylistsQuery, useAddNewLikedMutation, useDeleteNewLikedMutation, useAddPTrackMutation } from '../../ApiSlice'
+import { useGetLikedQuery, useGetPlaylistsQuery, useAddNewLikedMutation, useDeleteNewLikedMutation, useAddPTrackMutation, useDeletePTrackMutation } from '../../ApiSlice'
 import { useState } from 'react';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
@@ -12,6 +12,8 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
     const [removeSong] = useDeleteNewLikedMutation()
     const [addNewsong] = useAddNewLikedMutation()
     const [addpTrack] = useAddPTrackMutation()
+    const [removePTrack] = useDeletePTrackMutation()
+
     let found = liked?.tracks.find((e:any)=>e.uri === currentTrack.uri)
     let found2 = liked?.tracks?.find((e:any)=>e.name === currentTrack?.name && e.artists[0].name === currentTrack?.artists[0].name)
     var submit1: boolean[] = []
@@ -30,11 +32,17 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
         submit2.push(temp)
         for (let i = 0; i < playlists!.length; i++){
             submit2.push((document.getElementById(`checkbox${i}`) as HTMLInputElement).checked)
-            if (submit1[i+1] !== (document.getElementById(`checkbox${i}`) as HTMLInputElement).checked){
+            // if (submit1[i+1] !== (document.getElementById(`checkbox${i}`) as HTMLInputElement).checked){
+                if (submit1[i+1] !== submit2[i+1]){
+                submit1[i+1] === false ? 
                 setTimeout(() => {
                     let p_id = playlists![i].playlist_id
-                let ptrackData = {images: currentTrack.album.images, uri: currentTrack.uri, name: currentTrack.name, track_number: 0, duration_ms: duration, artists: currentTrack.artists}
-                addpTrack({pID: p_id, initialP: ptrackData})
+                    let ptrackData = {images: currentTrack.album.images, uri: currentTrack.uri, name: currentTrack.name, track_number: 0, duration_ms: duration, artists: currentTrack.artists}
+                    addpTrack({pID: p_id, initialP: ptrackData})
+                },500) :
+                setTimeout(() => {
+                    let p_id = playlists![i].playlist_id
+                    removePTrack({pID: p_id, name: currentTrack.name})
                 },500)
                 
                 

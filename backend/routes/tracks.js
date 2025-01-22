@@ -71,4 +71,27 @@ catch(e){
     //       });
 })
 
+router.post('/artists', async (req, res) => {
+    const headers = {
+        Authorization: 'Bearer ' + process.env.access_token
+      }
+    // req.body.map(a => console.log(a))
+    let temp = []
+    let apiRequestLoop = function(){
+        let promiseArray = []
+        req.body.map(a =>
+            promiseArray.push(fetch(`https://api.spotify.com/v1/artists/${a}`,{headers}).then(response => response.json()))
+        )
+        return Promise.all(promiseArray);
+        }
+        let temp2 = {}
+        apiRequestLoop().then(dataa => dataa.map((a,i,arr) => {
+            temp.push(a.images),
+            arr.length - 1 === i ? (                                                                          
+                    temp2.images = temp,
+                    res.send(temp2)
+             ) : null
+        }))
+})
+
 module.exports = router;

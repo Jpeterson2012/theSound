@@ -19,7 +19,7 @@ import 'react-responsive-modal/styles.css';
 import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
-import { useGetDevicesQuery, Devices } from '../../ApiSlice.ts';
+import { useGetDevicesQuery, Devices, useGetAlbumsQuery } from '../../ApiSlice.ts';
 import { createSelector, current } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
 
@@ -139,6 +139,9 @@ export default function WebPlayback() {
       })
     })
 
+    const {data: albums = []} = useGetAlbumsQuery()
+    
+
     let pVol: any = "1"
 
     const [open, setOpen] = useState(false);
@@ -253,6 +256,9 @@ export default function WebPlayback() {
                             <a onClick={function handleClick() {
                                 var parts = current_track.album.uri.split(':');
                                 var lastSegment = parts.pop() || parts.pop();
+
+                                let found = albums.find((e:any) => e.album_id === lastSegment)
+                                found === undefined ? sessionStorage.setItem("albumStatus", "notuser") : sessionStorage.setItem("albumStatus","user")
                                 
                                 var artistss: any[] = []
                                 var artist_idss: any[] = []

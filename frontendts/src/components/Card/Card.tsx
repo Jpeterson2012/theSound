@@ -14,6 +14,7 @@ export default function Card( {id, image, name, artist, a_id}: any ) {
         <div className="card">
 
             <a onClick={function handleClick() {
+                sessionStorage.setItem("albumStatus", "user")
                 sessionStorage.setItem("id", id)
                 // sessionStorage.setItem("uri", uri)
                 sessionStorage.setItem("image", image)

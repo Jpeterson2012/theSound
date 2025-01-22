@@ -74,10 +74,10 @@ export default function RPlaylist({SpinComponent, lastSegment, active, paused}: 
             <>        
                 {loading ? <Loading2 yes={true} /> : (
                     <>
-                    <div style={{marginTop: '30px'}}>
+                    <div>
                         <span className="fade-in-imageP">
                             <SpinComponent is_active={active} is_paused={paused}/>
-                            <img src={sessionStorage.getItem("p_image")!} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>
+                            <img className='rImage' src={sessionStorage.getItem("p_image")!}/>
                         </span>
     
                         <div>

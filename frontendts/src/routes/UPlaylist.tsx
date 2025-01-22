@@ -10,12 +10,12 @@ import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import './UPlaylist.css'
 
 function mainImage(url: string) {
-  return (<img src={url} style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>)
+  return (<img className="mainImage" src={url}/>)
 }
 
 function listImages(last: any, ptracks: any) {
   if (last == 'likedsongs'){
-    return (<img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '360px', width: '350px', zIndex: '1', position: 'relative', right: '110px', top: '10px'}}/>)
+    return (<img className="mainImage" src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"/>)
   }
   else{
     return (
@@ -97,7 +97,7 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
         <>        
             {loading ? <Loading2 yes={true} /> : (
                 <>
-                <div style={{marginTop: '30px'}}>
+                <div>
                     <span className="fade-in-imageP">
                         <SpinComponent is_active={active} is_paused={paused}/>
                         {listImages(lastSegment, lastSegment == 'likedsongs' ? liked : singlePlist![0])}

@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
         })
       }
       else{
-        url = 'https://api.spotify.com/v1/browse/categories'
+        url = 'https://api.spotify.com/v1/browse/categories?limit=35'
         const getStuff = async () => {
           const resp = await fetch(url, {headers})
           const data = await resp.json()

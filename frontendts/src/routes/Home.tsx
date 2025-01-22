@@ -16,7 +16,7 @@ function Albums(listItems: any){
       flexWrap: 'wrap',
       justifyContent: 'space-evenly',
       alignItems: 'center',
-      paddingTop: '15px',
+      paddingTop: '15px',width: '90vw',position: 'absolute', left: '5vw', top: '16vw'
     }}>
       {listItems}
     </div>
@@ -53,7 +53,7 @@ function Playlists(navigate: any, listPlaylists: any){
       display: 'flex',
       flexWrap: 'wrap',
       flexDirection: 'column',
-      paddingTop: '15px',
+      paddingTop: '5vw',
       marginBottom: '90px'
     }}>
       <a onClick={function handleClick() {
@@ -104,6 +104,7 @@ export default function Home() {
     const [loading, setLoading] = useState(false)
       
     const {data: albums = [],isSuccess} = useGetAlbumsQuery()
+    
 
     const sortedAlbums = (() => {
       const sortedAlbums = albums.slice()
@@ -146,6 +147,7 @@ export default function Home() {
     })
 
     useEffect(() => {
+      console.log(albums)
       sessionStorage.getItem('sortVal') && setSorted(+sessionStorage.getItem('sortVal')!)
       sessionStorage.getItem('psortVal') && setPSorted(+sessionStorage.getItem('psortVal')!)
       
@@ -207,22 +209,27 @@ export default function Home() {
     <>
       {!isSuccess ? <Loading2 yes={true} /> : (<>
       <div className="homeContainer">
-        <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
-        <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
-        <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
-        <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'audiobook') }}>AudioBooks</button>
-        {/* <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button> */}
-        <div className="dropdown" id="dropdown">
-          <button className="dropbtn">Sort</button>
-          <div className="dropdown-content">
-            {(sessionStorage.getItem('home') === null || sessionStorage.getItem('home') === 'album') && albumSort(setSorted)}
-            {sessionStorage.getItem('home') === 'playlist' && playlistSort(setPSorted)}
+          <div style={{position: 'absolute', top: '10vw', right: '40vw'}}>
+            <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
+            <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
+            <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
+            <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'audiobook') }}>AudioBooks</button>
+        
+            {/* <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button> */}
+            <div className="dropdown" id="dropdown">
+              <button className="dropbtn">Sort</button>
+              <div className="dropdown-content">
+                {(sessionStorage.getItem('home') === null || sessionStorage.getItem('home') === 'album') && albumSort(setSorted)}
+                {sessionStorage.getItem('home') === 'playlist' && playlistSort(setPSorted)}
+              </div>
+            </div>
+
           </div>
-        </div>
         
       </div>
+          
+        {html}      
       
-      {html}
       </>
     )}
     </>

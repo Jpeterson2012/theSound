@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/', async (req, res) => {
     // console.log(req.params.id)
     var info = {}
-    url = 'https://api.spotify.com/v1/browse/new-releases'
+    url = 'https://api.spotify.com/v1/browse/new-releases?limit=35'
     const headers = {
         Authorization: 'Bearer ' + process.env.access_token
       }

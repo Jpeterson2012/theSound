@@ -28,12 +28,26 @@ div .fade-in-imageP{
     -webkit-background-clip: text;
 }
 
+.rImage{
+    height: 360px; 
+    width: 350px; 
+    z-index: 1; 
+    position: relative; 
+    right: 110px; 
+    top: 10px;
+}
+
 @media(min-height: 1000px){
     #deleteSong{
         left: 600px;
     }
     .lolP{
         margin-left: 55.4vw;
+    }
+    .rImage{
+        height: 460px;
+        width: 450px;
+        right: 160px;
     }
     
 }

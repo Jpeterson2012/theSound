@@ -37,6 +37,7 @@ function getTracks(ptracks: any) {
     return (
       palbums.map((t:any) =>
         <a onClick={function handleClick() {
+          sessionStorage.setItem("albumStatus", "notuser")
             t.artists.map((s:any) => artists.push(s.name))
             t.artists.map((s:any) => a_ids.push(s.id))
             sessionStorage.setItem("artist", JSON.stringify(artists))

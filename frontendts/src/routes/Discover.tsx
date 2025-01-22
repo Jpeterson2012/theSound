@@ -9,12 +9,12 @@ function customRender(name: any, item: any){
     return (
         <>
             <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{name}</h2>
-            <div style={{
+            <div className={name} style={{
                 display: 'flex',
                 flexWrap: 'wrap',
                 justifyContent: 'space-evenly',
                 alignItems: 'center',
-                paddingTop: '15px',                                                                                                                                                                                          
+                paddingTop: '15px',                                                                                                                                                                                                          
             }}>
                 {item}
             </div>
@@ -120,10 +120,10 @@ export default function Discover() {
 
 
     return (
-        <div style={{marginTop: '70px'}}>
-        {customRender("Categories", listCategories)}
-        {customRender("New Releases", listReleases)}
-        {customRender("Popular Playlists", listPlaylists)}
-        </div>
+        <div style={{width: '90vw', position: 'absolute', left: '5vw', top: '9vw'}}>    
+            {customRender("Categories", listCategories)}
+            {customRender("New Releases", listReleases)}
+            {customRender("Popular Playlists", listPlaylists)}        
+        </div>        
     )
 }
