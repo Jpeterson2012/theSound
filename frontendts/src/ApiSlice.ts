@@ -62,6 +62,12 @@ interface Devices {
     volume_percent: number
     supports_volume: boolean
 }
+interface Podcasts{
+    items: []
+}
+interface Audiobooks{
+    items: []
+}
 
 export type { Playlists, Albums, Devices }
 
@@ -220,6 +226,12 @@ export const apiSlice = createApi({
             keepUnusedDataFor:  10,
             query: () => '/player'
         }),
+        getPodcasts: builder.query<Podcasts, void>({
+            query: () => '/homepage2/podcasts'
+        }),
+        getAudiobooks: builder.query<Audiobooks, void>({
+            query: () => '/homepage2/audiobooks'
+        }),
     })
 })
 
@@ -245,4 +257,6 @@ export const {
     useDeleteNewLikedMutation,
     useDeletePTrackMutation,
     useGetDevicesQuery,
+    useGetPodcastsQuery,
+    useGetAudiobooksQuery,
 } = apiSlice

@@ -119,4 +119,37 @@ router.get('/liked', async (req, res) => {
 
      getLiked()
 })
+
+router.get('/podcasts', async (req,res) => {
+    url = 'https://api.spotify.com/v1/me/shows'
+    try{
+        const headers = {
+            Authorization: 'Bearer ' + process.env.access_token
+          }
+    
+        var resp = await fetch(url, {headers})
+        var data = await resp.json()
+        
+        res.send(data)
+    }
+    catch (e){
+        console.log(e)
+    }
+})
+
+router.get('/audiobooks', async (req,res) => {
+    url = 'https://api.spotify.com/v1/me/audiobooks'
+    try{
+        const headers = {
+            Authorization: 'Bearer ' + process.env.access_token
+          }
+    
+        var resp = await fetch(url, {headers})
+        var data = await resp.json()
+        res.send(data)
+    }
+    catch (e){
+        console.log(e)
+    }
+})
 module.exports = router;

@@ -20,7 +20,7 @@ import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
 import { useGetDevicesQuery, Devices, useGetAlbumsQuery } from '../../ApiSlice.ts';
-import { createSelector, current } from '@reduxjs/toolkit'
+import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
 
 import 'react-responsive-modal/styles.css';
@@ -123,7 +123,7 @@ export default function WebPlayback() {
 
     const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)})
 
-    const {data: devices = [], isSuccess: dSuccess} = useGetDevicesQuery()
+    const {data: devices = [], isSuccess: dSuccess, refetch} = useGetDevicesQuery()
     
     type getDevicefromResultArg = TypedUseQueryStateResult<Devices[],any,any>
 
@@ -417,6 +417,7 @@ export default function WebPlayback() {
                     <SeekBar duration={duration} player={player} paused={is_paused} />
 
                     <img src={device} onClick={function handleClick(){      
+                        refetch()
                         onOpenModal()                  
                         dSuccess ? console.log(devices) : null                                                
                     }} style={{position: 'absolute', right: '-42vw', height: '42px', cursor: 'pointer'}} />

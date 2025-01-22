@@ -2,6 +2,7 @@
 
 import './Card.css'
 import { useNavigate } from 'react-router-dom';
+import { useGetAlbumsQuery } from '../../ApiSlice.ts';
 
 export default function Card( {id, image, name, artist, a_id}: any ) {
     const navigate = useNavigate()
@@ -10,11 +11,13 @@ export default function Card( {id, image, name, artist, a_id}: any ) {
     let zip = artist.map(function (e: any, i: number) {
         return [e, a_id[i]]
     })
+    const {data: albums = []} = useGetAlbumsQuery()
+    let found = albums?.find((e: any) => e?.album_id === id)
     return (
         <div className="card">
 
             <a onClick={function handleClick() {
-                sessionStorage.setItem("albumStatus", "user")
+                found === undefined ? sessionStorage.setItem("albumStatus", "notuser") : sessionStorage.setItem("albumStatus","user")
                 sessionStorage.setItem("id", id)
                 // sessionStorage.setItem("uri", uri)
                 sessionStorage.setItem("image", image)

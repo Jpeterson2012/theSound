@@ -6,7 +6,7 @@ import './Home.css'
 import Card from "../components/Card/Card.tsx";
 // import Local from "../components/Local/Local.jsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
-import { useGetAlbumsQuery, useGetPlaylistsQuery } from "../ApiSlice.ts"; 
+import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery } from "../ApiSlice.ts"; 
 
 
 function Albums(listItems: any){
@@ -85,9 +85,62 @@ function playlistSort(setPSorted: any){
     </>
   )
 }
-function Podcasts(){
+function Podcasts(podcasts:any){
+  const listItems = podcasts?.items.map((a:any) =>
+    <a onClick={function handleClick(){
+      var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
+      const headers = {
+          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + sessionStorage.getItem("token")
+      }
+      
+      fetch(url, {
+          method: 'PUT',
+          headers: headers,
+          body: JSON.stringify({context_uri: a.show.uri})
+      })
+    }}>
+      <div style={{display: 'flex', alignItems: 'center'}}>
+      < img className="fade-in-image" src={a.show.images.length == 1 ? a.show.images.map((s: any) => s.url) : a.show.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.show.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
+        <h2>{a.show.name}</h2>
+      </div>
+      </a>
+      )
+  
   return(
-    <h4>Hello there</h4>
+    <div style={{marginTop: '10vw'}}>
+      {listItems}
+    </div>
+    
+  )
+}
+function Audiobooks(audiobooks:any){
+  const listItems = audiobooks?.items.map((a:any) =>
+      <a onClick={function handleClick(){
+        var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: 'Bearer ' + sessionStorage.getItem("token")
+        }
+        
+        fetch(url, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify({context_uri: a.uri})
+        })
+      }}>
+      <div style={{display: 'flex', alignItems: 'center'}}>
+      < img className="fade-in-image" src={a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
+        <h2>{a.name}</h2>
+      </div>
+      </a>
+      )
+  
+  return(
+    <div style={{marginTop: '10vw'}}>
+      {listItems}
+    </div>
+    
   )
 }
 // function localSong(){
@@ -102,8 +155,12 @@ export default function Home() {
     const [sorted, setSorted] = useState(0)
     const [psorted, setPSorted] = useState(0)
     const [loading, setLoading] = useState(false)
+
+    
       
     const {data: albums = [],isSuccess} = useGetAlbumsQuery()
+    const {data: podcasts} = useGetPodcastsQuery()
+    const {data: audiobooks} = useGetAudiobooksQuery()
     
 
     const sortedAlbums = (() => {
@@ -146,8 +203,7 @@ export default function Home() {
       }
     })
 
-    useEffect(() => {
-      console.log(albums)
+    useEffect(() => {      
       sessionStorage.getItem('sortVal') && setSorted(+sessionStorage.getItem('sortVal')!)
       sessionStorage.getItem('psortVal') && setPSorted(+sessionStorage.getItem('psortVal')!)
       
@@ -160,7 +216,10 @@ export default function Home() {
           setHtml(Playlists(navigate,listPlaylists))
           break
         case 'podcast':
-          setHtml(Podcasts())
+          setHtml(Podcasts(podcasts))
+          break
+        case 'audiobook':
+          setHtml(Audiobooks(audiobooks))
           break
         // case 'local':
         //   setHtml(localSong())
@@ -169,6 +228,8 @@ export default function Home() {
           setHtml(Albums(listItems))
       }
       setLoading(false)
+      
+      
 
     
   }, [isSuccess,sorted, psorted]);
@@ -212,8 +273,8 @@ export default function Home() {
           <div style={{position: 'absolute', top: '10vw', right: '40vw'}}>
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
             <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
-            <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
-            <button className="homeButtons" onClick={() => {setHtml(Podcasts()), sessionStorage.setItem('home', 'audiobook') }}>AudioBooks</button>
+            <button className="homeButtons" onClick={() => {setHtml(Podcasts(podcasts)), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
+            <button className="homeButtons" onClick={() => {setHtml(Audiobooks(audiobooks)), sessionStorage.setItem('home', 'audiobook') }}>AudioBooks</button>
         
             {/* <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button> */}
             <div className="dropdown" id="dropdown">
