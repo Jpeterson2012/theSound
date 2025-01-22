@@ -20,8 +20,6 @@ import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
 import { useGetDevicesQuery, Devices, useGetAlbumsQuery } from '../../ApiSlice.ts';
-import { createSelector } from '@reduxjs/toolkit'
-import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
 
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
@@ -49,11 +47,11 @@ const track: any = {
     ],
     uri: ""
 }
-function Spin({is_active, is_paused}: any){
+function Spin({is_active, is_paused}:any){
     
     return (
         <>
-        <svg viewBox="0 0 400 400">
+        <svg id='svg1' viewBox="0 0 400 400">
               <g id="record"  style={!is_active ? {animationPlayState: 'paused'} :  is_paused ? {animationPlayState: 'paused'} : ({animationPlayState: 'running'})}>
               <circle r="200" cx="200" cy="200" />
               <circle className="line1" r="180" cx="200" cy="200" />
@@ -62,6 +60,25 @@ function Spin({is_active, is_paused}: any){
               <circle id="label" cx="200" cy="200" r="100" style={{fill: '#0066ff'}}/>
               <text className="writing" y="160" x="165">TheSound </text>  
               <text className="writing" y="230" x="115" textLength="170" lengthAdjust="spacing" >{sessionStorage.getItem("name") ? (sessionStorage.getItem("name")!.length > 49 ? (sessionStorage.getItem("name")!.substring(0,25) + "...") : sessionStorage.getItem("name")) : null}</text>    
+              <circle id="dot" cx="200" cy="200" r="6" />
+              </g>
+            </svg>
+        </>
+    )
+}
+function Spin2(is_active:any, is_paused:any){
+    
+    return (
+        <>
+        <svg id='svg2' viewBox="0 0 400 400">
+              <g id="record2"  style={!is_active ? {animationPlayState: 'paused'} :  is_paused ? {animationPlayState: 'paused'} : ({animationPlayState: 'running'})}>
+              <circle r="200" cx="200" cy="200" />
+              <circle className="line1" r="180" cx="200" cy="200" />
+              <circle className="line2" r="160" cx="200" cy="200" />
+              <circle className="line3" r="140" cx="200" cy="200" />
+              <circle id="label" cx="200" cy="200" r="100" style={{fill: '#0066ff'}}/>
+              <text className="writing" y="160" x="165">TheSound</text>  
+              <text className="writing" y="230" x="115" textLength="170" lengthAdjust="spacing" >TheSound</text>    
               <circle id="dot" cx="200" cy="200" r="6" />
               </g>
             </svg>
@@ -110,7 +127,7 @@ export default function WebPlayback() {
 
     const [player, setPlayer] = useState<any>(undefined);
     const [is_paused, setPaused] = useState<any>(false);
-    const [is_active, setActive] = useState(false);
+    const [is_active, setActive] = useState<any>(false);
     const [current_track, setTrack] = useState(track);
     const [pos, setPos] = useState<any>(0)
 
@@ -123,21 +140,7 @@ export default function WebPlayback() {
 
     const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)})
 
-    const {data: devices = [], isSuccess: dSuccess, refetch} = useGetDevicesQuery()
-    
-    type getDevicefromResultArg = TypedUseQueryStateResult<Devices[],any,any>
-
-    const selectDevice = createSelector(
-        (res: getDevicefromResultArg) => res.data,        
-        (data) => data?.filter(plist => plist.is_active === true)
-    )
-
-    const { mainDevice } = useGetDevicesQuery(undefined, {
-      selectFromResult: result => ({
-        ...result,
-        mainDevice: selectDevice(result)
-      })
-    })
+    const {data: devices = [], isSuccess: dSuccess, refetch} = useGetDevicesQuery()        
 
     const {data: albums = []} = useGetAlbumsQuery()
     
@@ -278,8 +281,11 @@ export default function WebPlayback() {
 
                                 navigate(`/app/album/${lastSegment}`)
                             }}>
+                            <span>
                             <img src={current_track.album.images[0]?.url} 
-                                className="now-playing__cover" alt="" style={{marginRight: '14px'}} />
+                                className="now-playing__cover" alt="" style={{left: '-3px', bottom: '5px', zIndex: '1',position: 'absolute'}} />
+                                <div>{is_active && Spin2(is_active,is_paused)}</div>
+                            </span>
                             </a>
                             
 

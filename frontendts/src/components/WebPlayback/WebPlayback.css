@@ -1,5 +1,5 @@
 .scrollbar1{
-    max-width: 270px;
+    max-width: 300px;
     color: rgb(90, 210, 216);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -8,7 +8,7 @@
       /* overflow: hidden; */
   }
   .scrollbar2{
-    max-width: 270px;
+    max-width: 300px;
     color: rgb(90, 210, 216);
     overflow: hidden;
   }
@@ -52,6 +52,10 @@
       transform: translate(-50%);
     }
   } */
+  .now-playing__side{
+    position:  absolute;
+    left: 90px;
+  }
   
   .main-wrapper img {
       height: 60px;
@@ -157,7 +161,7 @@
       }
     }
     /* Record animation */
-    svg {
+    #svg1 {
       z-index: 0;
       position: absolute;
       left: 40px;
@@ -166,6 +170,16 @@
       border: 1px solid 0066ff;
       background: black;
       overflow: hidden;
+    }
+    #svg2{
+      z-index: 0;
+      position: absolute;
+      left: 14px;
+      bottom: -10px;
+      width: 90px;
+      height: 80px;
+      border: 1px solid 0066ff;
+      background: black;
     }
     
     #label {
@@ -176,7 +190,7 @@
       100%{transform: rotate(360deg);}
     }
     
-    #record {
+    #record,#record2 {
       transform-origin: center center;
       animation: spin 2.5s linear infinite;
     }
@@ -257,9 +271,9 @@ input[type=range]{
 
   @media(min-height: 1000px){
     .scrollbar1, .scrollbar2{
-      max-width: 750px;
+      max-width: 790px;
     }
-    svg{
+    #svg1{
       width: 500px;
       height: 490px;
     }

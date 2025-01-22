@@ -85,8 +85,8 @@ export default function RAlbum({SpinComponent, active, paused}: any) {
               </span>
 
 
-              <h2>{zip.map((s: any,i: number,row: any) =>
-                <a className="artistName" onClick={function handleClick() {
+              <h2 className="artistName">{zip.map((s: any,i: number,row: any) =>
+                <a  onClick={function handleClick() {
                   navigate(`/app/artist/${s[1]}`)
                 }}>{row.length - 1 !== i ? s[0] + ", " : s[0]}</a>             
               )}</h2>

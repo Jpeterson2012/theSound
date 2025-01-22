@@ -17,6 +17,7 @@
 }
 .artistName{
     font-weight: bolder;
+    font-size: 25px;
 }
 .albumDescription{
     display: flex;
@@ -109,6 +110,10 @@
     .albumImage{
         height: 459px;
         right: 500px;
+    }
+    .artistName{
+        margin-top: 2vw;
+        font-size: 35px;
     }
   }
   

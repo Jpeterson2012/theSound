@@ -8,7 +8,7 @@ import Track from '../Track/Track';
 import escape from '../../images/escape.jpg'
 import search from '../../images/search.png'
 import space from '../../images/music.gif'
-import { useGetUserQuery } from '../../ApiSlice';
+import { useGetUserQuery,useGetAlbumsQuery } from '../../ApiSlice';
 
 function getTracks(ptracks: any) {
     var key = 0
@@ -31,13 +31,17 @@ function getTracks(ptracks: any) {
       )
     )
   }
-  function getAlbums(palbums: any, nav: any, close: any) {
+  function getAlbums(albumss: any,palbums: any, nav: any, close: any) {
     var artists: any = []
     var a_ids: any = []
+    
     return (
       palbums.map((t:any) =>
         <a onClick={function handleClick() {
-          sessionStorage.setItem("albumStatus", "notuser")
+          
+          let found = albumss?.find((e: any) => e?.album_id === t.id)
+          found === undefined ? sessionStorage.setItem("albumStatus", "notuser") : sessionStorage.setItem("albumStatus","user")
+
             t.artists.map((s:any) => artists.push(s.name))
             t.artists.map((s:any) => a_ids.push(s.id))
             sessionStorage.setItem("artist", JSON.stringify(artists))
@@ -110,6 +114,7 @@ export default function Logo () {
     const [albums, setAlbums] = useState<any>([]);
     const [plist, setPlist] = useState<any>([]);
     const [artist, setArtist] = useState<any>([])
+    const {data: albumss = []} = useGetAlbumsQuery()
 
     const [open, setOpen] = useState(false);
     const onOpenModal = () => setOpen(true);
@@ -155,7 +160,7 @@ export default function Logo () {
           setHtml(getTracks(tracks))
           break
         case 'albums':
-          setHtml(getAlbums(albums, navigate, onCloseModal))
+          setHtml(getAlbums(albumss,albums, navigate, onCloseModal))
           break
         case 'artists':
           setHtml(getArtists(artist, navigate, onCloseModal))
@@ -222,7 +227,7 @@ export default function Logo () {
 
                     <div id='modalbuttons' style={{display: 'none', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '8vw'}}>
                         <button onClick={() => {setHtml(getTracks(tracks)), sessionStorage.setItem('searchHome', 'tracks')}}>Tracks</button>
-                        <button onClick={() => {setHtml(getAlbums(albums, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'albums')}}>Albums</button>
+                        <button onClick={() => {setHtml(getAlbums(albumss,albums, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'albums')}}>Albums</button>
                         <button onClick={() => {setHtml(getArtists(artist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'artists')}}>Artists</button>
                         <button onClick={() => {setHtml(getPlaylists(plist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'playlists')}}>Playlists</button>
                     </div>
