@@ -40,6 +40,7 @@ function randColor(){
 }
 let color1 = 'hsla(' + (Math.random() * 360) + ', 100%, 50%, 1)'
 let color2 = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
+let color3 = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
 
 
 const track: any = {
@@ -66,7 +67,7 @@ function Spin({is_active, is_paused}:any){
               <circle className="line1" r="180" cx="200" cy="200" />
               <circle className="line2" r="160" cx="200" cy="200" />
               <circle className="line3" r="140" cx="200" cy="200" />
-              <circle id="label" cx="200" cy="200" r="100" style={{fill: color1}}/>
+              <circle id="label" cx="200" cy="200" r="100" style={{fill: color3}}/>
               <text className="writing" y="160" x="165">TheSound </text>  
               <text className="writing" y="230" x="115" textLength="170" lengthAdjust="spacing" >{sessionStorage.getItem("name") ? (sessionStorage.getItem("name")!.length > 49 ? (sessionStorage.getItem("name")!.substring(0,25) + "...") : sessionStorage.getItem("name")) : null}</text>    
               <circle id="dot" cx="200" cy="200" r="6" />
