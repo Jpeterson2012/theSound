@@ -72,13 +72,18 @@ router.post('/playlist/:id', async (req, res) => {
     sql = `SELECT tracks FROM uplaylists WHERE playlist_id = '${req.params.id}'`
     con.query(sql, (err,result) => {
       if (err) throw err;
+    
       let temp = JSON.parse(result[0].tracks)
+      if (temp === null){
+        temp = {}
+        temp.items = []
+      }
       let temp2 = req.body
       temp2.album = {}
       temp2.album.images = temp2.images        
       delete temp2.images
       
-      temp.items.push(temp2)
+      temp.items.push(temp2)      
       // console.log(temp.items)
       sql = `UPDATE uplaylists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}'`
       con.query(sql, (err,result) => {

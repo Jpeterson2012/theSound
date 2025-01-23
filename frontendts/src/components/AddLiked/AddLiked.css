@@ -9,6 +9,7 @@
     min-height: 800px !important;
     overflow: hidden;
     margin-bottom: 150px !important;
+    background:linear-gradient(to top, #0066ff 0%, #cc33ff 100%) !important;
   }
   input[type=checkbox]{
     /* appearance: none; */

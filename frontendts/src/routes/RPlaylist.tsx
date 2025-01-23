@@ -89,7 +89,7 @@ export default function RPlaylist({SpinComponent, lastSegment, active, paused}: 
                                 <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>
                                 <div style={{display: 'flex', marginRight: '10px'}}>
                                     <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
-                                    <h5 style={{color: 'rgb(90, 210, 216)'}}>{ptracks?.length} Songs</h5>
+                                    <h5 style={{color: 'rgb(90, 210, 216)'}}>{ptracks?.length} Song(s)</h5>
     
                     
                                 </div>

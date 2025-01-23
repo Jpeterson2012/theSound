@@ -19,7 +19,7 @@ function listImages(last: any, ptracks: any) {
   }
   else{
     return (
-      ptracks.images?.length == 1 ? ptracks.images?.map((s: any) => mainImage(s.url)) :
+      ptracks.images?.length === 0 ? mainImage("https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg") : ptracks.images?.length == 1 ? ptracks.images?.map((s: any) => mainImage(s.url)) :
       ptracks.images?.filter((t: any) => t.height == 640).map((s: any) => mainImage(s.url))
     )
   }
@@ -112,7 +112,7 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
                             <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>
                             <div style={{display: 'flex', marginRight: '10px'}}>
                                 <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
-                                <h5 style={{color: 'rgb(90, 210, 216)'}}>{lastSegment == 'likedsongs' ? liked?.tracks?.length : singlePlist![0].tracks.length} Songs</h5>
+                                <h5 style={{color: 'rgb(90, 210, 216)'}}>{lastSegment == 'likedsongs' ? liked?.tracks?.length : singlePlist![0].tracks.length} Song(s)</h5>
 
                 
                             </div>

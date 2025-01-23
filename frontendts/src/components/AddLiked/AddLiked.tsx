@@ -69,8 +69,8 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                     <div>             
                         <Modal modalId='modal2' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>                            
                             <div style={{display: 'flex', alignItems: 'center'}}>
-                                <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '80px', width: '80px', marginRight: '50px'}}/>
-                                <h3 style={{fontSize: '15px'}} >Liked Songs</h3>
+                                <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '80px', width: '80px', marginRight: '20px'}}/>
+                                <h3 style={{fontSize: '18px',color: 'black'}} >Liked Songs</h3>
                                  {/* <button>{found === undefined ? "Add" : "Remove"}</button> */}
                                 <input id='checkbox' type='checkbox' />
                                 <p hidden>
@@ -84,8 +84,8 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                                 </div>
                             {playlists!.map((a: any,i: any) =>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
-                                <img className="fade-in-image" src={a.images.length == 1 ? a.images.map((s:any) => s.url) : a.images.filter((s:any) => s.height == 300).map((s:any) => s.url)} alt={a.name} style={{height: '80px', width: '80px', marginRight: '50px'}}/>
-                                <h3 style={{maxWidth: '500px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize: '15px'}} >{a.name}</h3>
+                                <img className="fade-in-image" src={a.images.length == 0 ? "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" : a.images.length == 1 ? a.images.map((s:any) => s.url) : a.images.filter((s:any) => s.height == 300).map((s:any) => s.url)} alt={a.name} style={{height: '80px', width: '80px', marginRight: '20px'}}/>
+                                <h3 style={{maxWidth: '500px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize: '18px',color: 'black'}} >{a.name}</h3>
                                 <input id={"checkbox" + i} type='checkbox'/>
                                 <p hidden>
                                 {open ? (()=>

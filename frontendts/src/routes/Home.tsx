@@ -1,12 +1,15 @@
 //sessionstorage items created: cusername, albums, playlist_name, sortVal, psortVal
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import './Home.css'
 import Card from "../components/Card/Card.tsx";
 // import Local from "../components/Local/Local.jsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
-import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery } from "../ApiSlice.ts"; 
+import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery,useGetUserQuery } from "../ApiSlice.ts"; 
+import 'react-responsive-modal/styles.css';
+import { Modal } from 'react-responsive-modal';
+import escape from '../images/escape.jpg'
 
 
 function Albums(listItems: any){
@@ -159,8 +162,40 @@ export default function Home() {
     
       
     const {data: albums = [],isSuccess} = useGetAlbumsQuery()
+    const {data: user} = useGetUserQuery()
     const {data: podcasts} = useGetPodcastsQuery()
-    const {data: audiobooks} = useGetAudiobooksQuery()
+    const {data: audiobooks} = useGetAudiobooksQuery()    
+
+    const [open, setOpen] = useState(false);
+
+    const onOpenModal = () => {setOpen(true)}
+    const onCloseModal = () => {
+      setOpen(false)
+      let pform = document.getElementById('formPlaylist')
+      pform?.addEventListener("submit", (e) => {
+        e.preventDefault()
+        let name = (document.getElementById('first') as HTMLInputElement)
+        let desc = (document.getElementById('second') as HTMLInputElement)
+        let opt1 = (document.getElementById('option1') as HTMLInputElement)
+        // let opt2 = (document.getElementById('option2') as HTMLInputElement)
+        if (name!.value == "") console.error("Error")
+        else{
+          // console.log(name.value)
+          // console.log(desc.value)
+          // console.log(opt1.checked)
+          // console.log(opt2.checked)
+          fetch(`http://localhost:8888/auth/users/${user!.items}`, {
+            method: 'POST',
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({name: name.value, description: desc.value === "" ? "null" : desc.value, public: opt1.checked})                                        
+          }).then(a => {refetch()})
+        }
+      })
+    }
+
+    const closeIcon = (
+      <img src={escape} style={{height: '44px', width: '44px'}}/>
+  )
     
 
     const sortedAlbums = (() => {
@@ -185,7 +220,7 @@ export default function Home() {
       }      
     })
 
-    const {data: playlists = []} = useGetPlaylistsQuery()
+    const {data: playlists = [], isFetching, refetch} = useGetPlaylistsQuery()
 
     const sortedPlaylists = (() => {
       const sortedPlaylists = playlists.slice()
@@ -203,7 +238,8 @@ export default function Home() {
       }
     })
 
-    useEffect(() => {      
+    useEffect(() => {
+      console.log(playlists)      
       sessionStorage.getItem('sortVal') && setSorted(+sessionStorage.getItem('sortVal')!)
       sessionStorage.getItem('psortVal') && setPSorted(+sessionStorage.getItem('psortVal')!)
       
@@ -232,7 +268,7 @@ export default function Home() {
       
 
     
-  }, [isSuccess,sorted, psorted]);
+  }, [isSuccess,sorted, psorted,isFetching]);
     
   const listItems = sortedAlbums()?.map((a: any) => 
     <Card
@@ -257,7 +293,7 @@ export default function Home() {
         navigate(`/app/playlist/${a.playlist_id}`)
       }}>
         <div style={{display: 'flex', alignItems: 'center'}}>
-        <img className="fade-in-image" src={a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
+        <img className="fade-in-image" src={a.images.length == 0 ? "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" : a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
         <h2>{a.name}</h2>
         </div>
       
@@ -270,21 +306,65 @@ export default function Home() {
     <>
       {!isSuccess ? <Loading2 yes={true} /> : (<>
       <div className="homeContainer">
-          <div style={{position: 'absolute', top: '10vw', right: '40vw'}}>
+          <div style={{position: 'absolute', top: '10vw', right: '40vw'}}>            
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
             <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
             <button className="homeButtons" onClick={() => {setHtml(Podcasts(podcasts)), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
             <button className="homeButtons" onClick={() => {setHtml(Audiobooks(audiobooks)), sessionStorage.setItem('home', 'audiobook') }}>AudioBooks</button>
         
             {/* <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button> */}
+            <p style={sessionStorage.getItem('home') === "playlist" ? {display: "inline"} : {display: "none"}} className="addPlaylist" onClick={function handleClick(){
+              onOpenModal()                            
+            }} >{ "+"}</p>
+
             <div className="dropdown" id="dropdown">
+
+            
+
+              <Modal modalId='modal4' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>
+              <div style={{color: 'black', marginLeft: '40%',fontWeight: 'bolder'}} >New Playlist</div>
+              <form action=""  id="formPlaylist">
+                <label htmlFor="first">
+                    Name:
+                </label>
+                <input type="text" id="first" name="first" 
+                    placeholder="Enter your Playlist Name" required />
+                    
+                <label htmlFor="second">
+                    Description:
+                </label>
+                <input type="text" id="second" name="second" 
+                    placeholder="Optional"/>
+                
+                <div style={{color: 'black', fontWeight: 'bolder'}} >Public:</div>
+                  <div style={{display: 'flex', gap: '10px'}}>
+                  <div>
+                    <label htmlFor="option1">True</label>
+                    <input type="radio" id="option1" name="third" value="True" defaultChecked style={{width: '18px',height: '18px'}} />
+                  </div>  
+
+                  <div>
+                    <label htmlFor="option2">False</label>
+                    <input type="radio" id="option2" name="third" value="False" style={{width: '18px',height: '18px'}} />
+                  </div>  
+                </div>                   
+
+                <div className="wrap">
+                    <button type="submit" onClick={(() => onCloseModal())}>
+                        Submit
+                    </button>
+                </div>
+              </form>
+
+              </Modal>
+
               <button className="dropbtn">Sort</button>
               <div className="dropdown-content">
                 {(sessionStorage.getItem('home') === null || sessionStorage.getItem('home') === 'album') && albumSort(setSorted)}
                 {sessionStorage.getItem('home') === 'playlist' && playlistSort(setPSorted)}
               </div>
             </div>
-
+              
           </div>
         
       </div>

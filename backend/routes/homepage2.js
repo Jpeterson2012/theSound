@@ -41,16 +41,17 @@ router.get('/playlists', async (req, res) => {
             for (let i = 0; i < result.length; i++){
                 var temp ={}
                 temp.playlist_id = result[i].playlist_id
-                temp.images = JSON.parse(result[i].images)
+                temp.images = JSON.parse(result[i].images) === null ? [] : JSON.parse(result[i].images)
                 temp.name = result[i].name
                 temp.public = result[i].public
                 temp.uri = result[i].uri
                 var temp2 = JSON.parse(result[i].tracks)
                 
+                
                 var temp3 = []
-                temp2.items?.map(a => {
+                temp2 === null ? null : temp2.items?.map(a => {
                     temp3.push({images:( a.album?.images ? a.album?.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
-                })
+                }) 
                 temp.tracks = temp3
                 items.push(temp)
                 }

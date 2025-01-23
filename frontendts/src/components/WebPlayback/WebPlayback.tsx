@@ -394,8 +394,7 @@ export default function WebPlayback() {
                                 }
                         }}/>
                         <input id='volumeBar' type='range' min={0} max={1} step={0.05} style={{position: 'absolute', bottom: '14px',right: '290px'}} onChange={function handleChange(e){
-                            let temp2 = document.getElementById("volumeIcon")!
-                            let temp = document.getElementById("volumeBar")
+                            let temp2 = document.getElementById("volumeIcon")!                            
                             let found = sessionStorage.getItem("currentContext") === null ? true : sessionStorage.getItem("currentContext") === "null" ? true : false
                             e.target.value === "0" ? temp2.style.opacity = '0' : temp2.style.opacity = e.target.value
                             

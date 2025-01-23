@@ -253,10 +253,9 @@ input[type=range]{
     width: 1rem;
   }
 
+  
   #modal1{
-    background:linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%) !important;
-  }
-  #modal1{
+    background:linear-gradient(to top, #0066ff 0%, #cc33ff 100%) !important;
     margin: 0px;
     padding:  10px !important;
     position: fixed !important;
