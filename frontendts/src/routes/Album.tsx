@@ -6,6 +6,7 @@ import UAlbum from "./UAlbum.tsx";
 import RAlbum from "./RAlbum.tsx";
 
 function render(found: any, UAlbum: any, RAlbum: any, SpinComponent: any, active: any, paused: any){
+  //Check if album is already in library or not, also prevents rerenders when adding/removing to/from library
   if (found === undefined && sessionStorage.getItem("albumStatus") === "notuser"){
       return (<> <RAlbum SpinComponent={SpinComponent} active={active} paused={paused}/></>)
   }

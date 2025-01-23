@@ -39,6 +39,7 @@ function getTracks(ptracks: any) {
       palbums.map((t:any) =>
         <a onClick={function handleClick() {
           
+          //Check if album is already in library or not
           let found = albumss?.find((e: any) => e?.album_id === t.id)
           found === undefined ? sessionStorage.setItem("albumStatus", "notuser") : sessionStorage.setItem("albumStatus","user")
 

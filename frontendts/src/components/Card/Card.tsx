@@ -17,6 +17,7 @@ export default function Card( {id, image, name, artist, a_id}: any ) {
         <div className="card">
 
             <a onClick={function handleClick() {
+                //Check if album is already in library or not
                 found === undefined ? sessionStorage.setItem("albumStatus", "notuser") : sessionStorage.setItem("albumStatus","user")
                 sessionStorage.setItem("id", id)
                 // sessionStorage.setItem("uri", uri)

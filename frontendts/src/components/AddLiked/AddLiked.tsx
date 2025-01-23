@@ -23,6 +23,8 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
 
     const onOpenModal = () => {setOpen(true); submit1 = [], submit2 = []}
     const onCloseModal = () => {
+        //Potential idea for delaying backend requests
+        // let num = 500
         setOpen(false);
         // console.log(submit1)
         let temp = (document.getElementById('checkbox') as HTMLInputElement).checked
@@ -39,13 +41,13 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                     let p_id = playlists![i].playlist_id
                     let ptrackData = {images: currentTrack.album.images, uri: currentTrack.uri, name: currentTrack.name, track_number: 0, duration_ms: duration, artists: currentTrack.artists}
                     addpTrack({pID: p_id, initialP: ptrackData})
-                },500) :
+                },(sessionStorage.getItem("currentContext") === null || sessionStorage.getItem("currentContext") === "null") ? 500 : 250) :
                 setTimeout(() => {
                     let p_id = playlists![i].playlist_id
                     removePTrack({pID: p_id, name: currentTrack.name})
-                },500)
+                },(sessionStorage.getItem("currentContext") === null || sessionStorage.getItem("currentContext") === "null") ? 500 : 250)
                 
-                
+                // num += 500
             }
         }
         // console.log(submit2)
@@ -102,7 +104,7 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                     </div> 
 
 
-                    <p id='addSong' style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', marginTop: '15px', cursor: 'pointer', border: '2px solid #7a19e9', color: 'rgb(90, 210, 216)', borderRadius: '50%'}} onClick={function handleClick(){
+                    <p id='addSong' onClick={function handleClick(){
                                     
                         const handleSubmit = async () => {
                             var parts = currentTrack.album.uri.split(':');

@@ -21,8 +21,13 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                 album_name && sessionStorage.setItem("albumname", album_name)
                 
                 // sessionStorage.setItem("name", sessionStorage.getItem("albumname"))
-
-                var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
+                if (sessionStorage.getItem("currentContext")! === null || sessionStorage.getItem("currentContext")! === "null"){
+                    var url = `https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
+                }
+                else{
+                    var url = `https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("currentContext")}`
+                }
+                
                     const headers = {
                         "Content-Type": "application/json",
                         Authorization: 'Bearer ' + sessionStorage.getItem("token")

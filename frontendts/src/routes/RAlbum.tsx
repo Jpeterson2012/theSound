@@ -22,6 +22,7 @@ export default function RAlbum({SpinComponent, active, paused}: any) {
     const [addAlbum] = useAddAlbumMutation()
     const [deleteAlbum] = useDeleteAlbumMutation()
     const {data: albums = []} = useGetAlbumsQuery()
+    //Check if album is already in library or not
     let found = albums?.find((e: any) => e?.album_id === lastSegment)
     
 
@@ -78,6 +79,7 @@ export default function RAlbum({SpinComponent, active, paused}: any) {
           <>
 
             <div className="topDiv">
+              <h2>{tracks?.albums?.name}</h2>
               <span className="fade-in-image2">
                 <SpinComponent is_active={active} is_paused={paused}/>
                 <img className="albumImage" src={sessionStorage.getItem("image")!}/>

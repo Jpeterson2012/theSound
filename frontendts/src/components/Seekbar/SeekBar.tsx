@@ -23,63 +23,40 @@ function useInterval(callback: any, delay: any){
 
 export default function SeekBar({duration, player, paused}: any){
     const [pos, setPos] = useState<any>(0)
+    let found = sessionStorage.getItem("currentContext") === null ? true : sessionStorage.getItem("currentContext") === "null" ? true : false
     
-
-        // let getPosition = () => {
-        //     if(paused) return position
-
-        //     let temp = position + (performance.now() - update) / 1000
-        //     return temp > duration ? duration : temp
-        // }
-        // useInterval(()=>{
-        //     let a = getPosition()
-        //     console.log(a)
-        // },1500)
-        useInterval(() => {
-            paused ? null : player?.getCurrentState().then((state: any) => {
-               setPos(state?.position)
-             })
-        },1000)
-        // console.log(getPosition)
-        
-
-        // if (position && duration) {
-        //     setPos(duration ? (position >= duration ? 0 : position / duration) : 0);
-        // }
-        // setPos(position)
-        
-        
-    
-
-    
-    
-    
-    
+    //Checks if current device is The Sound. If not uses session variable to update song progress
+    if (found){
+      useInterval(() => {
+        paused ? null : player?.getCurrentState().then((state: any) => {
+           setPos(state?.position)
+         })
+      },1000)
+    }
+    else{
+      useInterval(() => {
+        setPos(sessionStorage.getItem("progress") ? sessionStorage.getItem("progress") : 0)
+      },3000)
+    }          
 
     return(
         <input id='seeker' type='range' min="0" max={duration} value={pos} step="100" onChange={function handleChange(e){ 
             setPos(e.target.value)
-            player.seek(e.target.value)
+            let temp = (document.getElementById('seeker') as HTMLInputElement)
+
+            if(found) {
+              player.seek(e.target.value)              
+            }
+            else 
+              setTimeout(() => {                
+                fetch(`http://localhost:8888/auth/player/seek/${sessionStorage.getItem("currentContext")},${+e.target.value}`, {
+                  method: 'POST',
+                  headers: {"Content-Type":"application/json"},                                        
+                })
+              },150)
+            
         }} style={{position: 'absolute', left: '280px', bottom: '12px', width: '500px'}} />
     )
 }
 
-{/* <input id='seeker' type='range' min="0" max={duration} value={(()=>
-                        
-                        
-                        window.setInterval(()=>{
-                            player?.getCurrentState().then((state: any) => {
-                                (document.getElementById('seeker') as HTMLInputElement).value = state?.position
-                            })
-                        },500)
-                        window.setInterval(()=> {let p = sPosition; p += is_paused ? 0 : 300},300)
-                        
-                    )()} onChange={function handleChange(e){ 
-                        setPos(e.target.value)
-                        player.seek(e.target.value)
-                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} />  */}
-                    
-                    {/* <input id='seeker' type='range' min="0" max={duration} value={pos} onChange={function handleChange(e){ 
-                        setPos(e.target.value)
-                        player.seek(e.target.value)
-                    }} style={{position: 'absolute', left: '300px', bottom: '12px', width: '500px'}} /> */}
+export { useInterval }

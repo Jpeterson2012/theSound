@@ -1,5 +1,5 @@
 .scrollbar1{
-    max-width: 300px;
+    max-width: 260px;
     color: rgb(90, 210, 216);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -8,7 +8,7 @@
       /* overflow: hidden; */
   }
   .scrollbar2{
-    max-width: 300px;
+    max-width: 260px;
     color: rgb(90, 210, 216);
     overflow: hidden;
   }
@@ -271,7 +271,7 @@ input[type=range]{
 
   @media(min-height: 1000px){
     .scrollbar1, .scrollbar2{
-      max-width: 790px;
+      max-width: 770px;
     }
     #svg1{
       width: 500px;

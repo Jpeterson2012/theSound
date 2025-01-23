@@ -118,20 +118,61 @@ router.post('/next/:id', async(req,res) => {
 })
 
 router.get('/currently-playing', async(req,res) => {
-    url = 'https://api.spotify.com/v1/me/player/currently-playing'
+    url = 'https://api.spotify.com/v1/me/player/currently-playing'    
     try{
         const headers = {
             Authorization: 'Bearer ' + process.env.access_token
           }
     
         var resp = await fetch(url, {headers})
-        var data = await resp.json()
+        var data = await resp.json()        
         res.send(data)
     }
     catch (e){
         console.log(e)
     }
 
+})
+
+router.post('/volume/:id', async(req,res) => {
+    let arr = req.params.id    
+    arr = arr.split(',')
+    console.log(arr[0])
+    
+    url = `https://api.spotify.com/v1/me/player/volume?volume_percent=${+arr[1]}&device_id=${arr[0]}`    
+    try{        
+        const headers = {
+            Authorization: 'Bearer ' + process.env.access_token
+          }
+    
+          await fetch(url, {
+            method: 'PUT',
+            headers: headers                        
+        }).then(res.send("201"))
+    }
+    catch (e){
+        console.log(e)
+    }
+})
+
+router.post('/seek/:id', async(req,res) => {
+    let arr = req.params.id    
+    arr = arr.split(',')    
+    
+    url = `https://api.spotify.com/v1/me/player/seek?position_ms=${+arr[1]}&device_id=${arr[0]}`    
+    try{        
+        const headers = {
+            Authorization: 'Bearer ' + process.env.access_token
+          }
+    
+          await fetch(url, {
+            method: 'PUT',
+            headers: headers                        
+        }).then(res.send("201"))
+    }
+    catch (e){
+        console.log(e)
+    }
 })
 
 module.exports = router;

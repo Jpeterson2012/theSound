@@ -52,6 +52,7 @@ export default function UAlbum({SpinComponent, active, paused}: any) {
        sessionStorage.setItem("albumStatus", "user")
       if(asuccess) {
         setIsLoading(false)
+        //Assigns user album to session storage to prevent error if removed from library
         singleAlbum!.length > 0 ? (sessionStorage.setItem("ualbum",JSON.stringify(singleAlbum)), setTAlbum(singleAlbum!)) : (setTAlbum(JSON.parse(sessionStorage.getItem("ualbum")!)), setArtists(JSON.parse(sessionStorage.getItem("uartist")!))  )
         
         
@@ -78,8 +79,7 @@ export default function UAlbum({SpinComponent, active, paused}: any) {
         const assignArtists = async () => {            
             const tempArtists = await fetchArtists()
             sessionStorage.setItem("uartist",JSON.stringify(tempArtists))
-            
-            console.log(tempArtists)                        
+                                                
             setArtists(tempArtists)                            
           }
           assignArtists()
@@ -107,15 +107,16 @@ export default function UAlbum({SpinComponent, active, paused}: any) {
 
         {isLoading ? <Loading2 yes={true} /> : (
           <>
-
+            
             <div className="topDiv">
+            <h2>{talbum[0]?.name}</h2>
               <span className="fade-in-image2">
                 <SpinComponent is_active={active} is_paused={paused}/>
                 <img className="albumImage" src={sessionStorage.getItem("image")!}/>
 
               </span>
 
-
+              
               <h2 className="artistName">{zip.map((s: any,i: number,row: any) =>
                 <a  onClick={function handleClick() {
                   navigate(`/app/artist/${s[1]}`)
