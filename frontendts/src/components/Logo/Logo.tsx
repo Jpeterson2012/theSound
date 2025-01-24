@@ -8,7 +8,7 @@ import Track from '../Track/Track';
 import escape from '../../images/escape.jpg'
 import search from '../../images/search.png'
 import space from '../../images/music.gif'
-import { useGetUserQuery,useGetAlbumsQuery } from '../../ApiSlice';
+import { useGetUserQuery,useGetAlbumsQuery } from '../../App/ApiSlice';
 
 function getTracks(ptracks: any) {
     var key = 0

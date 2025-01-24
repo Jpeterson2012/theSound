@@ -2,7 +2,7 @@
 
 import './Card.css'
 import { useNavigate } from 'react-router-dom';
-import { useGetAlbumsQuery } from '../../ApiSlice.ts';
+import { useGetAlbumsQuery } from '../../App/ApiSlice.ts';
 
 export default function Card( {id, image, name, artist, a_id}: any ) {
     const navigate = useNavigate()

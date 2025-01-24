@@ -2,7 +2,7 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App/App.tsx'
-import { store } from './store.ts'
+import { store } from './App/store.ts'
 import { Provider } from 'react-redux'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import ScrollToTop from './components/ScrollToTop.tsx';

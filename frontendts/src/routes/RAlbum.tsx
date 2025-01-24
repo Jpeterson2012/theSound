@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './RAlbum.css'
 import Loading2 from "../components/Loading2/Loading2.tsx"
 import Track from "../components/Track/Track.tsx";
-import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation } from "../ApiSlice.ts";
+import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation } from "../App/ApiSlice.ts";
 
 
 

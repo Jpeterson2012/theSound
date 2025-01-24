@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
-import { useGetPlaylistsQuery, useGetLikedQuery, Playlists, useDeleteNewLikedMutation, useDeletePTrackMutation } from "../ApiSlice.ts";
+import { useGetPlaylistsQuery, useGetLikedQuery, Playlists, useDeleteNewLikedMutation, useDeletePTrackMutation } from "../App/ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import './UPlaylist.css'
@@ -23,6 +23,20 @@ function listImages(last: any, ptracks: any) {
       ptracks.images?.filter((t: any) => t.height == 640).map((s: any) => mainImage(s.url))
     )
   }
+}
+function customImage(ptracks: any){
+  return(
+    <div className="mainImage2">
+      <div style={{display: 'flex',width: '360px'}}>
+        <img src={ptracks.tracks[0].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+        <img src={ptracks.tracks[1].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+      </div>
+      <div style={{display: 'flex', width: '360px'}}>
+        <img src={ptracks.tracks[2].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+        <img src={ptracks.tracks[3].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+      </div>
+    </div>
+  )
 }
 {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
 {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
@@ -88,7 +102,7 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
     let truth: boolean = lsuccess && psuccess
 
     useEffect(()=>{
-        if(truth) setLoading(false)
+        if(truth) setLoading(false)          
     },[lsuccess,liked])
 
     
@@ -100,12 +114,22 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
                 <div>
                     <span className="fade-in-imageP">
                         <SpinComponent is_active={active} is_paused={paused}/>
-                        {listImages(lastSegment, lastSegment == 'likedsongs' ? liked : singlePlist![0])}
+                        {lastSegment == 'likedsongs' ? listImages(lastSegment,liked) : ((singlePlist![0].images.length === 0 && singlePlist![0].tracks.length > 3) ? customImage(singlePlist![0]) : listImages(lastSegment,singlePlist![0]))}
                     </span>
 
                     <div>
-        
-        
+                      {/* <div style={{marginTop: '40px'}}>
+                      <div>
+                      <img src={singlePlist![0].tracks[0].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+                      <img src={singlePlist![0].tracks[1].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+                      </div>
+                      <div>
+                      <img src={singlePlist![0].tracks[2].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+                      <img src={singlePlist![0].tracks[3].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+                      </div>
+                      </div> */}
+                    
+                        
           
                         <div style={{marginBottom: '60px', marginTop: '40px'}}>
             

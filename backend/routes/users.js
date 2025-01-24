@@ -11,36 +11,22 @@ router.get('/', function(req, res, next) {
  
 });
 
-router.post('/:id', async (req,res) => {
-  url = `https://api.spotify.com/v1/users/${req.params.id}/playlists`
-  
-    try{
-        const headers = {
-            Authorization: 'Bearer ' + process.env.access_token            
-          }
+router.post('/:playlist', async (req,res) => {
     
-        await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: `{"name": "${req.body.name}", "description": "${req.body.description}","public": ${req.body.public}}`            
-        }).then(data => {return data.json()}).then(data => {
-            console.log(data.name)
-            try{
-              sql = `INSERT INTO uplaylists (playlist_id, name, public, uri) VALUES ('${data.id}', '${data.name}', ${data.public}, '${data.uri}')`
-            con.query(sql, (err) => {
-              if (err) throw err;
-              console.log('New Playlist Added')
-            })
-            res.send("204")
-            }
-            catch(e){
-              console.log(e)
-            }
-          })            
-    }
-    catch (e){
+  try{
+        
+      sql = `INSERT INTO uplaylists (playlist_id, name, public, uri) VALUES ('${req.body.id}', '${req.body.name}', ${req.body.public}, 'spotify:playlist:${req.body.id}')`
+      con.query(sql, (err) => {
+        if (err) throw err;
+        console.log('New Playlist Added')
+      })
+      res.send("204")
+      }
+      catch(e){
         console.log(e)
-    }
+  }
+                  
+    
     
 })
 

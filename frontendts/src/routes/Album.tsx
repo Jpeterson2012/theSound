@@ -1,7 +1,7 @@
 //Session storage vars ref_id and ref_items created here
 import { useEffect } from "react";
 import './Album.css'
-import { useGetAlbumsQuery } from "../ApiSlice.ts";
+import { useGetAlbumsQuery } from "../App/ApiSlice.ts";
 import UAlbum from "./UAlbum.tsx";
 import RAlbum from "./RAlbum.tsx";
 

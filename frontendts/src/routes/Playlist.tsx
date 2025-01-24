@@ -3,7 +3,7 @@
 //Working on fixing fetched playlists. attempting to split user and regular
 import { useState, useEffect, useMemo } from "react";
 import './Playlist.css'
-import { useGetPlaylistsQuery, useGetLikedQuery, Playlists } from "../ApiSlice.ts";
+import { useGetPlaylistsQuery, useGetLikedQuery, Playlists } from "../App/ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult } from '@reduxjs/toolkit/query/react'
 import RPlaylist from "./RPlaylist.tsx";

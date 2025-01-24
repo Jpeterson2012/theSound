@@ -6,10 +6,20 @@ import './Home.css'
 import Card from "../components/Card/Card.tsx";
 // import Local from "../components/Local/Local.jsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
-import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery,useGetUserQuery } from "../ApiSlice.ts"; 
+import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery,useGetUserQuery } from "../App/ApiSlice.ts"; 
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import escape from '../images/escape.jpg'
+
+function generatePassword() {
+  var length = 22,
+      charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      retVal = "";
+  for (var i = 0, n = charset.length; i < length; ++i) {
+      retVal += charset.charAt(Math.floor(Math.random() * n));
+  }
+  return retVal;
+}
 
 
 function Albums(listItems: any){
@@ -180,14 +190,15 @@ export default function Home() {
         // let opt2 = (document.getElementById('option2') as HTMLInputElement)
         if (name!.value == "") console.error("Error")
         else{
+          let pID = generatePassword()
           // console.log(name.value)
           // console.log(desc.value)
           // console.log(opt1.checked)
           // console.log(opt2.checked)
-          fetch(`http://localhost:8888/auth/users/${user!.items}`, {
+          fetch(`http://localhost:8888/auth/users/playlist`, {
             method: 'POST',
             headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({name: name.value, description: desc.value === "" ? "null" : desc.value, public: opt1.checked})                                        
+            body: JSON.stringify({id: pID, name: name.value, description: desc.value === "" ? "null" : desc.value, public: opt1.checked})                                        
           }).then(a => {refetch()})
         }
       })
@@ -286,18 +297,20 @@ export default function Home() {
 
   const listPlaylists = sortedPlaylists()?.map((a: any) =>
     <>
-
+      
       <a onClick={function handleClick() {
+        
         sessionStorage.setItem("uplist", "true")
         sessionStorage.setItem("playlist_name", a.name)
         navigate(`/app/playlist/${a.playlist_id}`)
       }}>
         <div style={{display: 'flex', alignItems: 'center'}}>
-        <img className="fade-in-image" src={a.images.length == 0 ? "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" : a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
+        <img id="fade-in-image" className="fade-in-image" src={a.images.length == 0 ? "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" : a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
         <h2>{a.name}</h2>
         </div>
       
       <br></br>
+      
       </a>
       
     </>

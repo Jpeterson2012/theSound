@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './UAlbum.css'
 import Loading2 from "../components/Loading2/Loading2.tsx"
 import Track from "../components/Track/Track.tsx";
-import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation, Albums } from "../ApiSlice.ts";
+import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation, Albums } from "../App/ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 

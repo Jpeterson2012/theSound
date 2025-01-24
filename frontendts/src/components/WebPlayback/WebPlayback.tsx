@@ -19,7 +19,7 @@ import 'react-responsive-modal/styles.css';
 import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
-import { useGetDevicesQuery, Devices, useGetAlbumsQuery } from '../../ApiSlice.ts';
+import { useGetDevicesQuery, useGetAlbumsQuery } from '../../App/ApiSlice.ts';
 import PollPlayer from '../PollPlayer.tsx';
 
 import 'react-responsive-modal/styles.css';
@@ -27,6 +27,7 @@ import { Modal } from 'react-responsive-modal';
 import escape from '../../images/escape.jpg'
 import device from '../../images/device.png'
 import { useInterval } from '../Seekbar/SeekBar.tsx';
+
 
 declare global {
     interface Window{

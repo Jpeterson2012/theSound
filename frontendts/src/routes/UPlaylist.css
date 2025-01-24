@@ -36,6 +36,17 @@ div .fade-in-imageP{
     right: 110px; 
     top: 10px;
 }
+.mainImage2{
+    height: 360px;
+    width: 360px;    
+    margin: 0px;
+    padding: 0px;
+    z-index: 1; 
+    /* position: relative;  */
+    /* right: 110px;  */
+    left: 28.8vw;
+    top: -0.5vw;
+}
 
 @media(min-height: 1000px){
     #deleteSong{
