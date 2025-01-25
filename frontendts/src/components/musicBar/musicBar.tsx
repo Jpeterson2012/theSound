@@ -1,3 +1,4 @@
+import './musicBar.css'
 export default function musicBar (){
     return (
         <div className="now_playing2" id="music2">

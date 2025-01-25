@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import Track from "../components/Track/Track";
 import Card from "../components/Card/Card";
-import Loading2 from '../components/Loading2/Loading2.tsx';
 import './Artist.css'
 import { Spin3 } from "../components/Spin/Spin.tsx";
+import musicBar from "../components/musicBar/musicBar.tsx";
 
 export default function Artist({paused}: any) {
   var parts = window.location.href.split('/');
@@ -56,8 +56,11 @@ export default function Artist({paused}: any) {
   }, [lastSegment]);
   var count: number = 1
   const listTTracks = artists2.tracks?.tracks.map((t: any) =>
-    <div style={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
-    <p style={{marginLeft: '16px'}}>{count < 10 ? '0' + count : count}</p> 
+
+    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',width: '100%'}}>
+      
+    {!paused ? <span style={{position: 'absolute', left: '7.5vw'}}>{(sessionStorage.getItem('current') === t.uri || (t.artists?.name === t.name && t.artists?.artists[0].name === t.artist[0].name)) ? musicBar() : null}</span> : null}
+    <p style={{marginLeft: '16px',overflow: 'visible'}}>{count < 10 ? '0' + count : count}</p> 
     <img src={t.album?.images.filter((t: any) => t.height == 64).map((s: any) => s.url)} style={{marginLeft: '20px'}} />
     <Track 
       uri={t.album.uri}
@@ -66,9 +69,8 @@ export default function Artist({paused}: any) {
       duration={t.duration_ms}
       album_name={t.album?.name}
       artist={t.artists}
-      t_uri={t.uri}
-      pause={paused}
-      mbarVal={true}
+      t_uri={t.uri}   
+      customWidth={80}   
     />
     <p hidden>{count++}</p>
     </div>
@@ -133,7 +135,10 @@ export default function Artist({paused}: any) {
         </div>
         
             <p className="headers">Top Tracks</p>
+            <div>
             {listTTracks}
+            </div>
+            
 
             <div>
             <p className="headers">Albums</p>

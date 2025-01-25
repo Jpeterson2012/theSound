@@ -9,7 +9,9 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 
 import { Spin } from "../components/Spin/Spin.tsx";
+import musicBar from "../components/musicBar/musicBar.tsx";
 
+import MySnackbar from "../components/MySnackBar.tsx";
 
 
 export default function UAlbum({active, paused}: any) {
@@ -25,6 +27,7 @@ export default function UAlbum({active, paused}: any) {
     const [deleteAlbum] = useDeleteAlbumMutation()
     const [artists, setArtists] = useState<any>([])
     const [talbum, setTAlbum] = useState<any>([])
+    const[snack, setSnack] = useState(false)
 
     
 
@@ -91,6 +94,8 @@ export default function UAlbum({active, paused}: any) {
     
     
     const listItems2 = talbum[0]?.tracks?.items.map((t: any) => 
+      <div>
+        {!paused ? <span style={{position: 'absolute', left: '8vw'}}>{(sessionStorage.getItem('current') === t.uri || (t.artists?.name === t.name && t.artists?.artists[0].name === t.artist[0].name)) ? musicBar() : null}</span> : null}
       <Track 
         uri={`spotify:album:${talbum[0]?.album_id}`}
         name={t.name}
@@ -98,9 +103,9 @@ export default function UAlbum({active, paused}: any) {
         duration={t.duration_ms}
         album_name={null}
         artist={t.artists}
-        t_uri={t.uri}
-        pause={paused}
+        t_uri={t.uri}        
       />
+      </div>
     )
     
     return (
@@ -131,24 +136,20 @@ export default function UAlbum({active, paused}: any) {
 
                 {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
 
-                {artists?.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
-                <div id="snackbar2">{singleAlbum!.length !== 0 ? "Added to Library!" : "Removed From Library"}</div>
+                {artists?.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}                
                 <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
-
+                  setSnack(true)
                   let temp2 = document.getElementById('addAlbum')!
                   temp2.style.animation = 'pulse3 linear 1s'
                   setTimeout(()=>{
                       temp2.style.removeProperty('animation')
-                  }, 1000)
-                  var x = document.getElementById("snackbar2");
-                  x!.className = "show";
-                  setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 5000);  
+                  }, 1000)                    
 
                   if (singleAlbum!.length === 0){                    
-                      setTimeout (() => {addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name}) },1000)                    
+                      setTimeout (() => {addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name}) },1100)                    
                   }
                   else{                                        
-                      setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1000)                                        
+                      setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100)                                        
                   }                  
 
                 }}>{singleAlbum!.length === 0 ? "+" : "✓"}</p>
@@ -159,11 +160,17 @@ export default function UAlbum({active, paused}: any) {
 
 
 
-              <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol2">Duration</span></div>
+              
             </div>
             
-
-            {listItems2}
+            <div style={{width: '80vw'}}>
+              <div style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
+                <span className="uTitle">Title</span>
+                <span className="uTitle2">Duration</span>
+              </div>
+              {listItems2}
+            </div>
+            
             <div style={{display: 'flex', flexDirection: 'column', marginTop: '50px', marginBottom: '50px'}}>
               {artists?.images?.map((a: any) => <img src={a.find((b: any) => b.height > 160).url} style={{width: '90px', height: '90px'}} />)}
             </div>
@@ -176,7 +183,7 @@ export default function UAlbum({active, paused}: any) {
           </>
 
         )}
-
+        {snack ? <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>  : null}
       </>
     )
 }

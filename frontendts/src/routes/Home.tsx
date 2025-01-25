@@ -12,6 +12,7 @@ import escape from '../images/escape.jpg'
 import { Spin3 } from "../components/Spin/Spin.tsx";
 
 import { imageRender } from "../components/ImageRender/ImageRender.tsx";
+import MySnackbar from "../components/MySnackBar.tsx";
 
 import dots from '../images/dots.png'
 
@@ -132,7 +133,8 @@ function Podcasts(podcasts:any){
 }
 function Audiobooks(audiobooks:any){
   const listItems = audiobooks?.items.map((a:any) =>
-      <a onClick={function handleClick(){
+      <a onClick={function handleClick(){        
+
         var url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
         const headers = {
             "Content-Type": "application/json",
@@ -179,6 +181,8 @@ export default function Home() {
     const [loading, setLoading] = useState(true)
     const [deleteAlbum, {isSuccess: delsuccess}] = useDeleteAlbumMutation()
     const [deletePlaylist] = useDeletePlaylistMutation()
+
+    const[opensnack, setOpensnack] = useState(false)
 
     const onOpenModal = () => {setOpen(true)}
     const onCloseModal = () => {
@@ -282,8 +286,9 @@ export default function Home() {
     <div>
 
       <div className="removeContainer" style={{width: '20px'}}>
-      <button className="removeAlbum" onClick={function handleClick(){        
-        setTimeout(() => { deleteAlbum({aID: a.album_id}) },500)
+      <button className="removeAlbum" onClick={function handleClick(){
+        setOpensnack(true)        
+        setTimeout(() => { deleteAlbum({aID: a.album_id}) },300)
       }}>Remove From Library</button>
       <img src={dots} className="removeImg" style={{marginBottom: '20px', transform: 'rotate(90deg)', height: '20px', width: '20px', margin: '0px', cursor: 'pointer'}} />      
       </div>
@@ -305,10 +310,11 @@ export default function Home() {
   const listPlaylists = sortedPlaylists()?.map((a: any) =>
     <div style={{display: 'flex', gap: '20px', alignItems: 'center'}}>
 
-      <div className="removeContainer" style={{width: '20px'}}>
-        <button className="removeAlbum" onClick={function handleClick(){        
-          setTimeout(() => { deletePlaylist({pID: a.playlist_id}) },500)
-          setTimeout(()=>{refetch() },600)
+      <div className="removePContainer" style={{width: '20px'}}>
+        <button className="removePlay" onClick={function handleClick(){
+          setOpensnack(true)        
+          setTimeout(() => { deletePlaylist({pID: a.playlist_id}) },300)
+          setTimeout(()=>{refetch() },400)
         }}>Remove From Library</button>
         <img src={dots} className="removeImg" style={{marginBottom: '20px', height: '40px', width: '40px', margin: '0px', cursor: 'pointer'}} />      
       </div>
@@ -341,7 +347,7 @@ export default function Home() {
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
             <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
             <button className="homeButtons" onClick={() => {setHtml(Podcasts(podcasts)), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
-            <button className="homeButtons" onClick={() => {setHtml(Audiobooks(audiobooks)), sessionStorage.setItem('home', 'audiobook') }}>AudioBooks</button>
+            <button className="homeButtons" onClick={() => {setHtml(Audiobooks(audiobooks)), sessionStorage.setItem('home', 'audiobook')}}>AudioBooks</button>
         
             {/* <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button> */}
             <p style={sessionStorage.getItem('home') === "playlist" ? {display: "inline"} : {display: "none"}} className="addPlaylist" onClick={function handleClick(){
@@ -404,6 +410,7 @@ export default function Home() {
       
       </>
     )}
+    {opensnack ? <MySnackbar state={opensnack} setstate={setOpensnack} message="Removed From Library"/> : null}
     </>
   )
 }

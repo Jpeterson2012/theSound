@@ -30,8 +30,9 @@ export default function Discover() {
     const [categories, setCategories] = useState([])
     const [fplaylists, setFplaylists] = useState<any>([])
     const [loading, setLoading] = useState(true)
+    const [found, setFound] = useState(false)
 
-    useEffect (() => {
+    useEffect (() => {        
         const rel = sessionStorage.getItem("releases")
         const cat = sessionStorage.getItem("categories")
         const fplay = sessionStorage.getItem("fplaylists")
@@ -80,7 +81,9 @@ export default function Discover() {
         <a onClick={function handleClick() {
             sessionStorage.setItem("c_icon", a.icons.map((s: any) => s.url))
             sessionStorage.setItem("c_name", a.name)
-            navigate(`/app/categories/${a.id}`)
+            // navigate(`/app/categories/${a.id}`)
+            console.log("hello")
+            setFound(true)
         }}>
             <div style={{width: '200px',height: '305px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 
@@ -130,7 +133,7 @@ export default function Discover() {
             {customRender("New Releases", listReleases)}
             {customRender("Popular Playlists", listPlaylists)}        
         </div>
-         }        
+         }         
         </>
     )
 }

@@ -3,22 +3,27 @@ import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
 import { Spin, Spin3 } from '../components/Spin/Spin.tsx';
 import dots from '../images/dots.png'
+import EditPlaylist from '../components/EditPlaylist/EditPlaylist.tsx';
+import musicBar from '../components/musicBar/musicBar.tsx';
+import MySnackbar from '../components/MySnackBar.tsx';
 
-function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
+function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setmodal:any,settrack:any){
   let key = 0
   return (
     ptracks?.map((t: any) => 
 
       <div style={{display: 'flex', alignItems: 'center'}} >
+
           <p hidden>{liked_urls.push(t.uri)}</p>  
-          
+          {!paused ? <span style={{position: 'absolute', left: '9vw'}}>{(sessionStorage.getItem('current') === t.uri || (t.artists?.name === t.name && t.artists?.artists[0].name === t.artist[0].name)) ? musicBar() : null}</span> : null}
           <div className="removeContainer3" style={{display: 'flex', alignItems: 'center'}}>
 
           <button className="removeAlbum3" onClick={function handleClick(){        
-              
+              settrack(t)
+              setmodal(true) 
             }}>Edit Playlists</button>
             <img src={dots} className="removeImg2" style={{marginBottom: '20px', height: '30px', width: '30px', margin: '0px', cursor: 'pointer'}} />
-            <img src={t.album?.filter((t: any)=>t.height == 64).map((s: any) => s.url)} />
+            <img src={t.images?.filter((t: any)=>t.height == 64).map((s: any) => s.url)} />
 
           </div>
 
@@ -42,6 +47,9 @@ export default function RPlaylist({lastSegment, active, paused}: any){
     const [ptracks, setpTracks] = useState<any>([]);
     const [total, setTotal] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [modal, setModal] = useState(false)
+    const[trackData, setTrackData] = useState(null)
+    const[snack, setSnack] = useState(false)
     var liked_uris: any = []
 
     useEffect (() => {                
@@ -103,9 +111,14 @@ export default function RPlaylist({lastSegment, active, paused}: any){
     
                     
                                 </div>
-    
-                                <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lolP">Duration</span></div>
-                                {regPlaylists(ptracks, lastSegment, liked_uris, paused) }
+                                <div style={{width: '80vw'}} >
+                                  <div style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
+                                    <span className="lol">Title</span>
+                                    <span className="lolP">Duration</span>
+                                    </div>
+                                  {regPlaylists(ptracks, lastSegment, liked_uris, paused,setModal,setTrackData) }
+                                </div>
+                                
                 
                             </div>
                         </div>
@@ -113,6 +126,8 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                     </div>
                     </>
                 )}
+                {modal ? <EditPlaylist track={trackData} boolVal={modal} setbool={setModal} /> : null}
+                {snack ? <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>  : null}
             </>
         )
 }

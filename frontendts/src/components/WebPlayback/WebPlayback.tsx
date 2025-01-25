@@ -192,10 +192,10 @@ export default function WebPlayback() {
                 <Logo />
                 <Routes>
                 <Route path = '/' element={<Home/>} key={0}/>
-                <Route path='/discover' element={<Discover />} key={1} />
+                <Route path='/discover' element={<Discover/>} key={1} />
                 <Route path='/categories/:id' element={<Categories />} key={2}/>
-                <Route path='/album/:id' element={<Album active={is_active}  paused={is_paused}/>} key={3}/>
-                <Route path='/playlist/:id' element={<Playlist active={is_active}  paused={is_paused}/>} key={4}/>
+                <Route path='/album/:id' element={<Album active={is_active}  paused={is_paused} />} key={3}/>
+                <Route path='/playlist/:id' element={<Playlist active={is_active}  paused={is_paused} />} key={4}/>
                 <Route path='/artist/:id' element={<Artist paused={is_paused} />} key={5}/>
                 </Routes>    
                 

@@ -1,5 +1,4 @@
-//session storage variable name set here
-import musicBar from "../musicBar/musicBar.tsx"
+//session storage variable name set hereimport musicBar from "../musicBar/musicBar.tsx"
 import './Track.css'
 
 function timeCalc (ms: number) {
@@ -11,9 +10,9 @@ function timeCalc (ms: number) {
     else return `${mins}.${secs}`
 }
 
-export default function Track ( {uri, name, number, duration, album_name, artist, t_uri, pause, mbarVal}: any ) {
+export default function Track ( {uri, name, number, duration, album_name, artist,show,customWidth}: any ) {
     return (
-        <div style={{display: 'flex'}}>
+        <div className='trackContainer' style={customWidth ? {width: `${customWidth}%`} : {width: '100%'}}>
             <a onClick={function handleClick () {
                 // console.log(sessionStorage.get
                 // console.log(sessionStorage.getItem("uri"))
@@ -39,19 +38,16 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                         body: JSON.stringify({context_uri: uri, offset: {position: number - 1}})
                     })
                 
-            }}>
-            <div className="main" style={{display: 'flex', alignItems: 'center'}}>
-                {!pause ? <span className="mbar" style={mbarVal ? {marginTop: '40px'} : {}} >{sessionStorage.getItem('current') === t_uri ? musicBar() : null}</span> : null}
+            }}>            
+                
                 <div className="innerMain">
                     <h2>{name}</h2>
-                    <h4>{artist.map((a: any,i: number,row: any) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
-                </div>
+                    <h4>{artist.map((a: any,i: number,row: any) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>                
             
             </div>
-            <br></br>
-            <br></br>
+            <br></br>            
             </a>
-            <span className="songLength">{timeCalc(duration)}</span>
+            {show === false ? null : <span className="songLength">{timeCalc(duration)}</span>}
       </div>
     )
 }

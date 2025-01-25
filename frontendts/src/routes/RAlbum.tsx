@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import './RAlbum.css'
-import Loading2 from "../components/Loading2/Loading2.tsx"
 import Track from "../components/Track/Track.tsx";
 import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation } from "../App/ApiSlice.ts";
 
 import { Spin,Spin3 } from "../components/Spin/Spin.tsx";
-
+import musicBar from "../components/musicBar/musicBar.tsx";
+import MySnackbar from "../components/MySnackBar.tsx";
 
 export default function RAlbum({active, paused}: any) {
     const navigate = useNavigate()
@@ -23,6 +23,7 @@ export default function RAlbum({active, paused}: any) {
     const [addAlbum] = useAddAlbumMutation()
     const [deleteAlbum] = useDeleteAlbumMutation()
     const {data: albums = []} = useGetAlbumsQuery()
+    const[snack, setSnack] = useState(false)
     //Check if album is already in library or not
     let found = albums?.find((e: any) => e?.album_id === lastSegment)
     
@@ -60,8 +61,10 @@ export default function RAlbum({active, paused}: any) {
       //This fixes render bug where fetch doesn't activate when clicking on currently playing album
     }, [sessionStorage.getItem("image")]);
     
-    const listItems = tracks.albums?.tracks?.items.map((t: any) => 
-      <Track 
+    const listItems = tracks.albums?.tracks?.items.map((t: any) =>
+      <div>
+        {!paused ? <span style={{position: 'absolute', left: '8vw'}}>{(sessionStorage.getItem('current') === t.uri || (t.artists?.name === t.name && t.artists?.artists[0].name === t.artist[0].name)) ? musicBar() : null}</span> : null}
+        <Track 
         uri={tracks.albums.uri}
         name={t.name}
         number={t.track_number}
@@ -71,6 +74,7 @@ export default function RAlbum({active, paused}: any) {
         t_uri={t.uri}
         pause={paused}
       />
+      </div>       
     )
     
     return (
@@ -99,24 +103,20 @@ export default function RAlbum({active, paused}: any) {
                 </div>
 
                 {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
-                {tracks.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
-                <div id="snackbar2">{found !== undefined ? "Added to Library!" : "Removed From Library"}</div>
-                <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
-
+                {tracks.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}                
+                <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(this:any){
+                  setSnack(true)
                   let temp = document.getElementById('addAlbum')!
                   temp.style.animation = 'pulse3 linear 1s'
                   setTimeout(()=>{
                       temp.style.removeProperty('animation')
-                  }, 1000)
-                  var x = document.getElementById("snackbar2");
-                  x!.className = "show";
-                  setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 5000);  
+                  }, 1000)                    
 
                   if (found === undefined){                                        
-                    setTimeout(() => { addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label}) },1000)                 
+                    setTimeout(() => { addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label}) },1100)                 
                   }
                   else{                    
-                      setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1000)                                 
+                      setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100)                                 
                   }                  
 
                 }}>{found === undefined ? "+" : "✓"}</p>
@@ -127,11 +127,17 @@ export default function RAlbum({active, paused}: any) {
 
 
 
-              <div style={{display: 'inline-flex'}}><span className="lol">Title</span><span className="lol2">Duration</span></div>
+              
+            </div>
+
+            <div style={{width: '80vw'}}>
+            <div style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
+              <span className="rTitle">Title</span>
+              <span className="rTitle2">Duration</span>
+              </div>
+            {listItems}
             </div>
             
-
-            {listItems}
             <div style={{display: 'flex', flexDirection: 'column', marginTop: '50px', marginBottom: '50px'}}>
               {tracks.images?.map((a: any) => <img src={a.find((b: any) => b.height > 160).url} style={{width: '90px', height: '90px'}} />)}
             </div>
@@ -144,7 +150,7 @@ export default function RAlbum({active, paused}: any) {
           </>
 
         )}
-
+        {snack ? <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>  : null}
       </>
     )
 }

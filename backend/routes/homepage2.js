@@ -45,12 +45,11 @@ router.get('/playlists', async (req, res) => {
                 temp.name = result[i].name
                 temp.public = result[i].public
                 temp.uri = result[i].uri
-                var temp2 = JSON.parse(result[i].tracks)
-                
+                var temp2 = JSON.parse(result[i].tracks)                
                 
                 var temp3 = []
                 temp2 === null ? null : temp2.items?.map(a => {
-                    temp3.push({images:( a.album?.images ? a.album?.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
+                    temp3.push({album_id: a.album?.id, images:( a.album?.images ? a.album?.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
                 }) 
                 temp.tracks = temp3
                 items.push(temp)
@@ -93,7 +92,7 @@ router.get('/playlists/:id', async (req, res) => {
 router.get('/liked', async (req, res) => {
     
     function getLiked(){
-        var sql = 'select images, duration, track_id, name, artists from likedsongs'
+        var sql = 'select album_id, images, duration, track_id, name, artists from likedsongs'
         con.query(sql, function (err, result) {
             if (err) throw e
 
@@ -101,7 +100,7 @@ router.get('/liked', async (req, res) => {
             for (let i = 0; i < result.length; i++){
                 var temp ={}
                 var tracks = {}
-                //temp.album_id = result[i].album_id
+                temp.album_id = result[i].album_id
                 temp.images = JSON.parse(result[i].images)
                 temp.duration_ms = result[i].duration
                 temp.uri = result[i].track_id

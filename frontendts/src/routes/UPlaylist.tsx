@@ -3,13 +3,15 @@
 //Working on fixing fetched playlists. attempting to split user and regular
 import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
-import Loading2 from "../components/Loading2/Loading2.tsx";
 import { useGetPlaylistsQuery, useGetLikedQuery, Playlists, useDeleteNewLikedMutation, useDeletePTrackMutation } from "../App/ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import './UPlaylist.css'
 import { Spin } from "../components/Spin/Spin.tsx";
 import dots from "../images/dots.png"
+import EditPlaylist from "../components/EditPlaylist/EditPlaylist.tsx";
+import musicBar from "../components/musicBar/musicBar.tsx";
+import MySnackbar from "../components/MySnackBar.tsx";
 
 function customImage(ptracks: any){
   return(
@@ -35,8 +37,8 @@ function returnUrl(ptracks: any){
 }
 {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
 {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
-function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, removePTrack: any, lastSegment: any) {
-  let key = 0
+function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, removePTrack: any, lastSegment: any,setmodal:any,settrack: any,setsnack:any) {
+  let key = 0  
   return (
     userLists?.tracks?.map((t: any) =>
 
@@ -44,15 +46,20 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
 
           <p hidden>{liked_urls.push(t.uri)}</p>
           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+            {/* Music bar animation here */}
+            {!paused ? <span style={{position: 'absolute', left: '9vw'}}>{(sessionStorage.getItem('current') === t.uri || (t.artists?.name === t.name && t.artists?.artists[0].name === t.artist[0].name)) ? musicBar() : null}</span> : null}
             <div className="removeContainer2" style={{width: '20px'}}>
               <div className="removeAlbum2">
 
-              <button style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px',width: '130px', height: '60px'}} onClick={function handleClick(){        
-              
+              <button style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px',width: '130px', height: '60px'}} onClick={function handleClick(){  
+                 settrack(t)
+                setmodal(true)                                     
               }}>Edit Playlists</button>
 
-              {lastSegment !== 'likedsongs' ? null : <button style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px', width: '130px', height: '60px'}} onClick={function handleClick(){        
-                  lastSegment === 'likedsongs' ? setTimeout(() => { removeSong({name: t.name}) },500) : setTimeout(() => { removePTrack({pID: userLists.playlist_id, name: t.name}) },500)
+              {lastSegment !== 'likedsongs' ? null : <button style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px', width: '130px', height: '60px'}} onClick={function handleClick(){  
+                  setsnack(true)
+                
+                  lastSegment === 'likedsongs' ? setTimeout(() => { removeSong({name: t.name}) },300) : setTimeout(() => { removePTrack({pID: userLists.playlist_id, name: t.name}) },500)
               }}>Remove From Liked Songs</button>}
 
               </div>
@@ -90,6 +97,9 @@ export default function UPlaylist({lastSegment, active, paused}: any){
     const {data: liked, isSuccess: lsuccess} = useGetLikedQuery()
     const [removeSong] = useDeleteNewLikedMutation()
     const [removePTrack] = useDeletePTrackMutation()
+    const [modal, setModal] = useState(false)
+    const[trackData, setTrackData] = useState(null)
+    const[snack, setSnack] = useState(false)
   
     type getPlaylistfromResultArg = TypedUseQueryStateResult<Playlists[],any,any>
     
@@ -108,7 +118,7 @@ export default function UPlaylist({lastSegment, active, paused}: any){
 
     let truth: boolean = lsuccess && psuccess
 
-    useEffect(()=>{
+    useEffect(()=>{        
         if(truth) setLoading(false)          
     },[lsuccess,liked])
 
@@ -118,7 +128,7 @@ export default function UPlaylist({lastSegment, active, paused}: any){
         <>        
             {loading ? null : (
                 <>
-                <div>                    
+                <div style={{marginBottom: '100px'}} >                    
 
                     {(lastSegment! === 'likedsongs' ? Spin(active,paused,"https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg",null) 
                     : (singlePlist![0].images.length === 0 && singlePlist![0].tracks.length > 3) ? Spin(active,paused,"",customImage(singlePlist![0])) 
@@ -135,9 +145,14 @@ export default function UPlaylist({lastSegment, active, paused}: any){
 
                 
                             </div>
-
-                            <div style={{display: 'inline-flex', marginTop: '50px'}}><span className="lol">Title</span><span className="lolP">Duration</span></div>
-                            {userPlaylists(lastSegment == 'likedsongs' ? liked : singlePlist![0], liked_uris, paused,removeSong, removePTrack, lastSegment) }
+                            <div style={{width: '80vw'}} >
+                            <div style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
+                              <span className="lolP2">Title</span>
+                              <span className="lolP">Duration</span>
+                              </div>
+                            {userPlaylists(lastSegment == 'likedsongs' ? liked : singlePlist![0], liked_uris, paused,removeSong, removePTrack, lastSegment,setModal,setTrackData,setSnack) }
+                            </div>
+                            
             
                         </div>
                     </div>
@@ -145,6 +160,8 @@ export default function UPlaylist({lastSegment, active, paused}: any){
                 </div>
                 </>
             )}
+            {modal ? <EditPlaylist track={trackData} boolVal={modal} setbool={setModal} setsnack={setSnack} /> : null}
+            {snack ? <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>  : null}
         </>
     )
 }

@@ -17,8 +17,10 @@ div .fade-in-imageP{
     left: 180px;
     cursor: pointer;
 }
-.lolP{
-    margin-left: 65vw;
+.lol{
+    margin-left: 30px;
+}
+.lolP,.lol{    
     font-weight: bolder;
     font-size: large;
     font-family: Arial,Helvetica, sans-serif;
@@ -39,14 +41,15 @@ div .fade-in-imageP{
 .removeAlbum3{
     display: none;
     position: absolute;
-    left: 6.5vw;
+    left: 21.5vw;
     /* left: 200px; */
     /* bottom: 15px; */
     padding: 5px;
     color: black;
     background: rgb(90, 210, 216);
-    font-size: 16px;
-    min-width: 120px;
+    font-size: 13px;
+    width: 130px;
+    height: 60px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     /* border-radius: 16px; */
     z-index: 2;
@@ -56,16 +59,13 @@ div .fade-in-imageP{
 @media(min-height: 1000px){
     #deleteSong{
         left: 600px;
-    }
-    .lolP{
-        margin-left: 55.4vw;
-    }
+    }    
     .rImage{
         height: 460px;
         width: 450px;
         right: 160px;
     }
     .removeAlbum3{
-        left: 15.8vw;
+        left: 5.1vw;
     }
 }

@@ -13,7 +13,7 @@ function timeCalc (ms: number) {
 export default function PTrack ( {uri, name, number, duration, liked, artist, t_uri, pause}: any ) {
     const artists = JSON.parse(sessionStorage.getItem("currentTrack")!)
     return (
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
             <a onClick={function handleClick () {
                 
                 // sessionStorage.setItem("name", sessionStorage.getItem("playlist_name"))
@@ -38,8 +38,7 @@ export default function PTrack ( {uri, name, number, duration, liked, artist, t_
                     })
                 
             }}>
-            <div>
-            {!pause ? <span className="mbar2">{(sessionStorage.getItem('current') === t_uri || (artists?.name === name && artists?.artists[0].name === artist[0].name)) ? musicBar() : null}</span> : null}
+            <div>            
                 <div className="ptrackInfo">
                     <h2 className="ptrackName">{name}</h2>
                     <h4 className="ptrackArtist">{artist?.map((a: any,i: number,row: any) => row.length - 1 !== i ? a.name + ", " : a.name)}</h4>
