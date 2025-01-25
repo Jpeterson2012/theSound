@@ -28,6 +28,9 @@
 a {
   cursor: pointer;
 }
+a:hover{
+  color: black
+}
 
 
 img {

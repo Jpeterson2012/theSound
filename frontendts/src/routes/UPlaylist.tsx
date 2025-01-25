@@ -9,6 +9,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import './UPlaylist.css'
 import { Spin } from "../components/Spin/Spin.tsx";
+import dots from "../images/dots.png"
 
 function customImage(ptracks: any){
   return(
@@ -42,7 +43,24 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
       <div style={{display: 'flex', alignItems: 'center'}}>
 
           <p hidden>{liked_urls.push(t.uri)}</p>
-          <img src={t.images.filter((t: any)=>t.height == 64).map((s: any) => s.url)} style={{height: '64px', width: '64px'}}/>
+          <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+            <div className="removeContainer2" style={{width: '20px'}}>
+              <div className="removeAlbum2">
+
+              <button style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px',width: '130px', height: '60px'}} onClick={function handleClick(){        
+              
+              }}>Edit Playlists</button>
+
+              {lastSegment !== 'likedsongs' ? null : <button style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px', width: '130px', height: '60px'}} onClick={function handleClick(){        
+                  lastSegment === 'likedsongs' ? setTimeout(() => { removeSong({name: t.name}) },500) : setTimeout(() => { removePTrack({pID: userLists.playlist_id, name: t.name}) },500)
+              }}>Remove From Liked Songs</button>}
+
+              </div>
+              <img src={dots} className="removeImg2" style={{marginBottom: '20px', height: '30px', width: '30px', margin: '0px', cursor: 'pointer'}} />      
+            </div>
+            <img src={t.images.filter((t: any)=>t.height == 64).map((s: any) => s.url)} style={{height: '64px', width: '64px'}}/>
+          </div>
+          
           <PTrack 
           uri={userLists.uri}
           name={t.name}
@@ -54,12 +72,12 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
           pause={paused}
           />
         <p hidden>{key++}</p>
-        <h1 id="deleteSong" onClick={function handleClick(){          
+        {/* <h1 id="deleteSong" onClick={function handleClick(){          
                 
           lastSegment === 'likedsongs' ? setTimeout(() => { removeSong({name: t.name}) },500) : setTimeout(() => { removePTrack({pID: userLists.playlist_id, name: t.name}) },500)
 
         
-        }}>-</h1>
+        }}>-</h1> */}
       </div>
     )
   )

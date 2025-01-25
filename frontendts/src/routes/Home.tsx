@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css'
 import Card from "../components/Card/Card.tsx";
 // import Local from "../components/Local/Local.jsx";
-import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery } from "../App/ApiSlice.ts"; 
+import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery, useDeleteAlbumMutation,useDeletePlaylistMutation } from "../App/ApiSlice.ts"; 
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import escape from '../images/escape.jpg'
@@ -13,6 +13,7 @@ import { Spin3 } from "../components/Spin/Spin.tsx";
 
 import { imageRender } from "../components/ImageRender/ImageRender.tsx";
 
+import dots from '../images/dots.png'
 
 function generatePassword() {
   var length = 22,
@@ -76,7 +77,7 @@ function Playlists(navigate: any, listPlaylists: any){
         sessionStorage.setItem("uplist", "true")
         navigate('/app/playlist/likedsongs')
       }}>
-      <div style={{display: 'flex', alignItems: 'center', animation: 'fadeIn 0.5s'}}>
+      <div style={{display: 'flex', alignItems: 'center', animation: 'fadeIn 0.5s', marginLeft: '40px'}}>
         <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '300px', width: '300px', marginRight: '50px'}}/>
         <h2>Liked Songs</h2>
       </div>
@@ -176,6 +177,8 @@ export default function Home() {
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true)
+    const [deleteAlbum, {isSuccess: delsuccess}] = useDeleteAlbumMutation()
+    const [deletePlaylist] = useDeletePlaylistMutation()
 
     const onOpenModal = () => {setOpen(true)}
     const onCloseModal = () => {
@@ -273,9 +276,18 @@ export default function Home() {
       }
       setLoading(false)                  
     
-  }, [ready,isFetching, (sorted || psorted)]);
+  }, [ready,isFetching, (sorted || psorted),delsuccess]);
     
-  const listItems = sortedAlbums()?.map((a: any) => 
+  const listItems = sortedAlbums()?.map((a: any) =>
+    <div>
+
+      <div className="removeContainer" style={{width: '20px'}}>
+      <button className="removeAlbum" onClick={function handleClick(){        
+        setTimeout(() => { deleteAlbum({aID: a.album_id}) },500)
+      }}>Remove From Library</button>
+      <img src={dots} className="removeImg" style={{marginBottom: '20px', transform: 'rotate(90deg)', height: '20px', width: '20px', margin: '0px', cursor: 'pointer'}} />      
+      </div>
+
     <Card      
       id={a.album_id}
       uri={a.uri}
@@ -285,34 +297,45 @@ export default function Home() {
       a_id={a.artists.map((t: any) => t.id)}
       key={a.album_id}
     />
+    </div>
   )
 
   
 
   const listPlaylists = sortedPlaylists()?.map((a: any) =>
-    <>
-      
+    <div style={{display: 'flex', gap: '20px', alignItems: 'center'}}>
+
+      <div className="removeContainer" style={{width: '20px'}}>
+        <button className="removeAlbum" onClick={function handleClick(){        
+          setTimeout(() => { deletePlaylist({pID: a.playlist_id}) },500)
+          setTimeout(()=>{refetch() },600)
+        }}>Remove From Library</button>
+        <img src={dots} className="removeImg" style={{marginBottom: '20px', height: '40px', width: '40px', margin: '0px', cursor: 'pointer'}} />      
+      </div>
+
       <a onClick={function handleClick() {
         
         sessionStorage.setItem("uplist", "true")
         sessionStorage.setItem("playlist_name", a.name)
         navigate(`/app/playlist/${a.playlist_id}`)
       }}>
+        
+        
+
         <div style={{display: 'flex', alignItems: 'center', animation: 'fadeIn 0.5s'}}>
-        {imageRender(a,300,300,50)}
-        {/* <img id="fade-in-image" className="fade-in-image" src={a.images.length == 0 ? "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" : a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/> */}
+        {imageRender(a,300,300,50)}        
         <h2>{a.name}</h2>
         </div>
-      
+              
       <br></br>
       
       </a>
       
-    </>
+    </div>
   )
   return (
     <>
-      {!ready && !loading ? Spin3() : (<>
+      {!ready && !loading ? Spin3() : (<>      
       <div className="homeContainer">
           <div style={{position: 'absolute', top: '10vw', right: '40vw'}}>            
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>

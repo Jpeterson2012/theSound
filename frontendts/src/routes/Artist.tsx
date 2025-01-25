@@ -128,8 +128,8 @@ export default function Artist({paused}: any) {
         <img className="fade-in-image" src={artists.artists?.images.length == 0 ? 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg' : artists.artists?.images[1]?.url} alt={artists.artists?.name} style={{height: '320px', width: '320px'}} />
         <p style={{margin: '20px auto'}} >{artists.artists?.followers.total.toLocaleString()} followers</p>
         <div style={{display: 'flex', justifyContent: 'space-evenly', alignItems: 'center'}}>
-            <p className="headers">Genres:</p>
-            {artists.artists?.genres.map((s: any) => <p>{s}</p>)}
+            <p className="headers">Genre(s):</p>
+            {artists?.artists?.genres.length > 0 ? artists.artists?.genres.map((s: any) => <p>{s}</p>) : <p>Music I guess. Idk</p>}
         </div>
         
             <p className="headers">Top Tracks</p>

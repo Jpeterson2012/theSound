@@ -152,6 +152,28 @@ export const apiSlice = createApi({
                 }
             }
         }),
+        deletePlaylist: builder.mutation<Playlists,{pID: any}>({
+            query: ({pID}) => ({
+                url: '/update/playlist',
+                method: 'DELETE',
+                body: {pID}
+            }),
+            async onQueryStarted({pID}, lifecycleApi){
+                const deletePlaylistPatchResult = lifecycleApi.dispatch(
+                    apiSlice.util.updateQueryData('getPlaylists',undefined,draft => {
+                        let temp = draft.findIndex(a => a.playlist_id === pID)
+                        draft.splice(temp,1)
+                    //    draft = draft.filter(a => a.album_id !== aID)
+                    })
+                )
+                try {
+                    await lifecycleApi.queryFulfilled
+                }
+                catch{
+                    deletePlaylistPatchResult.undo()
+                }
+            }
+        }),
         getLiked: builder.query<Liked, void>({
             query: () => '/homepage2/liked'
         }),
@@ -275,4 +297,5 @@ export const {
     useGetDevicesQuery,
     useGetPodcastsQuery,
     useGetAudiobooksQuery,
+    useDeletePlaylistMutation,
 } = apiSlice

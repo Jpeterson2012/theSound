@@ -7,9 +7,10 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 400;
   line-height: 1.5;
+  font-size: 17px !important;
 
-  /* color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87); */
+  color-scheme: dark;
+  color: rgba(19, 18, 18, 0.87);
   
   background {
     width: 100vw;
@@ -17,10 +18,10 @@
     background-color: #242424;
   };
 
-  font-synthesis: none;
+  /* font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale; */
   
 }
 html {
@@ -38,7 +39,8 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #535bf2 !important;
+  background: transparent !important;
 }
 
 body {

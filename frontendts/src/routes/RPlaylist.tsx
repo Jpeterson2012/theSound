@@ -2,6 +2,7 @@ import './RPlaylist.css'
 import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
 import { Spin, Spin3 } from '../components/Spin/Spin.tsx';
+import dots from '../images/dots.png'
 
 function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
   let key = 0
@@ -10,7 +11,17 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
 
       <div style={{display: 'flex', alignItems: 'center'}} >
           <p hidden>{liked_urls.push(t.uri)}</p>  
-          <img src={t.album?.filter((t: any)=>t.height == 64).map((s: any) => s.url)} />
+          
+          <div className="removeContainer3" style={{display: 'flex', alignItems: 'center'}}>
+
+          <button className="removeAlbum3" onClick={function handleClick(){        
+              
+            }}>Edit Playlists</button>
+            <img src={dots} className="removeImg2" style={{marginBottom: '20px', height: '30px', width: '30px', margin: '0px', cursor: 'pointer'}} />
+            <img src={t.album?.filter((t: any)=>t.height == 64).map((s: any) => s.url)} />
+
+          </div>
+
           <PTrack 
           uri={"spotify:playlist:" + last}
           name={t.name}
