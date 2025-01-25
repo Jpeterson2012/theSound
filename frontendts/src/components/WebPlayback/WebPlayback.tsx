@@ -113,8 +113,7 @@ export default function WebPlayback() {
     const navigate = useNavigate()
     let pVol: any = "1"
 
-    useEffect(() => {
-        console.log(currentDev.name)
+    useEffect(() => {        
 ///////////////////////////Create Spotify web player client
 
             const script = document.createElement("script");
@@ -192,12 +191,12 @@ export default function WebPlayback() {
             <>
                 <Logo />
                 <Routes>
-                <Route path = '/' element={<Home/>}/>
-                <Route path='/discover' element={<Discover />} />
-                <Route path='/categories/:id' element={<Categories />} />
-                <Route path='/album/:id' element={<Album active={is_active}  paused={is_paused}/>}/>
-                <Route path='/playlist/:id' element={<Playlist active={is_active}  paused={is_paused}/>} />
-                <Route path='/artist/:id' element={<Artist paused={is_paused} />} />
+                <Route path = '/' element={<Home/>} key={0}/>
+                <Route path='/discover' element={<Discover />} key={1} />
+                <Route path='/categories/:id' element={<Categories />} key={2}/>
+                <Route path='/album/:id' element={<Album active={is_active}  paused={is_paused}/>} key={3}/>
+                <Route path='/playlist/:id' element={<Playlist active={is_active}  paused={is_paused}/>} key={4}/>
+                <Route path='/artist/:id' element={<Artist paused={is_paused} />} key={5}/>
                 </Routes>    
                 
                 <div className='wrapper'>

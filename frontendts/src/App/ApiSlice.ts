@@ -1,4 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from './store'
 
 
 interface Albums {
@@ -242,6 +244,20 @@ export const apiSlice = createApi({
 //     (res: getPlaylistfromResultArg, userId: string) => userId,
 //     (data, userId) => data?.filter(plist => plist.playlist_id === userId)
 // )
+// const emptyAlbums: Albums[] = []
+// export const selectAlbumsResult = apiSlice.endpoints.getAlbums.select()
+// export const selectAllAlbums = createSelector(
+//     selectAlbumsResult,
+//     albumsResult => albumsResult?.data ?? emptyAlbums
+// )
+// export const albumsAZ = createSelector(
+//     selectAllAlbums,
+//     (data) => data?.sort((a,b) => a.name.localeCompare(b.name))
+
+// )
+// export const selectAlbums = () => {
+//     return albumsAZ(state)
+// }
 
 
 export const { 

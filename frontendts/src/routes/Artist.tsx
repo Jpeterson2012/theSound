@@ -120,7 +120,7 @@ export default function Artist({paused}: any) {
   
 
   return (
-    <>
+    <div style={{width: '95vw'}}>
     { loading ? Spin3() :
     <div style={{marginTop: '40px',marginBottom: '80px'}}>
       <h1>{artists.artists?.name}</h1>
@@ -134,14 +134,22 @@ export default function Artist({paused}: any) {
         
             <p className="headers">Top Tracks</p>
             {listTTracks}
+
+            <div>
             <p className="headers">Albums</p>
             <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
                 {listItems}
             </div>
-            {listItems2?.length !== 0 ? <p className="headers">Singles</p> : null}
-            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
+            </div>
+            
+
+            <div >
+            {listItems2?.length !== 0 ? <p className="headers" >Singles</p> : null}
+            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center'}}>
                 {listItems2}
             </div>
+            </div>
+            
             {listItems3?.length !== 0 ? <p className="headers">Compilations</p> : null}
             <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
                 {listItems3}
@@ -151,6 +159,6 @@ export default function Artist({paused}: any) {
         
     </div>
     }
-    </>
+    </div>
   )
 }

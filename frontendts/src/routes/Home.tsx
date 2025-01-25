@@ -13,6 +13,7 @@ import { Spin3 } from "../components/Spin/Spin.tsx";
 
 import { imageRender } from "../components/ImageRender/ImageRender.tsx";
 
+
 function generatePassword() {
   var length = 22,
       charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
@@ -166,14 +167,15 @@ function Audiobooks(audiobooks:any){
 export default function Home() {
     const navigate = useNavigate()
     const [html, setHtml] = useState<any>(null)
-    const [sorted, setSorted] = useState(0)
-    const [psorted, setPSorted] = useState(0)        
+    const [sorted, setSorted] = useState(+sessionStorage.getItem('sortVal')!)
+    const [psorted, setPSorted] = useState(+sessionStorage.getItem('psortVal')!)        
       
     const {data: albums = [],isSuccess: albumSuccess} = useGetAlbumsQuery()    
     const {data: podcasts, isSuccess: podSuccess} = useGetPodcastsQuery()
     const {data: audiobooks, isSuccess: audSuccess} = useGetAudiobooksQuery()    
 
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(true)
 
     const onOpenModal = () => {setOpen(true)}
     const onCloseModal = () => {
@@ -248,10 +250,8 @@ export default function Home() {
       }
     })
 
-    useEffect(() => {            
-      sessionStorage.getItem('sortVal') && setSorted(+sessionStorage.getItem('sortVal')!)
-      sessionStorage.getItem('psortVal') && setPSorted(+sessionStorage.getItem('psortVal')!)
-            
+    useEffect(() => {    
+      
       switch(sessionStorage.getItem('home')){
         case 'album':
           setHtml(Albums(listItems))
@@ -270,19 +270,20 @@ export default function Home() {
         //   break
         default:
           setHtml(Albums(listItems))
-      }                  
+      }
+      setLoading(false)                  
     
-  }, [ready,sorted, psorted,isFetching]);
+  }, [ready,isFetching, (sorted || psorted)]);
     
   const listItems = sortedAlbums()?.map((a: any) => 
-    <Card
-      // key={a.id}
+    <Card      
       id={a.album_id}
       uri={a.uri}
       image={a.images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}
       name={a.name}
       artist={a.artists.map((t: any) => t.name)}
       a_id={a.artists.map((t: any) => t.id)}
+      key={a.album_id}
     />
   )
 
@@ -311,7 +312,7 @@ export default function Home() {
   )
   return (
     <>
-      {!ready? Spin3() : (<>
+      {!ready && !loading ? Spin3() : (<>
       <div className="homeContainer">
           <div style={{position: 'absolute', top: '10vw', right: '40vw'}}>            
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>

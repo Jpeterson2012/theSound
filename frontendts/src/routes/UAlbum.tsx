@@ -136,19 +136,19 @@ export default function UAlbum({active, paused}: any) {
                 <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
 
                   let temp2 = document.getElementById('addAlbum')!
-                  temp2.style.animation = 'pulse3 1s ease'
+                  temp2.style.animation = 'pulse3 linear 1s'
                   setTimeout(()=>{
                       temp2.style.removeProperty('animation')
                   }, 1000)
                   var x = document.getElementById("snackbar2");
                   x!.className = "show";
-                  setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 4000);  
+                  setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 5000);  
 
                   if (singleAlbum!.length === 0){                    
-                      addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name})                    
+                      setTimeout (() => {addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name}) },1000)                    
                   }
                   else{                                        
-                      deleteAlbum({aID: lastSegment!})                                        
+                      setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1000)                                        
                   }                  
 
                 }}>{singleAlbum!.length === 0 ? "+" : "✓"}</p>

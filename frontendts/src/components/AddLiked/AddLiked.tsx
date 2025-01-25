@@ -122,13 +122,13 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                         if (found === undefined && found2 === undefined){
                             handleSubmit()
                             let temp = document.getElementById('addSong')!
-                            temp.style.animation = 'pulse3 1s ease'
+                            temp.style.animation = 'pulse3 linear 1s'
                             setTimeout(()=>{
                                 temp.style.removeProperty('animation')
                             }, 1000)
                             var x = document.getElementById("snackbar");
                             x!.className = "show";
-                            setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 4000);
+                            setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 5000);
                         }
                         else{
                             onOpenModal()

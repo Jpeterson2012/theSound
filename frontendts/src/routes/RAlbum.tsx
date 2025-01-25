@@ -104,19 +104,19 @@ export default function RAlbum({active, paused}: any) {
                 <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
 
                   let temp = document.getElementById('addAlbum')!
-                  temp.style.animation = 'pulse3 1s ease'
+                  temp.style.animation = 'pulse3 linear 1s'
                   setTimeout(()=>{
                       temp.style.removeProperty('animation')
                   }, 1000)
                   var x = document.getElementById("snackbar2");
                   x!.className = "show";
-                  setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 4000);  
+                  setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 5000);  
 
                   if (found === undefined){                                        
-                      addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label})                    
+                    setTimeout(() => { addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label}) },1000)                 
                   }
                   else{                    
-                      deleteAlbum({aID: lastSegment!})                                 
+                      setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1000)                                 
                   }                  
 
                 }}>{found === undefined ? "+" : "✓"}</p>
