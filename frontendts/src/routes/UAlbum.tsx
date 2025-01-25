@@ -3,15 +3,16 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import './UAlbum.css'
-import Loading2 from "../components/Loading2/Loading2.tsx"
 import Track from "../components/Track/Track.tsx";
 import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation, Albums } from "../App/ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 
+import { Spin } from "../components/Spin/Spin.tsx";
 
 
-export default function UAlbum({SpinComponent, active, paused}: any) {
+
+export default function UAlbum({active, paused}: any) {
     const navigate = useNavigate()
     var parts = window.location.href.split('/');
     var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash    
@@ -105,16 +106,15 @@ export default function UAlbum({SpinComponent, active, paused}: any) {
     return (
       <>
 
-        {isLoading ? <Loading2 yes={true} /> : (
+        {isLoading ? null : (
           <>
             
             <div className="topDiv">
             <h2>{talbum[0]?.name}</h2>
-              <span className="fade-in-image2">
-                <SpinComponent is_active={active} is_paused={paused}/>
-                <img className="albumImage" src={sessionStorage.getItem("image")!}/>
-
-              </span>
+              
+              {/* Spin Component import now instead of prop */}
+              {Spin(active,paused,sessionStorage.getItem("image")!,null)}
+              
 
               
               <h2 className="artistName">{zip.map((s: any,i: number,row: any) =>
@@ -136,10 +136,10 @@ export default function UAlbum({SpinComponent, active, paused}: any) {
                 <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
 
                   let temp2 = document.getElementById('addAlbum')!
-                  temp2.style.animation = 'hithere 1s ease'
+                  temp2.style.animation = 'pulse3 1s ease'
                   setTimeout(()=>{
                       temp2.style.removeProperty('animation')
-                  }, 750)
+                  }, 1000)
                   var x = document.getElementById("snackbar2");
                   x!.className = "show";
                   setTimeout(function(){ x!.className = x!.className.replace("show", ""); }, 4000);  

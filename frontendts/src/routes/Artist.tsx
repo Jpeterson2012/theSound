@@ -3,12 +3,13 @@ import Track from "../components/Track/Track";
 import Card from "../components/Card/Card";
 import Loading2 from '../components/Loading2/Loading2.tsx';
 import './Artist.css'
+import { Spin3 } from "../components/Spin/Spin.tsx";
 
 export default function Artist({paused}: any) {
   var parts = window.location.href.split('/');
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
   
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [artists, setArtists] = useState<any>([])
   const [artists2, setArtists2] = useState<any>([])
   useEffect (() => {
@@ -24,11 +25,9 @@ export default function Artist({paused}: any) {
           }
           catch (err) {}
     }
-    const assignArtists = async () => {
-      setLoading(true)
+    const assignArtists = async () => {      
       const tempArtists = await fetchArtist()
-      setArtists(tempArtists)
-      setLoading(false)
+      setArtists(tempArtists)      
 
     }
     assignArtists()
@@ -47,6 +46,7 @@ export default function Artist({paused}: any) {
   const assignArtists2 = async () => {
     // setLoading(true)
     const tempArtists2 = await fetchArtist2()
+    setLoading(false)
     // setLoading(false)
     setArtists2(tempArtists2)
 
@@ -121,7 +121,7 @@ export default function Artist({paused}: any) {
 
   return (
     <>
-    { loading ? <Loading2 yes={true} /> :
+    { loading ? Spin3() :
     <div style={{marginTop: '40px',marginBottom: '80px'}}>
       <h1>{artists.artists?.name}</h1>
         {/* <img src={artists.artists?.images.filter(t=>t.height == 320).map(s => s.url)} /> */}

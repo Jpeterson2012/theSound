@@ -224,7 +224,7 @@ export const apiSlice = createApi({
         }),
         getDevices: builder.query<Devices[], void>({
             keepUnusedDataFor:  10,
-            query: () => '/player'
+            query: () => '/player/devices'
         }),
         getPodcasts: builder.query<Podcasts, void>({
             query: () => '/homepage2/podcasts'

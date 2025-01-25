@@ -41,11 +41,18 @@ div .fade-in-imageP{
     width: 360px;    
     margin: 0px;
     padding: 0px;
-    z-index: 1; 
+    z-index: 1;    
     /* position: relative;  */
     /* right: 110px;  */
-    left: 28.8vw;
-    top: -0.5vw;
+    
+}
+.subImage{
+    display: flex;    
+}
+.subsubImage{
+    height: 180px;
+    width: 180px;
+    border-radius: 0;
 }
 
 @media(min-height: 1000px){
@@ -59,6 +66,15 @@ div .fade-in-imageP{
         height: 460px;
         width: 450px;
         right: 160px;
+    }
+    .mainImage2{
+        height: 400px;
+        width: 400px;
+        margin-bottom: 10px;
+    }
+    .subsubImage{
+        height: 192px;
+        width: 192px;
     }
     
 }

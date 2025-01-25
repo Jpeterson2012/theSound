@@ -29,6 +29,7 @@ export default function Discover() {
     const [releases, setReleases] = useState<any>([])
     const [categories, setCategories] = useState([])
     const [fplaylists, setFplaylists] = useState<any>([])
+    const [loading, setLoading] = useState(true)
 
     useEffect (() => {
         const rel = sessionStorage.getItem("releases")
@@ -38,6 +39,7 @@ export default function Discover() {
             setReleases(JSON.parse(rel));
             setCategories(JSON.parse(cat))
             setFplaylists(JSON.parse(fplay))
+            setLoading(false)
         }
 
         else {
@@ -46,6 +48,7 @@ export default function Discover() {
                 const data = await resp.json()
                 setCategories(data)
                 sessionStorage.setItem("categories", JSON.stringify(data))
+                setLoading(false)
             }
             fetchCategories()
 
@@ -120,10 +123,14 @@ export default function Discover() {
 
 
     return (
+        <>
+        { loading ? null :
         <div style={{width: '90vw', position: 'absolute', left: '5vw', top: '9vw'}}>    
             {customRender("Categories", listCategories)}
             {customRender("New Releases", listReleases)}
             {customRender("Popular Playlists", listPlaylists)}        
-        </div>        
+        </div>
+         }        
+        </>
     )
 }

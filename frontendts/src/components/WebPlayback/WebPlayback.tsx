@@ -8,7 +8,6 @@ import Album from '../../routes/Album';
 import Playlist from '../../routes/Playlist.tsx';
 import Artist from '../../routes/Artist.tsx';
 import Logo from '../Logo/Logo.tsx';
-import Loading2 from '../Loading2/Loading2.tsx';
 import Discover from '../../routes/Discover.tsx';
 import Categories from '../../routes/Categories.tsx';
 import shuffle from '../../images/shuffle.png'
@@ -21,13 +20,11 @@ import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
 import { useGetDevicesQuery, useGetAlbumsQuery } from '../../App/ApiSlice.ts';
 import PollPlayer from '../PollPlayer.tsx';
-
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import escape from '../../images/escape.jpg'
 import device from '../../images/device.png'
-import { useInterval } from '../Seekbar/SeekBar.tsx';
-
+import { Spin2 } from '../Spin/Spin.tsx';
 
 declare global {
     interface Window{
@@ -35,14 +32,6 @@ declare global {
         Spotify: any;
     }
 }
-
-function randColor(){
-    return "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
-}
-let color1 = 'hsla(' + (Math.random() * 360) + ', 100%, 50%, 1)'
-let color2 = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
-let color3 = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
-
 
 const track: any = {
     name: "",
@@ -57,44 +46,6 @@ const track: any = {
         { name: "" }
     ],
     uri: ""
-}
-function Spin({is_active, is_paused}:any){
-    
-    return (
-        <>
-        <svg id='svg1' viewBox="0 0 400 400">
-              <g id="record"  style={!is_active ? {animationPlayState: 'paused'} :  is_paused ? {animationPlayState: 'paused'} : ({animationPlayState: 'running'})}>
-              <circle r="200" cx="200" cy="200" />
-              <circle className="line1" r="180" cx="200" cy="200" />
-              <circle className="line2" r="160" cx="200" cy="200" />
-              <circle className="line3" r="140" cx="200" cy="200" />
-              <circle id="label" cx="200" cy="200" r="100" style={{fill: color3}}/>
-              <text className="writing" y="160" x="165">TheSound </text>  
-              <text className="writing" y="230" x="115" textLength="170" lengthAdjust="spacing" >{sessionStorage.getItem("name") ? (sessionStorage.getItem("name")!.length > 49 ? (sessionStorage.getItem("name")!.substring(0,25) + "...") : sessionStorage.getItem("name")) : null}</text>    
-              <circle id="dot" cx="200" cy="200" r="6" />
-              </g>
-            </svg>
-        </>
-    )
-}
-function Spin2(is_active:any, is_paused:any){
-    //Spin for footer bar
-    return (
-        <>
-        <svg id='svg2' viewBox="0 0 400 400">
-              <g id="record2"  style={!is_active ? {animationPlayState: 'paused'} :  is_paused ? {animationPlayState: 'paused'} : ({animationPlayState: 'running'})}>
-              <circle r="200" cx="200" cy="200" />
-              <circle className="line1" r="180" cx="200" cy="200" />
-              <circle className="line2" r="160" cx="200" cy="200" />
-              <circle className="line3" r="140" cx="200" cy="200" />
-              <circle id="label2" cx="200" cy="200" r="100" style={{fill: color2}}/>
-              <text className="writing" y="160" x="165">TheSound</text>  
-              <text className="writing" y="230" x="115" textLength="170" lengthAdjust="spacing" >TheSound</text>    
-              <circle id="dot" cx="200" cy="200" r="6" />
-              </g>
-            </svg>
-        </>
-    )
 }
 
 function playbackState(uri: string, setPaused: any, currentDev: any){
@@ -133,53 +84,37 @@ function playbackState(uri: string, setPaused: any, currentDev: any){
     }
 }
 
-
 export default function WebPlayback() {
-
-    useInterval(() => {
-        if(is_active){
-            document.getElementById('label')!.style.fill = randColor()
-            document.getElementById('label2')!.style.fill = randColor()
-        }  
-    },120000)
-    // sessionStorage.setItem("uplist", "false")
 
     const [player, setPlayer] = useState<any>(undefined);
     const [is_paused, setPaused] = useState<any>(false);
     const [is_active, setActive] = useState<any>(false);
     const [current_track, setTrack] = useState(track);
     const [pos, setPos] = useState<any>(0)
-
-    const [duration, setDuration] = useState<any>(0)
-    
-
+    const [duration, setDuration] = useState<any>(0)    
     const [shuffled, setisShuffled] = useState(true)
     const [repeated, setRepeated] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
-
     //Used to keep track of current device. used in Track and Ptrack Component 
     const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)})
 
     //Get available devices
-    const {data: devices = [], isSuccess: dSuccess, refetch} = useGetDevicesQuery()        
+    const {data: devices = [], isSuccess: isFetching, refetch} = useGetDevicesQuery()        
 
-    const {data: albums = []} = useGetAlbumsQuery()
-    
-
-    let pVol: any = "1"
+    const {data: albums = []} = useGetAlbumsQuery()        
 
     const [open, setOpen] = useState(false);
-
     const onOpenModal = () => {setOpen(true)}
     const onCloseModal = () => {setOpen(false)}
     const closeIcon = (
         <img src={escape} style={{height: '44px', width: '44px'}}/>
     )
     
-
     const navigate = useNavigate()
+    let pVol: any = "1"
 
     useEffect(() => {
+        console.log(currentDev.name)
 ///////////////////////////Create Spotify web player client
 
             const script = document.createElement("script");
@@ -195,7 +130,6 @@ export default function WebPlayback() {
             }
             fetchToken()
             
-
             document.body.appendChild(script);
             
             window.onSpotifyWebPlaybackSDKReady = () => {  
@@ -205,8 +139,7 @@ export default function WebPlayback() {
                         getOAuthToken: (cb: any) => { cb(token); },
                         volume: 0.5
                     });
-                    setPlayer(player);
-                    setIsLoading(false)
+                    setPlayer(player);                    
                     
                     player.addListener('ready', ({ device_id }:any) => {
                         console.log('Ready with Device ID', device_id);
@@ -228,50 +161,42 @@ export default function WebPlayback() {
                     player.addListener('account_error', ({ message }: any) => {
                         console.error(message);
                     });
-                    
-                    
+                                        
                     player.addListener('player_state_changed', ( (state: any) => {
                         if (!state) {
                             return;
                         }                        
                         setTrack(state.track_window.current_track);                        
-                        setPaused(state.paused);
-                        
-         
+                        setPaused(state.paused);                                 
                         setDuration(state.duration)        
                         setPos(state.position)      
                         
                         sessionStorage.setItem("name", state.track_window.current_track.album.name)
                         sessionStorage.setItem("current", state.track_window.current_track.uri)
-                        sessionStorage.setItem("currentTrack",JSON.stringify(state.track_window.current_track))
-                                                                                               
+                        sessionStorage.setItem("currentTrack",JSON.stringify(state.track_window.current_track))                                                 
                     
                         player.getCurrentState().then( (state: any) => { 
-                            !state ? setActive(false) : setActive(true)
-                                
-                                                    
-                        })
-                                                            
+                            !state ? setActive(false) : setActive(true)                            
+                                                                                                                                          
+                        })                                                            
                     }));
-                    
-                    
-                    
+                                                            
                     player.connect();
-                        
+                    setIsLoading(false)                        
             };            
     }, []);
 
     return (
         <>
-        {isLoading ? <Loading2 yes={true}/> : (
+        {isLoading ? null : (
             <>
                 <Logo />
                 <Routes>
                 <Route path = '/' element={<Home/>}/>
                 <Route path='/discover' element={<Discover />} />
                 <Route path='/categories/:id' element={<Categories />} />
-                <Route path='/album/:id' element={<Album SpinComponent={Spin} active={is_active}  paused={is_paused}/>}/>
-                <Route path='/playlist/:id' element={<Playlist SpinComponent={Spin} active={is_active}  paused={is_paused}/>} />
+                <Route path='/album/:id' element={<Album active={is_active}  paused={is_paused}/>}/>
+                <Route path='/playlist/:id' element={<Playlist active={is_active}  paused={is_paused}/>} />
                 <Route path='/artist/:id' element={<Artist paused={is_paused} />} />
                 </Routes>    
                 
@@ -486,8 +411,9 @@ export default function WebPlayback() {
 
                     <img src={device} onClick={function handleClick(){      
                         refetch()
-                        onOpenModal()                  
-                        dSuccess ? console.log(devices) : null                                                
+                        onOpenModal()
+                        console.log(currentDev.name)                                          
+                        !isFetching ? console.log(devices) : null                                                
                     }} style={{position: 'absolute', right: '-42vw', height: '42px', cursor: 'pointer'}} />
 
                     <Modal modalId='modal1' open={open} onClose={onCloseModal} closeIcon={closeIcon} >
@@ -521,7 +447,7 @@ export default function WebPlayback() {
                             )}
                         </div>
                     </Modal>
-                    <PollPlayer track={current_track} setTrack={setTrack} duration={setDuration}/>
+                    <PollPlayer setCurrentDev={setCurrentDev} currentDev={currentDev} setTrack={setTrack} duration={setDuration} paused={setPaused}/>
                     
                     </div>
                     
@@ -534,100 +460,3 @@ export default function WebPlayback() {
         </>
     )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetLikedQuery } from "../../ApiSlice";
-// import { useEffect, useState } from "react";
-// let a: string
-
-// export default function WebPlayback(){
-
-//     const [users, setUsers] = useState("")
-//     useEffect(() => {
-        
-//     // const fetchUsers = async () => {
-//     //     try {
-//     //         var temp = await fetch("http://localhost:8888/auth/users")
-//     //     .then((res) => {
-//     //         console.log(res.json())
-//     //         return res.json();
-//     //     }).then((data) => {
-//     //         return data;
-//     //     })
-//     //         return temp
-//     //     }
-//     //     catch (err) {}
-//     //     }
-//     // const fetchBaby = async () => {
-//     //     const tempUsers = await fetchUsers()
-//     //     console.log(tempUsers.items)
-//     //     sessionStorage.setItem("username", tempUsers.items)
-//     // }
-//     // fetchBaby()
-//     const getUser = async () => {
-//         try{
-//         const res = await fetch("http://localhost:8888/auth/users")
-        
-//         const data = await res.json()
-//         return data
-//         }
-//         catch (err){}
-//     }
-//     getUser().then(data => {
-//         sessionStorage.setItem("username", data)
-//         setUsers(data.items)
-//     })
-//     },[])
-    
-//     // const {
-//     //     data: albums = [],
-//     //     isSuccess
-//     // } = useGetAlbumsQuery()
-
-//     // const {
-//     //     data: playlists = [],
-//     //     isSuccess
-//     // } = useGetPlaylistsQuery()
-//     const {
-//         data: liked = [],
-//         isSuccess
-//     } = useGetLikedQuery()
-    
-//     if (isSuccess) console.log(liked)
-//     return(
-//         <>
-//         <h1>Hi</h1>
-//         </>
-//     )
-//     // return (
-//     //     <>
-//     //     <h2>{users}</h2>
-//     //     </>
-//     // )
-// }

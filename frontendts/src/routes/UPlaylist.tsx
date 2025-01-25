@@ -8,35 +8,29 @@ import { useGetPlaylistsQuery, useGetLikedQuery, Playlists, useDeleteNewLikedMut
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import './UPlaylist.css'
+import { Spin } from "../components/Spin/Spin.tsx";
 
-function mainImage(url: string) {
-  return (<img className="mainImage" src={url}/>)
-}
-
-function listImages(last: any, ptracks: any) {
-  if (last == 'likedsongs'){
-    return (<img className="mainImage" src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"/>)
-  }
-  else{
-    return (
-      ptracks.images?.length === 0 ? mainImage("https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg") : ptracks.images?.length == 1 ? ptracks.images?.map((s: any) => mainImage(s.url)) :
-      ptracks.images?.filter((t: any) => t.height == 640).map((s: any) => mainImage(s.url))
-    )
-  }
-}
 function customImage(ptracks: any){
   return(
     <div className="mainImage2">
-      <div style={{display: 'flex',width: '360px'}}>
-        <img src={ptracks.tracks[0].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
-        <img src={ptracks.tracks[1].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+      <div className="subImage" >
+        <img className="subsubImage" style={{borderRadius: '15px 0px 0px 0px'}} src={ptracks.tracks[0].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
+        <img className="subsubImage" style={{borderRadius: '0px 15px 0px 0px'}} src={ptracks.tracks[1].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
       </div>
-      <div style={{display: 'flex', width: '360px'}}>
-        <img src={ptracks.tracks[2].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
-        <img src={ptracks.tracks[3].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
+      <div className="subImage" >
+        <img className="subsubImage" style={{borderRadius: '0px 0px 0px 15px'}} src={ptracks.tracks[2].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
+        <img className="subsubImage" style={{borderRadius: '0px 0px 15px 0px'}} src={ptracks.tracks[3].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
       </div>
     </div>
   )
+}
+
+function returnUrl(ptracks: any){  
+  
+  if (ptracks.images.length === 0) return 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg'
+  else if (ptracks.images.length === 1) return ptracks.images.map((s:any) => s.url)
+  else return ptracks.images.filter((t: any) => t.height == 640).map((s: any) => s.url)
+  
 }
 {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
 {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
@@ -60,12 +54,7 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
           pause={paused}
           />
         <p hidden>{key++}</p>
-        <h1 id="deleteSong" onClick={function handleClick(){
-          let temp = document.getElementById('deleteSong')!
-          temp.style.animation = 'hithere 1s ease'
-          setTimeout(()=>{
-              temp.style.removeProperty('animation')
-          }, 750)
+        <h1 id="deleteSong" onClick={function handleClick(){          
                 
           lastSegment === 'likedsongs' ? setTimeout(() => { removeSong({name: t.name}) },500) : setTimeout(() => { removePTrack({pID: userLists.playlist_id, name: t.name}) },500)
 
@@ -76,7 +65,7 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
   )
 }
 
-export default function UPlaylist({SpinComponent, lastSegment, active, paused}: any){
+export default function UPlaylist({lastSegment, active, paused}: any){
     const [loading, setLoading] = useState(true)
     var liked_uris: any = []
 
@@ -109,28 +98,16 @@ export default function UPlaylist({SpinComponent, lastSegment, active, paused}: 
 
     return(
         <>        
-            {loading ? <Loading2 yes={true} /> : (
+            {loading ? null : (
                 <>
-                <div>
-                    <span className="fade-in-imageP">
-                        <SpinComponent is_active={active} is_paused={paused}/>
-                        {lastSegment == 'likedsongs' ? listImages(lastSegment,liked) : ((singlePlist![0].images.length === 0 && singlePlist![0].tracks.length > 3) ? customImage(singlePlist![0]) : listImages(lastSegment,singlePlist![0]))}
-                    </span>
+                <div>                    
+
+                    {(lastSegment! === 'likedsongs' ? Spin(active,paused,"https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg",null) 
+                    : (singlePlist![0].images.length === 0 && singlePlist![0].tracks.length > 3) ? Spin(active,paused,"",customImage(singlePlist![0])) 
+                    : Spin(active,paused,returnUrl(singlePlist![0]),null) )}
 
                     <div>
-                      {/* <div style={{marginTop: '40px'}}>
-                      <div>
-                      <img src={singlePlist![0].tracks[0].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
-                      <img src={singlePlist![0].tracks[1].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
-                      </div>
-                      <div>
-                      <img src={singlePlist![0].tracks[2].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
-                      <img src={singlePlist![0].tracks[3].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} style={{height: '180px', width: '180px'}}/>
-                      </div>
-                      </div> */}
                     
-                        
-          
                         <div style={{marginBottom: '60px', marginTop: '40px'}}>
             
                             <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>

@@ -1,5 +1,6 @@
 //Session storage var progress created here, used in SeekBar
 
+import { current } from "@reduxjs/toolkit";
 import { useEffect,useRef } from "react";
 
 function useInterval(callback: any, delay: any){
@@ -22,12 +23,18 @@ function useInterval(callback: any, delay: any){
     }, [delay]);
   }
 
-export default function PollPlayer({track,setTrack,duration}: any){
+export default function PollPlayer({setCurrentDev,currentDev,setTrack,duration,paused}: any){
 
     useInterval(() => {            
         const poll = async () => {
-            const resp = await fetch('http://localhost:8888/auth/player/currently-playing')
+            const resp = await fetch('http://localhost:8888/auth/player')
             const data = await resp.json()
+            if (currentDev.name !== data.device.name) {
+              setCurrentDev({name: "TheSound", id: sessionStorage.getItem("device_id"!)})
+              sessionStorage.setItem("currentContext", "null")
+            }
+            if (data.is_playing === false) paused(true)
+            else paused(false)
             setTrack(data.item)
             duration(data.item.duration_ms)
             sessionStorage.setItem("name", data.item.album.name)

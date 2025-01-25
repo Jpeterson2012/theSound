@@ -1,7 +1,7 @@
 import './RPlaylist.css'
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import PTrack from "../components/PTrack/PTrack.tsx";
-import Loading2 from "../components/Loading2/Loading2.tsx";
+import { Spin, Spin3 } from '../components/Spin/Spin.tsx';
 
 function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
   let key = 0
@@ -27,7 +27,7 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any){
   )
 }
 
-export default function RPlaylist({SpinComponent, lastSegment, active, paused}: any){
+export default function RPlaylist({lastSegment, active, paused}: any){
     const [ptracks, setpTracks] = useState<any>([]);
     const [total, setTotal] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -72,13 +72,12 @@ export default function RPlaylist({SpinComponent, lastSegment, active, paused}: 
 
     return(
             <>        
-                {loading ? <Loading2 yes={true} /> : (
+                {loading ? Spin3() : (
                     <>
                     <div>
-                        <span className="fade-in-imageP">
-                            <SpinComponent is_active={active} is_paused={paused}/>
-                            <img className='rImage' src={sessionStorage.getItem("p_image")!}/>
-                        </span>
+                        
+                        {/* Spin Component import now instead of prop */}
+                        {Spin(active,paused,sessionStorage.getItem("p_image")!,null)} 
     
                         <div>
             

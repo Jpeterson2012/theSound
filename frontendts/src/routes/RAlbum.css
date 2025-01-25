@@ -67,13 +67,6 @@
         opacity: 1;
     }
 }
-@keyframes hithere {
-    30% { transform: scale(1.2); }
-    40%, 60% { transform: rotate(-20deg) scale(1.2); }
-    50% { transform: rotate(20deg) scale(1.2); }
-    70% { transform: rotate(0deg) scale(1.2); }
-    100% { transform: scale(1); }
-  }
 
   #snackbar2{
     visibility: hidden; /* Hidden by default. Visible on click */
@@ -96,6 +89,22 @@
     -webkit-animation: fadein 0.5s, fadeout 0.5s 4.0s;
     animation: fadein 0.5s, fadeout 0.5s 4.0s;
   }  
+  @keyframes pulse3 {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(238, 238, 238, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
 
 @media(min-height: 1000px){
     .fade-in-image2{

@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css'
 import Card from "../components/Card/Card.tsx";
 // import Local from "../components/Local/Local.jsx";
-import Loading2 from "../components/Loading2/Loading2.tsx";
-import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery,useGetUserQuery } from "../App/ApiSlice.ts"; 
+import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery } from "../App/ApiSlice.ts"; 
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import escape from '../images/escape.jpg'
+import { Spin3 } from "../components/Spin/Spin.tsx";
+
+import { imageRender } from "../components/ImageRender/ImageRender.tsx";
 
 function generatePassword() {
   var length = 22,
@@ -20,7 +22,6 @@ function generatePassword() {
   }
   return retVal;
 }
-
 
 function Albums(listItems: any){
   return(
@@ -74,7 +75,7 @@ function Playlists(navigate: any, listPlaylists: any){
         sessionStorage.setItem("uplist", "true")
         navigate('/app/playlist/likedsongs')
       }}>
-      <div style={{display: 'flex', alignItems: 'center'}}>
+      <div style={{display: 'flex', alignItems: 'center', animation: 'fadeIn 0.5s'}}>
         <img src="https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" alt="Liked Songs"  style={{height: '300px', width: '300px', marginRight: '50px'}}/>
         <h2>Liked Songs</h2>
       </div>
@@ -150,7 +151,7 @@ function Audiobooks(audiobooks:any){
       )
   
   return(
-    <div style={{marginTop: '10vw'}}>
+    <div style={{marginTop: '10vw'}}>      
       {listItems}
     </div>
     
@@ -166,15 +167,11 @@ export default function Home() {
     const navigate = useNavigate()
     const [html, setHtml] = useState<any>(null)
     const [sorted, setSorted] = useState(0)
-    const [psorted, setPSorted] = useState(0)
-    const [loading, setLoading] = useState(false)
-
-    
+    const [psorted, setPSorted] = useState(0)        
       
-    const {data: albums = [],isSuccess} = useGetAlbumsQuery()
-    const {data: user} = useGetUserQuery()
-    const {data: podcasts} = useGetPodcastsQuery()
-    const {data: audiobooks} = useGetAudiobooksQuery()    
+    const {data: albums = [],isSuccess: albumSuccess} = useGetAlbumsQuery()    
+    const {data: podcasts, isSuccess: podSuccess} = useGetPodcastsQuery()
+    const {data: audiobooks, isSuccess: audSuccess} = useGetAudiobooksQuery()    
 
     const [open, setOpen] = useState(false);
 
@@ -231,7 +228,9 @@ export default function Home() {
       }      
     })
 
-    const {data: playlists = [], isFetching, refetch} = useGetPlaylistsQuery()
+    const {data: playlists = [], isSuccess: playSuccess, isFetching, refetch} = useGetPlaylistsQuery()
+
+    let ready = albumSuccess && podSuccess && audSuccess && playSuccess
 
     const sortedPlaylists = (() => {
       const sortedPlaylists = playlists.slice()
@@ -249,12 +248,10 @@ export default function Home() {
       }
     })
 
-    useEffect(() => {
-      console.log(playlists)      
+    useEffect(() => {            
       sessionStorage.getItem('sortVal') && setSorted(+sessionStorage.getItem('sortVal')!)
       sessionStorage.getItem('psortVal') && setPSorted(+sessionStorage.getItem('psortVal')!)
-      
-      setLoading(true)
+            
       switch(sessionStorage.getItem('home')){
         case 'album':
           setHtml(Albums(listItems))
@@ -273,13 +270,9 @@ export default function Home() {
         //   break
         default:
           setHtml(Albums(listItems))
-      }
-      setLoading(false)
-      
-      
-
+      }                  
     
-  }, [isSuccess,sorted, psorted,isFetching]);
+  }, [ready,sorted, psorted,isFetching]);
     
   const listItems = sortedAlbums()?.map((a: any) => 
     <Card
@@ -304,8 +297,9 @@ export default function Home() {
         sessionStorage.setItem("playlist_name", a.name)
         navigate(`/app/playlist/${a.playlist_id}`)
       }}>
-        <div style={{display: 'flex', alignItems: 'center'}}>
-        <img id="fade-in-image" className="fade-in-image" src={a.images.length == 0 ? "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" : a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
+        <div style={{display: 'flex', alignItems: 'center', animation: 'fadeIn 0.5s'}}>
+        {imageRender(a,300,300,50)}
+        {/* <img id="fade-in-image" className="fade-in-image" src={a.images.length == 0 ? "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg" : a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/> */}
         <h2>{a.name}</h2>
         </div>
       
@@ -317,7 +311,7 @@ export default function Home() {
   )
   return (
     <>
-      {!isSuccess ? <Loading2 yes={true} /> : (<>
+      {!ready? Spin3() : (<>
       <div className="homeContainer">
           <div style={{position: 'absolute', top: '10vw', right: '40vw'}}>            
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>

@@ -178,71 +178,75 @@ export default function Logo () {
     }, [tracks])
 
     return(
-        <div className='mainLogo'>
-            <h2 className='userName'>{isSuccess ? user!.items : 'hi'}</h2>
+        <>
+          {!isSuccess ? null :
+          <div className='mainLogo'>
+              <h2 className='userName'>{isSuccess ? user!.items : 'hi'}</h2>
 
-            <h2 style={{position: 'absolute', left: '25vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
-              if (window.history?.length && window.history.length > 1) navigate(-1)
-              else navigate('/app/', {replace: true})
-            }}>{"<"}</h2>
-
-            <img className='searchimg' src={search} onClick={function handleClick(){onOpenModal()}} />
-
-            <h2 style={{position: 'absolute', right: '30vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
-              if (window.history?.length && window.history.length > 1) navigate(1)
+              <h2 style={{position: 'absolute', left: '25vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
+                if (window.history?.length && window.history.length > 1) navigate(-1)
                 else navigate('/app/', {replace: true})
-            }}>{">"}</h2>
+              }}>{"<"}</h2>
 
-            <a onClick={function handleClick() {navigate('/app/discover')}}>
-                <h2 style={{position: 'relative', right: '5vw'}} >Discover</h2>
-            </a>
-            <a onClick={function handleClick() {navigate('/app')}}>
-                <img style={{width: '80px', height: '80px'}} src={logo} alt="Avatar"/>
-            </a>
+              <img className='searchimg' src={search} onClick={function handleClick(){onOpenModal()}} />
 
+              <h2 style={{position: 'absolute', right: '30vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
+                if (window.history?.length && window.history.length > 1) navigate(1)
+                  else navigate('/app/', {replace: true})
+              }}>{">"}</h2>
 
-
-            <div>
-            
-                <Modal modalId='modal3' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>
-                  
-                <div className="wrap">
-                <div className="search">
-                    <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
-                    <button type="button" className="searchButton" onClick={function handleSubmit(){
-
-                      setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0;
-
-                      console.log((document.getElementById("searchTerm") as HTMLInputElement).value);
-                      let t = document.getElementById('modalbuttons')!
-                      t.style.display = 'flex'
-                      t.style.animation = 'fadeIn 0.5s'
-                      
-                      fetchSearch()
-                       return false
-                    }}><i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}} ></i></button>
-                    </div>
-                    </div>
-                    <img src={space} style={{zIndex: '0', width: '100%', height: '180px', position: 'absolute', top: '0', opacity: '0.3', objectFit: 'cover', objectPosition: '20% 50%'}} />
+              <a onClick={function handleClick() {navigate('/app/discover')}}>
+                  <h2 style={{position: 'relative', right: '5vw'}} >Discover</h2>
+              </a>
+              <a onClick={function handleClick() {navigate('/app')}}>
+                  <img style={{width: '80px', height: '80px'}} src={logo} alt="Avatar"/>
+              </a>
 
 
-                    <div id='modalbuttons' style={{display: 'none', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '8vw'}}>
-                        <button onClick={() => {setHtml(getTracks(tracks)), sessionStorage.setItem('searchHome', 'tracks')}}>Tracks</button>
-                        <button onClick={() => {setHtml(getAlbums(albumss,albums, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'albums')}}>Albums</button>
-                        <button onClick={() => {setHtml(getArtists(artist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'artists')}}>Artists</button>
-                        <button onClick={() => {setHtml(getPlaylists(plist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'playlists')}}>Playlists</button>
-                    </div>
 
-                    <div style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginTop: '40px'}}>{html ? html : getTracks(tracks)}</div>
-                    
+              <div>
 
-                    {tracks.length > 0 ? <button onClick={function handleSubmit(){
-                      counter += 10
-                      fetchSearch()
-                    }} style={{marginLeft: 'auto', marginRight: 'auto'}} >Load More</button> : null}
-                </Modal>
-            </div>
-        </div>
+                  <Modal modalId='modal3' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>
+
+                  <div className="wrap">
+                  <div className="search">
+                      <input type="text" className="searchTerm" id='searchTerm'  placeholder="What are you looking for?" />
+                      <button type="button" className="searchButton" onClick={function handleSubmit(){
+
+                        setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0;
+
+                        console.log((document.getElementById("searchTerm") as HTMLInputElement).value);
+                        let t = document.getElementById('modalbuttons')!
+                        t.style.display = 'flex'
+                        t.style.animation = 'fadeIn 0.5s'
+
+                        fetchSearch()
+                         return false
+                      }}><i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}} ></i></button>
+                      </div>
+                      </div>
+                      <img src={space} style={{zIndex: '0', width: '100%', height: '180px', position: 'absolute', top: '0', opacity: '0.3', objectFit: 'cover', objectPosition: '20% 50%'}} />
+
+
+                      <div id='modalbuttons' style={{display: 'none', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '8vw'}}>
+                          <button onClick={() => {setHtml(getTracks(tracks)), sessionStorage.setItem('searchHome', 'tracks')}}>Tracks</button>
+                          <button onClick={() => {setHtml(getAlbums(albumss,albums, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'albums')}}>Albums</button>
+                          <button onClick={() => {setHtml(getArtists(artist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'artists')}}>Artists</button>
+                          <button onClick={() => {setHtml(getPlaylists(plist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'playlists')}}>Playlists</button>
+                      </div>
+
+                      <div style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginTop: '40px'}}>{html ? html : getTracks(tracks)}</div>
+
+
+                      {tracks.length > 0 ? <button onClick={function handleSubmit(){
+                        counter += 10
+                        fetchSearch()
+                      }} style={{marginLeft: 'auto', marginRight: 'auto'}} >Load More</button> : null}
+                  </Modal>
+              </div>
+          </div>
+          }
+        </>
     )
 }
 
