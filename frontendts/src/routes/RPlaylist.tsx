@@ -6,6 +6,8 @@ import dots from '../images/dots.png'
 import EditPlaylist from '../components/EditPlaylist/EditPlaylist.tsx';
 import musicBar from '../components/musicBar/musicBar.tsx';
 import MySnackbar from '../components/MySnackBar.tsx';
+import ButtonScroll from '../components/ButtonScroll/ButtonScroll.tsx';
+import { useGetPlaylistsQuery,useDeletePlaylistMutation } from '../App/ApiSlice.ts';
 
 function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setmodal:any,settrack:any){
   let key = 0
@@ -47,12 +49,19 @@ export default function RPlaylist({lastSegment, active, paused}: any){
     const [ptracks, setpTracks] = useState<any>([]);
     const [total, setTotal] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [loading2, setLoading2] = useState(true)
     const [modal, setModal] = useState(false)
     const[trackData, setTrackData] = useState(null)
     const[snack, setSnack] = useState(false)
+
+    const {data: playlists = [], refetch} = useGetPlaylistsQuery()
+    let found = playlists?.find((e: any) => e?.playlist_id === lastSegment)
+    const [deletePlaylist] = useDeletePlaylistMutation()
+
     var liked_uris: any = []
 
-    useEffect (() => {                
+    useEffect (() => {            
+      console.log(found)    
       // console.log(loading)
           
         if (sessionStorage.getItem("ref_id") === lastSegment) {
@@ -85,9 +94,35 @@ export default function RPlaylist({lastSegment, active, paused}: any){
         
           }
           fetchpTracks()
+
+
+
+        //   const fetchTracks = async () => {
+        //     try {
+        //         var temp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
+        //       .then((res) => {
+        //         // console.log(res.json())
+        //         return res.json();
+        //       }).then((data) => {return data})
+        //         return temp
+        //       }
+        //       catch (err) {}
+        // }
+        // const assignTracks = async () => {
+        //   // setIsLoading(true)
+        //   const tempTracks = await fetchTracks()
+        //   setLoading(false)
+        //   console.log(tempTracks)
+        //   setpTracks(tempTracks.items)
+        //   // sessionStorage.setItem("ref_id", lastSegment!)
+        //   // sessionStorage.setItem("ref_items", JSON.stringify(tempTracks))
+  
+        // }
+        // assignTracks()
+
         }            
         
-      }, [sessionStorage.getItem("playlist_name")]);
+      }, [sessionStorage.getItem("playlist_name")!]);
 
     return(
             <>        
@@ -108,6 +143,33 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                                 <div style={{display: 'flex', marginRight: '10px'}}>
                                     <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
                                     <h5 style={{color: 'rgb(90, 210, 216)'}}>{ptracks?.length} Song(s)</h5>
+                                    <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
+                                      setSnack(true)
+                                      let temp2 = document.getElementById('addAlbum')!
+                                      temp2.style.transform = 'scale(1)'
+                                      temp2.style.animation = 'pulse3 linear 1s'
+                                      setTimeout(()=>{
+                                          temp2.style.removeProperty('animation')
+                                          temp2.style.removeProperty('transform')
+                                      }, 1000)                    
+                                    
+                                      if (found === undefined ){           
+                                        setSnack(true)         
+                                          setTimeout (() => {
+                                            fetch(`http://localhost:8888/auth/users/playlist`, {
+                                              method: 'POST',
+                                              headers: {"Content-Type":"application/json"},
+                                              body: JSON.stringify({id: lastSegment,name: sessionStorage.getItem("playlist_name"), images: JSON.parse(sessionStorage.getItem("fullp_image")!)})                                        
+                                            })
+                                          },500)
+                                          setTimeout(() => {refetch()},800)                 
+                                      }
+                                      else{                                        
+                                        setSnack(true)        
+                                        setTimeout(() => { deletePlaylist({pID: lastSegment!}) },300)                                                                           
+                                      }                  
+                                    
+                                    }}>{found === undefined ? "+" : "✓"}</p>
     
                     
                                 </div>
@@ -126,6 +188,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                     </div>
                     </>
                 )}
+                <ButtonScroll />
                 {modal ? <EditPlaylist track={trackData} boolVal={modal} setbool={setModal} /> : null}
                 {snack ? <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>  : null}
             </>

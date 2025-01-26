@@ -34,7 +34,7 @@ router.get('/albums', async (req, res) => {
 router.get('/playlists', async (req, res) => {
 
     function getPlaylists(){
-        var sql = 'SELECT playlist_id, images, name, public, uri, tracks from uplaylists'
+        var sql = 'SELECT playlist_id, images, name, public, uri, tracks from uplaylists where not name="temp_playlist"'
         con.query(sql, function (err,result) {
             if (err) throw err;
             var items = []
@@ -49,10 +49,10 @@ router.get('/playlists', async (req, res) => {
                 
                 var temp3 = []
                 temp2 === null ? null : temp2.items?.map(a => {
-                    temp3.push({album_id: a.album?.id, images:( a.album?.images ? a.album?.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
+                    temp3.push({album_id: a.album?.id, images: a.album?.images ? a.album?.images : (a.images ?  a.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
                 }) 
                 temp.tracks = temp3
-                items.push(temp)
+                items.push(temp)                
                 }
             res.send(items)
         })

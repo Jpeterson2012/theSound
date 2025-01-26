@@ -1,5 +1,4 @@
 import './Spin.css'
-import { useInterval } from '../Seekbar/SeekBar'
 
 function randColor(){
     return "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
@@ -8,14 +7,10 @@ let color1 = 'hsla(' + (Math.random() * 360) + ', 100%, 50%, 1)'
 let color2 = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
 let color3 = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
 
+
+//Found is a bool val that checks if the album/playlist has a cover image
+//If it does found is null and img is an image url passed in, else img = "" and found is a custom div comprised of images
 function Spin(is_active:any, is_paused:any,img:any, found:any){
-        
-    
-        // useInterval(() => {            
-        //         document.getElementById('label')!.style.fill = randColor()
-        //         document.getElementById('label2')!.style.fill = randColor()
-            
-        // },120000)
     
 
     let temp = (() => {
@@ -32,8 +27,8 @@ function Spin(is_active:any, is_paused:any,img:any, found:any){
               <circle className="line1" r="180" cx="200" cy="200" />
               <circle className="line2" r="160" cx="200" cy="200" />
               <circle className="line3" r="140" cx="200" cy="200" />
-              <circle id="label" cx="200" cy="200" r="100" style={{fill: color3}}/>
-              <text className="writing" y="160" x="165">TheSound </text>  
+              <circle id="label" cx="200" cy="200" r="100" style={{fill: color2}}/>
+              <text className="writing" y="160" x="165">TheSound</text>  
               <text className="writing" y="230" x="115" textLength="170" lengthAdjust="spacing" >{sessionStorage.getItem("name") ? (sessionStorage.getItem("name")!.length > 49 ? (sessionStorage.getItem("name")!.substring(0,25) + "...") : sessionStorage.getItem("name")) : null}</text>    
               <circle id="dot" cx="200" cy="200" r="6" />
               </g>
@@ -51,7 +46,7 @@ function Spin2(is_active:any, is_paused:any){
               <circle className="line1" r="180" cx="200" cy="200" />
               <circle className="line2" r="160" cx="200" cy="200" />
               <circle className="line3" r="140" cx="200" cy="200" />
-              <circle id="label2" cx="200" cy="200" r="100" style={{fill: color2}}/>
+              <circle id="label2" cx="200" cy="200" r="100" style={{fill: color3}}/>
               <text className="writing" y="160" x="165">TheSound</text>  
               <text className="writing" y="230" x="115" textLength="170" lengthAdjust="spacing" >TheSound</text>    
               <circle id="dot" cx="200" cy="200" r="6" />
@@ -62,7 +57,7 @@ function Spin2(is_active:any, is_paused:any){
 }
 
 function Spin3(){
-    //Spin for footer bar
+    //Spin for loading screen
     return (
         <>
         <svg id='svg3' viewBox="0 0 400 400">

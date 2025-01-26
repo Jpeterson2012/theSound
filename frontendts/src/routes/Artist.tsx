@@ -4,6 +4,7 @@ import Card from "../components/Card/Card";
 import './Artist.css'
 import { Spin3 } from "../components/Spin/Spin.tsx";
 import musicBar from "../components/musicBar/musicBar.tsx";
+import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 
 export default function Artist({paused}: any) {
   var parts = window.location.href.split('/');
@@ -161,8 +162,9 @@ export default function Artist({paused}: any) {
             </div>
             
           
-        
+            <ButtonScroll />
     </div>
+    
     }
     </div>
   )

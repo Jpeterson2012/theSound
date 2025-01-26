@@ -9,6 +9,7 @@ import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation } from ".
 import { Spin,Spin3 } from "../components/Spin/Spin.tsx";
 import musicBar from "../components/musicBar/musicBar.tsx";
 import MySnackbar from "../components/MySnackBar.tsx";
+import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 
 export default function RAlbum({active, paused}: any) {
     const navigate = useNavigate()
@@ -84,7 +85,7 @@ export default function RAlbum({active, paused}: any) {
           <>
 
             <div className="topDiv">
-              <h2>{tracks?.albums?.name}</h2>
+              <h2 style={{fontSize: '30px'}} >{tracks?.albums?.name}</h2>
               
               {/* Spin Component import now instead of prop */}
               {Spin(active,paused,sessionStorage.getItem("image")!,null)}
@@ -105,11 +106,13 @@ export default function RAlbum({active, paused}: any) {
                 {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
                 {tracks.images?.map((a: any) => <img className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}                
                 <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(this:any){
-                  setSnack(true)
+                  setSnack(true)                  
                   let temp = document.getElementById('addAlbum')!
+                  temp.style.transform = 'scale(1)'
                   temp.style.animation = 'pulse3 linear 1s'
                   setTimeout(()=>{
                       temp.style.removeProperty('animation')
+                      temp.style.removeProperty('transform')
                   }, 1000)                    
 
                   if (found === undefined){                                        
@@ -150,6 +153,7 @@ export default function RAlbum({active, paused}: any) {
           </>
 
         )}
+        <ButtonScroll />
         {snack ? <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>  : null}
       </>
     )

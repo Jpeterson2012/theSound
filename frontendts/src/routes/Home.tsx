@@ -16,6 +16,8 @@ import MySnackbar from "../components/MySnackBar.tsx";
 
 import dots from '../images/dots.png'
 
+import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
+
 function generatePassword() {
   var length = 22,
       charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
@@ -238,6 +240,7 @@ export default function Home() {
     })
 
     const {data: playlists = [], isSuccess: playSuccess, isFetching, refetch} = useGetPlaylistsQuery()
+    
 
     let ready = albumSuccess && podSuccess && audSuccess && playSuccess
 
@@ -280,7 +283,7 @@ export default function Home() {
       }
       setLoading(false)                  
     
-  }, [ready,isFetching, (sorted || psorted),delsuccess]);
+  }, [ready,isFetching, sorted,psorted,delsuccess]);
     
   const listItems = sortedAlbums()?.map((a: any) =>
     <div>
@@ -343,7 +346,7 @@ export default function Home() {
     <>
       {!ready && !loading ? Spin3() : (<>      
       <div className="homeContainer">
-          <div style={{position: 'absolute', top: '10vw', right: '40vw'}}>            
+          <div style={{position: 'absolute', top: '10vw', right: '40vw',display: 'flex',justifyContent: 'center',alignItems: 'center'}}>            
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
             <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
             <button className="homeButtons" onClick={() => {setHtml(Podcasts(podcasts)), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
@@ -352,14 +355,14 @@ export default function Home() {
             {/* <button className="homeButtons" onClick={() => {setHtml(localSong()), sessionStorage.setItem('home', 'local') }}>Local</button> */}
             <p style={sessionStorage.getItem('home') === "playlist" ? {display: "inline"} : {display: "none"}} className="addPlaylist" onClick={function handleClick(){
               onOpenModal()                            
-            }} >{ "+"}</p>
+            }} >+</p>
 
             <div className="dropdown" id="dropdown">
 
             
 
               <Modal modalId='modal4' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>
-              <div style={{color: 'black', marginLeft: '40%',fontWeight: 'bolder'}} >New Playlist</div>
+              <div style={{color: 'white', marginLeft: '35%',fontWeight: 'bolder',fontSize: '20px'}} >New Playlist</div>
               <form action=""  id="formPlaylist">
                 <label htmlFor="first">
                     Name:
@@ -373,7 +376,7 @@ export default function Home() {
                 <input type="text" id="second" name="second" 
                     placeholder="Optional"/>
                 
-                <div style={{color: 'black', fontWeight: 'bolder'}} >Public:</div>
+                <div style={{color: 'white', fontWeight: 'bolder',fontSize: '20px'}} >Public</div>
                   <div style={{display: 'flex', gap: '10px'}}>
                   <div>
                     <label htmlFor="option1">True</label>
@@ -386,7 +389,7 @@ export default function Home() {
                   </div>  
                 </div>                   
 
-                <div className="wrap">
+                <div className="wrap2">
                     <button type="submit" onClick={(() => onCloseModal())}>
                         Submit
                     </button>
@@ -410,6 +413,7 @@ export default function Home() {
       
       </>
     )}
+    <ButtonScroll />
     {opensnack ? <MySnackbar state={opensnack} setstate={setOpensnack} message="Removed From Library"/> : null}
     </>
   )

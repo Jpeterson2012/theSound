@@ -109,25 +109,31 @@
   cursor: pointer; 
   border: 2px solid #7a19e9; 
   color: rgb(90, 210, 216); 
-  /* border-radius: 50%; */
+  border-radius: 50%;
   height: 35px; 
   width: 35px;
   font-size: 30px;
   position: relative;
   left: 10vw;
   top: 5px;
-  padding: 0px 9px;
-  display: inline;
+  line-height: 28px;  
+  padding: 3px 5px;     
+  
+}
+.addPlaylist:hover{  
+  transform: scale(1);
+  animation: pulse3 1.5s infinite;
 }
 
 form label {
   display: block;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 15px;
   margin-bottom: 5px;
   text-align: left;
-  color: black;
+  color: white;
   font-weight: bold;
+  font-size: 20px;
 }
 form input {
   display: block;
@@ -138,22 +144,45 @@ form input {
   border: 1px solid #ddd;
   border-radius: 5px;
 }
-.wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.wrap2 button{
+  position: relative;
+  width: 90%;
+  height: 65px;
+  margin-top: 35px;
+  color: white;
+  background-color: #0066ff;
+  /* left: 0; */
+  /* left: 150px; */
+  
 }
 form{
   
 }
 #modal4{
   margin: 0px !important;
-  padding: 0px !important;
+  padding: 15px !important;
   min-width: 400px !important;
-  min-height: 340px !important;
-  overflow: hidden !important;
-  margin-bottom: 150px !important;
+  min-height: 370px !important;
+  overflow: hidden !important;  
+
   background: linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%);
+}
+
+@keyframes pulse3 {
+  0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(238, 238, 238, 0.7);
+  }
+
+  70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgb(90, 210, 216);
+  }
+
+  100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgb(90, 210, 216);
+  }
 }
 
 @media(min-height: 1000px){

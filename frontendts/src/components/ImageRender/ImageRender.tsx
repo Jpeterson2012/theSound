@@ -6,12 +6,12 @@ function imageRender(ptracks: any, height:any,width:any,margin:any){
         return(
             <div className="mainRender" style={{height: `${height}px`,width: `${width}px`, marginRight: `${margin}px`}}>
                 <div className="subRender" >
-                    <img className="subsubRender" style={{height: `${height/2}px`, width: `${width/2}px`, borderRadius: '15px 0px 0px 0px'}} src={ptracks.tracks[0].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
-                    <img className="subsubRender" style={{height: `${height/2}px`, width: `${width/2}px`, borderRadius: '0px 15px 0px 0px'}} src={ptracks.tracks[1].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
+                    <img className="subsubRender" style={{height: `${height/2}px`, width: `${width/2}px`, borderRadius: '15px 0px 0px 0px'}} src={ptracks.tracks[0].images.length === 1 ? ptracks.tracks[0].images.map((s:any) => s.url) : ptracks.tracks[0].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
+                    <img className="subsubRender" style={{height: `${height/2}px`, width: `${width/2}px`, borderRadius: '0px 15px 0px 0px'}} src={ptracks.tracks[1].images.length === 1 ? ptracks.tracks[0].images.map((s:any) => s.url) : ptracks.tracks[1].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
                 </div>
                 <div className="subRender" >
-                    <img className="subsubRender" style={{height: `${height/2}px`, width: `${width/2}px`, borderRadius: '0px 0px 0px 15px'}} src={ptracks.tracks[2].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
-                    <img className="subsubRender" style={{height: `${height/2}px`, width: `${width/2}px`, borderRadius: '0px 0px 15px 0px'}} src={ptracks.tracks[3].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
+                    <img className="subsubRender" style={{height: `${height/2}px`, width: `${width/2}px`, borderRadius: '0px 0px 0px 15px'}} src={ptracks.tracks[0].images.length === 1 ? ptracks.tracks[2].images.map((s:any) => s.url) : ptracks.tracks[2].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
+                    <img className="subsubRender" style={{height: `${height/2}px`, width: `${width/2}px`, borderRadius: '0px 0px 15px 0px'}} src={ptracks.tracks[0].images.length === 1 ? ptracks.tracks[3].images.map((s:any) => s.url) : ptracks.tracks[3].images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}/>
                 </div>
             </div>
         )        

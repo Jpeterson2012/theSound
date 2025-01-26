@@ -11,16 +11,32 @@ router.get('/', function(req, res, next) {
  
 });
 
-router.post('/:playlist', async (req,res) => {
-    
+router.post('/:playlist', async (req,res) => {    
+  console.log(req.body)
   try{
-        
-      sql = `INSERT INTO uplaylists (playlist_id, name, public, uri) VALUES ('${req.body.id}', '${req.body.name}', ${req.body.public}, 'spotify:playlist:${req.body.id}')`
-      con.query(sql, (err) => {
-        if (err) throw err;
-        console.log('New Playlist Added')
-      })
+      if(req.body.public === undefined){
+         
+        sql = `select playlist_id, name from uplaylists where playlist_id="${req.body.id}" and name = "temp_playlist"`
+        con.query(sql, function(err,result){ 
+          console.log(result)
+          if (result.length === 1){            
+            sql = `insert into uplaylists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${req.body.name}', public, 'spotify:playlist:${req.body.id}',tracks from uplaylists where name = "temp_playlist"`
+            con.query(sql, (err) => {
+              if (err) throw err;
+              console.log('New Playlist Added')
+            })
+          }             
+        })
+    }
+    else{
+        sql = `INSERT INTO uplaylists (playlist_id, name, public, uri) VALUES ('${req.body.id}', '${req.body.name}', ${req.body.public}, 'spotify:playlist:${req.body.id}')`
+        con.query(sql, (err) => {
+          if (err) throw err;
+          console.log('New Playlist Added')
+        })
+      }
       res.send("204")
+
       }
       catch(e){
         console.log(e)

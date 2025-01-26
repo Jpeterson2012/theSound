@@ -15,8 +15,7 @@ function MySnackbar({state,setstate,message}: any){
     };    
   
     return (
-      <div>
-    <button onClick={()=>setOpen(true)}>Activate Snackbar</button>        
+      <div>           
         <Snackbar 
         anchorOrigin={{vertical: 'bottom',horizontal: 'center'}}
          open={open} 
@@ -35,6 +34,7 @@ function MySnackbar({state,setstate,message}: any){
                 textAlign: 'center',
                 borderRadius: '16px',
                 padding: '16px',
+                marginBottom: '38px',
             }
          }}
         />

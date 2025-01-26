@@ -8,7 +8,7 @@ import Track from '../Track/Track';
 import escape from '../../images/escape.jpg'
 import search from '../../images/search.png'
 import space from '../../images/music.gif'
-import { useGetUserQuery,useGetAlbumsQuery } from '../../App/ApiSlice';
+import { useGetUserQuery,useGetAlbumsQuery, useGetPlaylistsQuery } from '../../App/ApiSlice';
 
 function getTracks(ptracks: any) {
     var key = 0
@@ -81,14 +81,16 @@ function getTracks(ptracks: any) {
       )
     )
   }
-  function getPlaylists(plists: any, nav: any, close: any){
+  function getPlaylists(plistss:any,plists: any, nav: any, close: any){
     return (
-      plists.map((a:any) => 
+      plists.map((a:any) =>
       <>
 
       <a onClick={function handleClick() {
-        sessionStorage.setItem("uplist", "false")
+        let found = plistss?.find((e: any) => e?.playlist_id === a.id)
+        found === undefined ? sessionStorage.setItem("uplist", "false") : sessionStorage.setItem("uplist", "true")
         sessionStorage.setItem("playlist_name", a.name)
+        sessionStorage.setItem("fullp_image", JSON.stringify(a.images))
         sessionStorage.setItem("p_image", a.images.length == 1 ? a.images.map((s:any) => s.url) : a.images.filter((s:any) => s.height == 60).map((s:any) => s.url))
         nav(`/app/playlist/${a.id}`)
         close()
@@ -117,6 +119,8 @@ export default function Logo () {
     const [plist, setPlist] = useState<any>([]);
     const [artist, setArtist] = useState<any>([])
     const {data: albumss = []} = useGetAlbumsQuery()
+    const {data: playlists = [], refetch} = useGetPlaylistsQuery()
+    
 
     const [open, setOpen] = useState(false);
     const onOpenModal = () => setOpen(true);
@@ -151,10 +155,7 @@ export default function Logo () {
     const closeIcon = (
         <img src={escape} style={{height: '44px', width: '44px'}}/>
       );
-    const {
-            data: user,
-            isSuccess
-            } = useGetUserQuery()
+    const {data: user,isSuccess} = useGetUserQuery()
     
     useEffect(() => {
       switch(sessionStorage.getItem('searchHome')){
@@ -168,7 +169,7 @@ export default function Logo () {
           setHtml(getArtists(artist, navigate, onCloseModal))
           break
         case 'playlists':
-          setHtml(getPlaylists(plist, navigate, onCloseModal))
+          setHtml(getPlaylists(playlists,plist, navigate, onCloseModal))
           break
         // case 'local':
         //   setHtml(localSong())
@@ -184,23 +185,22 @@ export default function Logo () {
           <div className='mainLogo'>
               <h2 className='userName'>{isSuccess ? user!.items : 'hi'}</h2>
 
-              <h2 style={{position: 'absolute', left: '25vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
+              <h2 className='navIcon1' onClick={function handleClick(){
                 if (window.history?.length && window.history.length > 1) navigate(-1)
                 else navigate('/app/', {replace: true})
               }}>{"<"}</h2>
 
               <img className='searchimg' src={search} onClick={function handleClick(){onOpenModal()}} />
 
-              <h2 style={{position: 'absolute', right: '30vw', fontSize: '30px', cursor: 'pointer'}} onClick={function handleClick(){
+              <h2 className='navIcon2' onClick={function handleClick(){
                 if (window.history?.length && window.history.length > 1) navigate(1)
                   else navigate('/app/', {replace: true})
               }}>{">"}</h2>
-
-              <a onClick={function handleClick() {navigate('/app/discover')}}>
-                  <h2 style={{position: 'relative', right: '5vw'}} >Discover</h2>
-              </a>
+              
+                  <h2 className='Discover' onClick={function handleClick() {navigate('/app/discover')}} >Discover</h2>   
+                             
               <a onClick={function handleClick() {navigate('/app')}}>
-                  <img style={{width: '80px', height: '80px'}} src={logo} alt="Avatar"/>
+                  <img className='logoIcon' src={logo} alt="Avatar" onClick={function handleClick() {navigate('/app')}}/>
               </a>
 
 
@@ -233,7 +233,7 @@ export default function Logo () {
                           <button onClick={() => {setHtml(getTracks(tracks)), sessionStorage.setItem('searchHome', 'tracks')}}>Tracks</button>
                           <button onClick={() => {setHtml(getAlbums(albumss,albums, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'albums')}}>Albums</button>
                           <button onClick={() => {setHtml(getArtists(artist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'artists')}}>Artists</button>
-                          <button onClick={() => {setHtml(getPlaylists(plist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'playlists')}}>Playlists</button>
+                          <button onClick={() => {setHtml(getPlaylists(playlists,plist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'playlists')}}>Playlists</button>
                       </div>
 
                       <div style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginTop: '40px'}}>{html ? html : getTracks(tracks)}</div>

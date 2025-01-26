@@ -2,10 +2,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh;
+    min-height: 50vh;
     /* turns background for entire app black */
     background-color: black;
-    color: #0066ff;
+    /* color: #0066ff; */
   }
 
 h2 {
@@ -20,10 +20,11 @@ h2 {
     display: block;
     margin: auto;
     position: relative;
-    width: 50%;
+    width: 10vw;
     min-width: 300px;
     height: 200px;
     border: 0px solid #000;
+    z-index: 1;
   }
   
   .noot-1,
@@ -39,53 +40,61 @@ h2 {
     font-size: 35px;
     opacity: 0;
   }
-  
+
   .noot-1 {
     top: 60px;
     left: 0;
     animation-delay: 0.5s;
+    color: #d093e5;
   }
   
   .noot-2 {
     top: 30px;
     left: 30%;
     animation-delay: 1s;
+    color: #d093e5;
   }
   
   .noot-3 {
     top: 90px;
     left: 60%;
     animation-delay: 1.5s;
+    color: #d093e5;
   }
   
   .noot-4 {
     top: 40px;
     left: 90%;
     animation-delay: 2s;
+    color: #4d73ad;
   }
 
   .noot-5 {
     top: 70px;
     left: 50%;
     animation-delay: 0.75s;
+    color: #4d73ad;
   }
   
   .noot-6 {
     top: 20px;
     left: 40%;
     animation-delay: 1.25s;
+    color: #cc33ff;
   }
   
   .noot-7 {
     top: 100px;
     left: 45%;
     animation-delay: 1.75s;
+    color: #cc33ff;
   }
   
   .noot-8 {
     top: 35px;
     left: 80%;
     animation-delay: 2.1s;
+    color: #cc33ff;
   }
   
   @keyframes notes {
@@ -106,4 +115,15 @@ h2 {
       opacity: 0;
     }
   }
+
+.loadingSpin{
+  position: relative;
+  bottom: 100px;
+  z-index: 0;
+}
+@media(min-height: 1000px){
+  .loadingSpin{
+    bottom: 200px;
+  }
+}
   

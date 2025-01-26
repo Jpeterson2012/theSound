@@ -2,10 +2,7 @@ import './Login.css'
 import logo from '../images/logo.png'
 import Loading2 from '../components/Loading2/Loading2.tsx'
 
-
-export default function Login() {
-  
-    // if (sessionStorage.getItem("token")) {location.href='http://localhost:5173/home'}
+export default function Login() {      
     
   return (
     <>

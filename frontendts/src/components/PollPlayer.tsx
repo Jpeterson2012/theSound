@@ -1,6 +1,4 @@
 //Session storage var progress created here, used in SeekBar
-
-import { current } from "@reduxjs/toolkit";
 import { useEffect,useRef } from "react";
 
 function useInterval(callback: any, delay: any){

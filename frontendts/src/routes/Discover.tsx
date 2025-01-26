@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Card from "../components/Card/Card";
 import './Discover.css'
+import ButtonScroll from "../components/ButtonScroll/ButtonScroll";
 
 function customRender(name: any, item: any){
     return (
@@ -29,8 +30,7 @@ export default function Discover() {
     const [releases, setReleases] = useState<any>([])
     const [categories, setCategories] = useState([])
     const [fplaylists, setFplaylists] = useState<any>([])
-    const [loading, setLoading] = useState(true)
-    const [found, setFound] = useState(false)
+    const [loading, setLoading] = useState(true)    
 
     useEffect (() => {        
         const rel = sessionStorage.getItem("releases")
@@ -81,9 +81,7 @@ export default function Discover() {
         <a onClick={function handleClick() {
             sessionStorage.setItem("c_icon", a.icons.map((s: any) => s.url))
             sessionStorage.setItem("c_name", a.name)
-            // navigate(`/app/categories/${a.id}`)
-            console.log("hello")
-            setFound(true)
+            // navigate(`/app/categories/${a.id}`)            
         }}>
             <div style={{width: '200px',height: '305px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 
@@ -131,7 +129,8 @@ export default function Discover() {
         <div style={{width: '90vw', position: 'absolute', left: '5vw', top: '9vw'}}>    
             {customRender("Categories", listCategories)}
             {customRender("New Releases", listReleases)}
-            {customRender("Popular Playlists", listPlaylists)}        
+            {customRender("Popular Playlists", listPlaylists)}  
+            <ButtonScroll />      
         </div>
          }         
         </>

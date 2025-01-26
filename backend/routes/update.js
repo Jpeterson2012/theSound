@@ -125,7 +125,7 @@ router.delete('/playlist/:id', async (req, res) => {
 router.delete('/playlist', async(req,res) => {
   try{
     // console.log(req.body)
-    sql = `DELETE FROM uplaylists WHERE playlist_id = "${req.body.pID}"`
+    sql = `DELETE FROM uplaylists WHERE playlist_id = "${req.body.pID}" and not name="temp_playlist"`
     con.query(sql, (err) => {
       if (err) throw err;
       console.log('Playlist deleted!')

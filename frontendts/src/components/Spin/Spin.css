@@ -49,10 +49,6 @@
     overflow: hidden;
   }
   
-  #label {
-    fill: white;
-  }
-  
   @keyframes spin {
     100%{transform: rotate(360deg);}
   }

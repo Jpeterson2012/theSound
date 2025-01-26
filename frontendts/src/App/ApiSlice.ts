@@ -141,7 +141,7 @@ export const apiSlice = createApi({
                     apiSlice.util.updateQueryData('getPlaylists',undefined,draft => {
                         
                         const temp = draft.find(p => p.playlist_id === pID)
-                        if (temp) temp.tracks.unshift(initialP)
+                        if (temp) temp.tracks.push(initialP)
                     })
                 )
                 try {
@@ -228,8 +228,7 @@ export const apiSlice = createApi({
             }),
             async onQueryStarted({name}, lifecycleApi){
                 const deleteLikedPatchResult = lifecycleApi.dispatch(
-                    apiSlice.util.updateQueryData('getLiked',undefined,draft => {            
-                        console.log(name)            
+                    apiSlice.util.updateQueryData('getLiked',undefined,draft => {                                    
                         let temp = draft?.tracks?.filter((a:any) => a.name !== name)                        
                         draft.tracks = [...temp]
                         // draft?.tracks?.filter((a:any) => a.name !== deleteSong.name)

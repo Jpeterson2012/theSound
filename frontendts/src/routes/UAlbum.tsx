@@ -7,12 +7,12 @@ import Track from "../components/Track/Track.tsx";
 import { useGetAlbumsQuery, useAddAlbumMutation,useDeleteAlbumMutation, Albums } from "../App/ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
+import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 
 import { Spin } from "../components/Spin/Spin.tsx";
 import musicBar from "../components/musicBar/musicBar.tsx";
 
 import MySnackbar from "../components/MySnackBar.tsx";
-
 
 export default function UAlbum({active, paused}: any) {
     const navigate = useNavigate()
@@ -51,7 +51,7 @@ export default function UAlbum({active, paused}: any) {
     
     
 
-    useEffect (() => { 
+    useEffect (() => {       
          
        sessionStorage.setItem("albumStatus", "user")
       if(asuccess) {
@@ -115,7 +115,7 @@ export default function UAlbum({active, paused}: any) {
           <>
             
             <div className="topDiv">
-            <h2>{talbum[0]?.name}</h2>
+            <h2 style={{fontSize: '30px'}} >{talbum[0]?.name}</h2>
               
               {/* Spin Component import now instead of prop */}
               {Spin(active,paused,sessionStorage.getItem("image")!,null)}
@@ -140,9 +140,11 @@ export default function UAlbum({active, paused}: any) {
                 <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
                   setSnack(true)
                   let temp2 = document.getElementById('addAlbum')!
+                  temp2.style.transform = 'scale(1)'
                   temp2.style.animation = 'pulse3 linear 1s'
                   setTimeout(()=>{
                       temp2.style.removeProperty('animation')
+                      temp2.style.removeProperty('transform')
                   }, 1000)                    
 
                   if (singleAlbum!.length === 0){                    
@@ -183,6 +185,7 @@ export default function UAlbum({active, paused}: any) {
           </>
 
         )}
+        <ButtonScroll />
         {snack ? <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>  : null}
       </>
     )
