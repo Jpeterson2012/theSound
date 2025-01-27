@@ -5,15 +5,19 @@ import './Artist.css'
 import { Spin3 } from "../components/Spin/Spin.tsx";
 import musicBar from "../components/musicBar/musicBar.tsx";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
+import { useParams } from "react-router-dom";
 
 export default function Artist({paused}: any) {
   var parts = window.location.href.split('/');
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
+  var {id} = useParams()
   
   const [loading, setLoading] = useState(true)
   const [artists, setArtists] = useState<any>([])
   const [artists2, setArtists2] = useState<any>([])
+  const [url,setUrl] = useState(id)
   useEffect (() => {
+    setUrl(id)
     
     const fetchArtist = async () => {
         try {
@@ -54,7 +58,7 @@ export default function Artist({paused}: any) {
   }
   assignArtists2()
     
-  }, [lastSegment]);
+  }, [id]);
   var count: number = 1
   const listTTracks = artists2.tracks?.tracks.map((t: any) =>
 

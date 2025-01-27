@@ -12,7 +12,9 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/:playlist', async (req,res) => {    
-  console.log(req.body)
+  let name = req.body.name
+  name = name.replace(/\W/g,' ')
+  console.log(name)
   try{
       if(req.body.public === undefined){
          
@@ -20,7 +22,7 @@ router.post('/:playlist', async (req,res) => {
         con.query(sql, function(err,result){ 
           console.log(result)
           if (result.length === 1){            
-            sql = `insert into uplaylists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${req.body.name}', public, 'spotify:playlist:${req.body.id}',tracks from uplaylists where name = "temp_playlist"`
+            sql = `insert into uplaylists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${name}', public, 'spotify:playlist:${req.body.id}',tracks from uplaylists where name = "temp_playlist"`
             con.query(sql, (err) => {
               if (err) throw err;
               console.log('New Playlist Added')

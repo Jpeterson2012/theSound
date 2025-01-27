@@ -4,15 +4,19 @@
 import './Playlist.css'
 import RPlaylist from "./RPlaylist.tsx";
 import UPlaylist from "./UPlaylist.tsx";
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 
 export default function Playlist({active, paused}: any) {
   var parts = window.location.href.split('/');
-  var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash  
+  var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
+  let {id} = useParams()  
+  const [url, setUrl] = useState(id)
+  
   useEffect(() => {
-    console.log(lastSegment)
-  },[lastSegment])
+    setUrl(id)
+  },[id])
 
   return (
       <>

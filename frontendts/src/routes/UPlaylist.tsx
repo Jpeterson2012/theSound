@@ -103,6 +103,8 @@ export default function UPlaylist({lastSegment, active, paused}: any){
     const[snack, setSnack] = useState(false)
     const [deletePlaylist] = useDeletePlaylistMutation()
     const [tplaylist, setTplaylist] = useState<any>([])
+
+    const {data: pStorm = []} = useGetPlaylistsQuery()
   
     type getPlaylistfromResultArg = TypedUseQueryStateResult<Playlists[],any,any>
     
@@ -126,7 +128,7 @@ export default function UPlaylist({lastSegment, active, paused}: any){
           if (psuccess){
           singlePlist!.length > 0 ? (sessionStorage.setItem("u_playlist",JSON.stringify(singlePlist!)), setTplaylist(singlePlist!)) : setTplaylist(JSON.parse(sessionStorage.getItem("u_playlist")!))
           }
-    },[lsuccess,liked])
+    },[lsuccess,liked,pStorm])
 
     
 

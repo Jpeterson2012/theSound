@@ -5,7 +5,6 @@ import { useGetLikedQuery, useGetPlaylistsQuery, useAddNewLikedMutation, useDele
 import { useState, useEffect } from 'react';
 import escape from '../../images/escape.jpg'
 import { imageRender } from '../ImageRender/ImageRender';
-import { Snackbar } from '@mui/material';
 
 export default function EditPlaylist({track,boolVal,setbool,setsnack}: any){
     const {data: liked, isSuccess: lsuccess} = useGetLikedQuery()
