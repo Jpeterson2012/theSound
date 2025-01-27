@@ -14,20 +14,18 @@ router.get('/:id', async (req, res) => {
     var data = await resp.json()
     info.artists = data
 
+    url = `https://api.spotify.com/v1/artists/${req.params.id}/top-tracks`
+    var resp = await fetch(url, {headers})
+    var data = await resp.json()
+    info.tracks = data
+
     res.send(info)
     }
     catch(e){
       console.error(e)
     }
     
-    //   fetch(url, { headers })
-    //       .then(response => response.json())
-    //       .then(data => {
-    //       res.send(data)
-    //       })
-    //       .catch(error => {
-    //       // handle error
-    //       });
+    
 })
 
 module.exports = router;

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Track from "../components/Track/Track";
 import Card from "../components/Card/Card";
 import './Artist.css'
-import { Spin3 } from "../components/Spin/Spin.tsx";
+import { Spin2, Spin3 } from "../components/Spin/Spin.tsx";
 import musicBar from "../components/musicBar/musicBar.tsx";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 import { useParams } from "react-router-dom";
@@ -13,12 +13,13 @@ export default function Artist({paused}: any) {
   var {id} = useParams()
   
   const [loading, setLoading] = useState(true)
+  const [loading2, setLoading2] = useState(true)
   const [artists, setArtists] = useState<any>([])
   const [artists2, setArtists2] = useState<any>([])
   const [url,setUrl] = useState(id)
   useEffect (() => {
     setUrl(id)
-    
+    lastSegment! !== id ? setArtists2([]): null
     const fetchArtist = async () => {
         try {
             var temp = await fetch(`http://localhost:8888/auth/artists/${lastSegment}`)
@@ -32,35 +33,72 @@ export default function Artist({paused}: any) {
     }
     const assignArtists = async () => {      
       const tempArtists = await fetchArtist()
+      setLoading(false)
       setArtists(tempArtists)      
 
     }
-    assignArtists()
+    assignArtists()    
 
-    const fetchArtist2 = async () => {
-      try {
-          var temp = await fetch(`http://localhost:8888/auth/artists2/${lastSegment}`)
-        .then((res) => {
-          // console.log(res.json())
-          return res.json();
-        }).then((data) => {return data})
-          return temp
-        }
-        catch (err) {}
-  }
-  const assignArtists2 = async () => {
-    // setLoading(true)
-    const tempArtists2 = await fetchArtist2()
-    setLoading(false)
-    // setLoading(false)
-    setArtists2(tempArtists2)
+  //   const fetchArtist2 = async () => {
+  //     try {
+  //         var temp = await fetch(`http://localhost:8888/auth/artists2/${lastSegment}`)
+  //       .then((res) => {
+  //         // console.log(res.json())
+  //         return res.json();
+  //       }).then((data) => {return data})
+  //         return temp
+  //       }
+  //       catch (err) {}
+  // }
+  // const assignArtists2 = async () => {
+  //   // setLoading(true)
+  //   const tempArtists2 = await fetchArtist2()    
+  //   setLoading2(false)
+  //   setArtists2(tempArtists2)
 
+  // }
+  // assignArtists2()
+
+
+
+  const fetchArtist2 = async () => {
+    const resp = await fetch(`http://localhost:8888/auth/artists2/${lastSegment}`,{
+      method: 'GET',
+      headers: {"Content-Type":"application/json"},
+    })
+    setLoading2(false)
+    let reader = resp.body!.getReader()
+    let result
+    let temp
+    let a = []
+    let decoder = new TextDecoder('utf8')
+    while(!result?.done){
+      result = await reader.read()
+      if (!result?.done){
+      let chunk = decoder.decode(result.value)
+      // console.log(chunk ? JSON.parse(chunk) : {})
+      // console.log('\n')
+                   
+      temp = JSON.parse(chunk).albums.items,
+      a.push(...temp),  
+      // a.push(...artists2),
+      setArtists2([...a])
+      }
+    
+    }
   }
-  assignArtists2()
+    fetchArtist2()
+
+
+    console.log(artists2)
+
+
+
+ 
     
   }, [id]);
   var count: number = 1
-  const listTTracks = artists2.tracks?.tracks.map((t: any) =>
+  const listTTracks = artists.tracks?.tracks.map((t: any) =>
 
     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',width: '100%'}}>
       
@@ -80,7 +118,7 @@ export default function Artist({paused}: any) {
     <p hidden>{count++}</p>
     </div>
   )
-  const listItems = artists2.albums?.items.filter((a: any) => a.album_type === 'album').map((a: any) =>
+  const listItems = artists2.filter((a: any) => a.album_group === 'album').map((a: any) =>
     <div> 
       <h5>{a.release_date}</h5>
     <Card
@@ -95,7 +133,7 @@ export default function Artist({paused}: any) {
     </div>
   )
   
-  const listItems2 = artists2.albums?.items.filter((a: any) => a.album_type === 'single').map((a: any) =>
+  const listItems2 = artists2.filter((a: any) => a.album_group === 'single').map((a: any) =>
     <div>
       <h5>{a.release_date}</h5>
     <Card
@@ -110,7 +148,21 @@ export default function Artist({paused}: any) {
     </div>
   )
 
-  const listItems3 = artists2.albums?.items.filter((a: any) => a.album_type === 'compilation').map((a: any) =>
+  const listItems3 = artists2.filter((a: any) => a.album_group === 'compilation').map((a: any) =>
+    <div>
+      <h5>{a.release_date}</h5> 
+    <Card
+      // key={a.id}
+      id={a.id}
+      uri={a.uri}
+      image={a.images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}
+      name={a.name}
+      artist={a.artists.map((t: any) => t.name)}
+      a_id={a.artists.map((t: any) => t.id)}
+    />
+    </div>
+  )
+  const listItems4 = artists2.filter((a: any) => a.album_group === 'appears_on').map((a: any) =>
     <div>
       <h5>{a.release_date}</h5> 
     <Card
@@ -143,10 +195,18 @@ export default function Artist({paused}: any) {
             <div>
             {listTTracks}
             </div>
+            { loading2 ? Spin3() : (
+              <>
+            <div>
+            {listItems4?.length !== 0 ? <p className="headers" >Appears On</p> : null}
+            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
+                {listItems4}
+            </div>
+            </div>
             
 
             <div>
-            <p className="headers">Albums</p>
+            {listItems?.length !== 0 ? <p className="headers" >Albums</p> : null}
             <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
                 {listItems}
             </div>
@@ -164,6 +224,8 @@ export default function Artist({paused}: any) {
             <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '40px'}}>
                 {listItems3}
             </div>
+            </>
+              )}
             
           
             <ButtonScroll />

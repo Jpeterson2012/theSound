@@ -94,7 +94,7 @@ export default function WebPlayback() {
                     player.addListener('player_state_changed', ( (state: any) => {
                         if (!state) {
                             return;
-                        }                                    
+                        }                                                    
                         setTrack(state.track_window.current_track);      
                           
                         setPaused(state.paused)      

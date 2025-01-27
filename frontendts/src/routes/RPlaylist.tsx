@@ -72,7 +72,10 @@ export default function RPlaylist({lastSegment, active, paused}: any){
         else{
           const fetchpTracks = async () => {
               // setLoading(true)
-              const resp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
+              const resp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`,{
+                method: 'GET',
+                headers: {"Content-Type":"application/json"},
+              })
               setLoading(false)
               let reader = resp.body!.getReader()
               let result
@@ -81,15 +84,15 @@ export default function RPlaylist({lastSegment, active, paused}: any){
               let decoder = new TextDecoder('utf8')
               while(!result?.done){
                 result = await reader.read()
+                if (!result?.done){
+                  
                 let chunk = decoder.decode(result.value)
-                // console.log(chunk ? JSON.parse(chunk) : {})
-                chunk ? (
+                // console.log(chunk ? JSON.parse(chunk) : {})                
                 total ? null : setTotal(JSON.parse(chunk).total),
                 temp = JSON.parse(chunk).items,
                 a.push(...temp),  
-                setpTracks([...a]) )
-                : (sessionStorage.setItem("ref_id", lastSegment!),  sessionStorage.setItem("ref_items", JSON.stringify(a)))
-              
+                setpTracks([...a])                
+                }
               }
         
           }

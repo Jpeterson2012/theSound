@@ -102,7 +102,7 @@ export default function BottomBar({player,is_active,is_paused, setPaused, durati
                         sessionStorage.setItem("albumname", current_track.album.name)
                         // console.log(sessionStorage.getItem("name")!.length)
 
-                        navigate(`/app/album/${lastSegment}`)
+                        current_track.type === 'episode' ? null : navigate(`/app/album/${lastSegment}`)
                     }}>
                     <span>
                     <img src={current_track.album.images[0]?.url} 
@@ -127,7 +127,7 @@ export default function BottomBar({player,is_active,is_paused, setPaused, durati
                         <div className='scrollbar2'>
                             <div className="now-playing__artist" data-direction="right">
                                 <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>{current_track.artists.map((s:any,i:number,row:any) => <a onClick={function handleClick(){ 
-                                    navigate(`/app/artist/${s.uri.split(':').pop()}`,{replace: true})
+                                    current_track.type === 'episode' ? null : navigate(`/app/artist/${s.uri.split(':').pop()}`)
                                     }} style={{color: 'rgb(90, 210, 216)'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</a>)}
                                 </p>
                                 {/* <p className='temp' style={{margin: '0px', padding: '0px'}}>{current_track.artists.map((s:any,i:number,row:any) => <a onClick={function handleClick(){ 

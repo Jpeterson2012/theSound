@@ -34,10 +34,10 @@
   #svg2{
     z-index: 0;
     position: absolute;
-    left: 14px;
-    bottom: -10px;
-    width: 90px;
-    height: 80px;
+    left: 17px;
+    bottom: -2px;
+    width: 80px;
+    height: 70px;
     border: 1px solid 0066ff;
     background: black;
   }
@@ -64,25 +64,42 @@
   
   .line1 {
     stroke: #cc33ff;
+    stroke-width: 2;
   }
   .line2{
     stroke: #d093e5;
+    stroke-width: 2;
   }
   .line3{
     stroke: #4d73ad;
+    stroke-width: 2;
   }
   .line4 {
     stroke: #d093e5;
+    stroke-width: 2;
   }
   .line5{
     stroke: #4d73ad;
+    stroke-width: 2;
   }
   .line6{
     stroke: #cc33ff;
+    stroke-width: 2;
+  }
+  .line7 {
+    stroke: #cc33ff;    
+    stroke-width: 4;
+  }
+  .line8{
+    stroke: #d093e5;
+    stroke-width: 4;
+  }
+  .line9{
+    stroke: #4d73ad;
+    stroke-width: 4;
   }
   .writing{
-    font-weight: bold;
-    fill: black;
+    font-weight: bold;    
   }
 
   @keyframes fadeIn {
