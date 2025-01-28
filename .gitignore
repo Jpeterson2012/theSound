@@ -15,6 +15,7 @@ backend/.env
 backend/ori/
 frontend/public/
 frontendts/public/
+frontendDemo/
 dist
 dist-ssr
 *.local

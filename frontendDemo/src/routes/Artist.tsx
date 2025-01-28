@@ -39,58 +39,59 @@ export default function Artist({paused}: any) {
     }
     assignArtists()    
 
-  //   const fetchArtist2 = async () => {
-  //     try {
-  //         var temp = await fetch(`http://localhost:8888/auth/artists2/${lastSegment}`)
-  //       .then((res) => {
-  //         // console.log(res.json())
-  //         return res.json();
-  //       }).then((data) => {return data})
-  //         return temp
-  //       }
-  //       catch (err) {}
-  // }
-  // const assignArtists2 = async () => {
-  //   // setLoading(true)
-  //   const tempArtists2 = await fetchArtist2()    
-  //   setLoading2(false)
-  //   setArtists2(tempArtists2)
-
-  // }
-  // assignArtists2()
-
-
-
-  const fetchArtist2 = async () => {
-    const resp = await fetch(`https://playground.jmpeterson.dev/auth/artists2/${lastSegment}`,{
-      method: 'GET',
-      headers: {"Content-Type":"application/json"},
-    })
-    setLoading2(false)
-    let reader = resp.body!.getReader()
-    let result
-    let temp
-    let a = []
-    let decoder = new TextDecoder('utf8')
-    while(!result?.done){
-      result = await reader.read()
-      if (!result?.done){
-      let chunk = decoder.decode(result.value)
-      // console.log(chunk ? JSON.parse(chunk) : {})
-      // console.log('\n')
-                   
-      temp = JSON.parse(chunk).albums.items,
-      a.push(...temp),  
-      // a.push(...artists2),
-      setArtists2([...a])
-      }
-    
-    }
+    const fetchArtist2 = async () => {
+      try {
+          var temp = await fetch(`https://playground.jmpeterson.dev/auth/artists2/${lastSegment}`)
+        .then((res) => {
+          // console.log(res.json())
+          return res.json();
+        }).then((data) => {return data})
+          return temp
+        }
+        catch (err) {}
   }
-    fetchArtist2()
+  const assignArtists2 = async () => {
+    // setLoading(true)
+    const tempArtists2 = await fetchArtist2()   
+    console.log(tempArtists2) 
+    setLoading2(false)
+    setArtists2(tempArtists2)
+
+  }
+  assignArtists2()
 
 
-    console.log(artists2)
+
+  // const fetchArtist2 = async () => {
+  //   const resp = await fetch(`https://playground.jmpeterson.dev/auth/artists2/${lastSegment}`,{
+  //     method: 'GET',
+  //     headers: {"Content-Type":"application/json"},
+  //   })
+  //   setLoading2(false)
+  //   let reader = resp.body!.getReader()
+  //   let result
+  //   let temp
+  //   let a = []
+  //   let decoder = new TextDecoder('utf8')
+  //   while(!result?.done){
+  //     result = await reader.read()
+  //     if (!result?.done){
+  //     let chunk = decoder.decode(result.value)
+  //     // console.log(chunk ? JSON.parse(chunk) : {})
+  //     // console.log('\n')
+                   
+  //     temp = JSON.parse(chunk).albums.items,
+  //     a.push(...temp),  
+  //     // a.push(...artists2),
+  //     setArtists2([...a])
+  //     }
+    
+  //   }
+  // }
+  //   fetchArtist2()
+
+
+    // console.log(artists2)
 
 
 
@@ -118,7 +119,7 @@ export default function Artist({paused}: any) {
     <p hidden>{count++}</p>
     </div>
   )
-  const listItems = artists2.filter((a: any) => a.album_group === 'album').map((a: any) =>
+  const listItems = artists2?.albums?.items.filter((a: any) => a.album_group === 'album').map((a: any) =>
     <div> 
       <h5>{a.release_date}</h5>
     <Card
@@ -133,7 +134,7 @@ export default function Artist({paused}: any) {
     </div>
   )
   
-  const listItems2 = artists2.filter((a: any) => a.album_group === 'single').map((a: any) =>
+  const listItems2 = artists2?.albums?.items.filter((a: any) => a.album_group === 'single').map((a: any) =>
     <div>
       <h5>{a.release_date}</h5>
     <Card
@@ -148,7 +149,7 @@ export default function Artist({paused}: any) {
     </div>
   )
 
-  const listItems3 = artists2.filter((a: any) => a.album_group === 'compilation').map((a: any) =>
+  const listItems3 = artists2?.albums?.items.filter((a: any) => a.album_group === 'compilation').map((a: any) =>
     <div>
       <h5>{a.release_date}</h5> 
     <Card
@@ -162,7 +163,7 @@ export default function Artist({paused}: any) {
     />
     </div>
   )
-  const listItems4 = artists2.filter((a: any) => a.album_group === 'appears_on').map((a: any) =>
+  const listItems4 = artists2?.albums?.items.filter((a: any) => a.album_group === 'appears_on').map((a: any) =>
     <div>
       <h5>{a.release_date}</h5> 
     <Card
