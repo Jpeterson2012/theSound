@@ -344,9 +344,10 @@ export default function Home() {
   )
   return (
     <>
-      {!ready && !loading ? Spin3() : (<>      
+      {/* {!ready && !loading ? Spin3() : ( */}
+        <>      
       <div className="homeContainer">
-          <div style={{position: 'absolute', top: '10vw', right: '40vw',display: 'flex',justifyContent: 'center',alignItems: 'center'}}>            
+          <div className="buttonContainer">            
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
             <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
             <button className="homeButtons" onClick={() => {setHtml(Podcasts(podcasts)), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
@@ -412,7 +413,7 @@ export default function Home() {
         {html}      
       
       </>
-    )}
+    {/* )} */}
     <ButtonScroll />
     {opensnack ? <MySnackbar state={opensnack} setstate={setOpensnack} message="Removed From Library"/> : null}
     </>

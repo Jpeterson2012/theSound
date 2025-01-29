@@ -8,8 +8,8 @@ export default function Login() {
     <>
       <Loading2 />
       <div className='fade-in-image' style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <img src={logo} alt='Avatar' />
-        <h1>Welcome to TheSound<sup>TM</sup></h1>
+        <img className='introImg' src={logo} alt='Avatar' />
+        <h1 className="intro">Welcome to TheSound<sup>TM</sup></h1>
       </div>
       <button className="home"onClick={() => {
         location.href = 'http://localhost:8888/auth/login'

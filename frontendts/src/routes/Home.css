@@ -184,6 +184,13 @@ form{
       box-shadow: 0 0 0 0 rgb(90, 210, 216);
   }
 }
+.homeContainer{
+  position: absolute;
+  top: 10vw; right: 40vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 @media(min-height: 1000px){
   .homeContainer{
@@ -191,5 +198,20 @@ form{
   }
   .removePlay{
     left: 24vw;
+  }
+}
+@media only screen and (max-width: 768px){
+  .homeContainer{
+    max-width: 350px;
+  }
+  .buttonContainer{
+    max-width: 350px;
+    top: 20vh;
+  }
+  .homeButtons{
+    width:50px;
+    font-size: 15px;
+    overflow: hidden;
+    
   }
 }
