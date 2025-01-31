@@ -12,6 +12,7 @@ import Discover from '../../routes/Discover.tsx';
 import Categories from '../../routes/Categories.tsx';
 import BottomBar from '../BottomBar/BottomBar.tsx';
 import PollPlayer from '../PollPlayer.tsx';
+import { useInterval } from '../Seekbar/SeekBar.tsx';
 
 declare global {
     interface Window{
@@ -58,6 +59,11 @@ export default function WebPlayback() {
                 sessionStorage.setItem("token", data.items)                
             }
             fetchToken()
+            //Handles refresh token
+            setInterval(() => {
+                fetch("http://localhost:8888/auth/token/refresh_token")
+                .then(data => data.json()).then(a => sessionStorage.setItem("token", a.items))                
+            },1000 * 60 * 59)
             
             document.body.appendChild(script);
             

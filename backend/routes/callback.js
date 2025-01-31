@@ -40,6 +40,8 @@ router.get('/', async (req, res) => {
   .then(response => response.json())
   .then(data => {
     process.env['access_token'] = data.access_token
+    process.env['expires_in'] = data.expires_in
+    process.env['refresh_token'] = data.refresh_token
     
     var url = 'https://api.spotify.com/v1/me'
     const headers = {
