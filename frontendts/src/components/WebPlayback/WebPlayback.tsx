@@ -56,14 +56,14 @@ export default function WebPlayback() {
                 const data = await response.json()
                 token = data.items
                 import.meta.env.VITE_TOKEN = data.items
-                localStorage.setItem("token", data.items)                
+                sessionStorage.setItem("token", data.items)                
             }
             fetchToken()
             //Handles refresh token
             setInterval(() => {
-                fetch(import.meta.env.VITE_URL + "/refresh_token")
+                fetch(import.meta.env.VITE_URL + "/token/refresh_token")
                 .then(data => data.json()).then(a => sessionStorage.setItem("token", a.items))                
-            },1000 * 60 * 59)
+            },1000 * 60 * 59)            
             
             document.body.appendChild(script);
             
