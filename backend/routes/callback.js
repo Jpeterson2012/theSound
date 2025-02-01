@@ -39,8 +39,7 @@ router.get('/', async (req, res) => {
   })
   .then(response => response.json())
   .then(data => {
-    process.env['access_token'] = data.access_token
-    process.env['expires_in'] = data.expires_in
+    process.env['access_token'] = data.access_token    
     process.env['refresh_token'] = data.refresh_token
     
     var url = 'https://api.spotify.com/v1/me'
@@ -55,7 +54,7 @@ router.get('/', async (req, res) => {
       var sql = `CREATE DATABASE IF NOT EXISTS ${temp}`
       con.query(sql, (err) => {
         if (err) throw err;
-        console.log(`Database for user ${data.display_name} created!`)
+        // console.log(`Database for user ${data.display_name} created!`)
       })
       sql = `USE ${temp}`
       process.env['DB'] = temp
@@ -89,8 +88,8 @@ router.get('/', async (req, res) => {
           if (err) throw err;
           var empty = result[0].Output
           //If table already has data read relevent data and send to front end
-          if (empty != 1) {
-            res.redirect('http://localhost:5173/1');
+          if (empty !== 1) {
+            res.redirect('http://localhost:5173/loading');
             const getStuff = async() => {
               //Fetch user's saved playlists
               var pages = 0

@@ -12,7 +12,6 @@ import Discover from '../../routes/Discover.tsx';
 import Categories from '../../routes/Categories.tsx';
 import BottomBar from '../BottomBar/BottomBar.tsx';
 import PollPlayer from '../PollPlayer.tsx';
-import { useInterval } from '../Seekbar/SeekBar.tsx';
 
 declare global {
     interface Window{
@@ -53,15 +52,16 @@ export default function WebPlayback() {
             script.async = true;
             var token = ''
             const fetchToken = async () => {
-                const response = await fetch("http://localhost:8888/auth/token")
+                const response = await fetch(import.meta.env.VITE_URL + "/token")
                 const data = await response.json()
                 token = data.items
-                sessionStorage.setItem("token", data.items)                
+                import.meta.env.VITE_TOKEN = data.items
+                localStorage.setItem("token", data.items)                
             }
             fetchToken()
             //Handles refresh token
             setInterval(() => {
-                fetch("http://localhost:8888/auth/token/refresh_token")
+                fetch(import.meta.env.VITE_URL + "/refresh_token")
                 .then(data => data.json()).then(a => sessionStorage.setItem("token", a.items))                
             },1000 * 60 * 59)
             
@@ -100,18 +100,19 @@ export default function WebPlayback() {
                     player.addListener('player_state_changed', ( (state: any) => {
                         if (!state) {
                             return;
-                        }                                                    
-                        setTrack(state.track_window.current_track);      
+                        }
+                                                                            
+                        setTrack(state?.track_window.current_track);      
                           
-                        setPaused(state.paused)      
+                        setPaused(state?.paused)      
             
-                        setDuration(state.duration)        
+                        setDuration(state?.duration)        
             
-                        setPos(state.position)      
+                        setPos(state?.position)      
                         
-                        sessionStorage.setItem("name", state.track_window.current_track.album.name)
-                        sessionStorage.setItem("current", state.track_window.current_track.uri)
-                        sessionStorage.setItem("currentTrack",JSON.stringify(state.track_window.current_track))                                                 
+                        sessionStorage.setItem("name", state?.track_window?.current_track?.album.name)
+                        sessionStorage.setItem("current", state?.track_window?.current_track?.uri)
+                        sessionStorage.setItem("currentTrack",JSON.stringify(state?.track_window?.current_track))                                                 
                     
                         player.getCurrentState().then( (state: any) => { 
                             !state ? setActive(false) : setActive(true)                            

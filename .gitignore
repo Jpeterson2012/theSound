@@ -15,10 +15,10 @@ backend/.env
 backend/ori/
 frontend/public/
 frontendts/public/
-frontendDemo/
 dist
 dist-ssr
 *.local
+frontendts/.env
 
 # Editor directories and files
 .vscode/*

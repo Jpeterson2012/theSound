@@ -45,7 +45,7 @@ router.get('/:id', async (req, res) => {
         con.query(sql, function(err,result) {
         if (err) throw err;
         var empty = result.length
-        console.log(empty)
+        // console.log(empty)
         if (empty === 0){
             let temp3 = []
             sql = `INSERT INTO uplaylists (playlist_id, images, name, public, uri, tracks) VALUES ('${req.params.id}', '${JSON.stringify(temp3)}', 'temp_playlist', true, 'spotify:playlist:${req.params.id}', ${con.escape(JSON.stringify(temp2))} )`

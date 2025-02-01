@@ -75,7 +75,7 @@ export type { Playlists, Albums, Devices }
 
 export const apiSlice = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8888/auth' }),
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_URL }),
     keepUnusedDataFor: 60 * 60,
     endpoints: builder => ({
         getAlbums: builder.query<Albums[], void>({

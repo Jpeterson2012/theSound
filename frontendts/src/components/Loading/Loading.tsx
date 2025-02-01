@@ -9,7 +9,7 @@ export default function Loading () {
     useEffect(() => {
         const fetchDone = async () => {
             try {
-                var temp = await fetch("http://localhost:8888/auth/callback/emit")
+                var temp = await fetch(import.meta.env.VITE_URL + "/callback/emit")
             .then((res) => {
                 return res.json();
             })

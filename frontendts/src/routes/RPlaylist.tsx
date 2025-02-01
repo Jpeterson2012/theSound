@@ -14,10 +14,10 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setm
   return (
     ptracks?.map((t: any) => 
 
-      <div style={{display: 'flex', alignItems: 'center'}} >
+      <div style={{display: 'flex', alignItems: 'center'}} key={t.uri.split(':').pop()}>
 
           <p hidden>{liked_urls.push(t.uri)}</p>  
-          {!paused ? <span style={{position: 'absolute', left: '9vw'}}>{(sessionStorage.getItem('current') === t.uri || (t.artists?.name === t.name && t.artists?.artists[0].name === t.artist[0].name)) ? musicBar() : null}</span> : null}
+          {!paused ? <span style={{position: 'absolute', left: '9vw'}}>{(sessionStorage.getItem('current') === t.uri || (t.artists?.name === t.name && t.artists?.artists[0]?.name === t.artist[0]?.name)) ? musicBar() : null}</span> : null}
           <div className="removeContainer3" style={{display: 'flex', alignItems: 'center'}}>
 
           <button className="removeAlbum3" onClick={function handleClick(){        
@@ -60,9 +60,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
 
     var liked_uris: any = []
 
-    useEffect (() => {            
-      console.log(found)    
-      // console.log(loading)
+    useEffect (() => {                 
           
         if (sessionStorage.getItem("ref_id") === lastSegment) {
           setpTracks(JSON.parse(sessionStorage.getItem("ref_items")!))
@@ -72,7 +70,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
         else{
           const fetchpTracks = async () => {
               // setLoading(true)
-              const resp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`,{
+              const resp = await fetch(import.meta.env.VITE_URL + `/ptracks/${lastSegment}`,{
                 method: 'GET',
                 headers: {"Content-Type":"application/json"},
               })
@@ -94,6 +92,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                 setpTracks([...a])                
                 }
               }
+              // console.log(ptracks)
         
           }
           fetchpTracks()
@@ -102,7 +101,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
 
         //   const fetchTracks = async () => {
         //     try {
-        //         var temp = await fetch(`http://localhost:8888/auth/ptracks/${lastSegment}`)
+        //         var temp = await fetch(import.meta.env.VITE_URL + `/ptracks/${lastSegment}`)
         //       .then((res) => {
         //         // console.log(res.json())
         //         return res.json();
@@ -159,7 +158,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                                       if (found === undefined ){           
                                         setSnack(true)         
                                           setTimeout (() => {
-                                            fetch(`http://localhost:8888/auth/users/playlist`, {
+                                            fetch(import.meta.env.VITE_URL + `/users/playlist`, {
                                               method: 'POST',
                                               headers: {"Content-Type":"application/json"},
                                               body: JSON.stringify({id: lastSegment,name: sessionStorage.getItem("playlist_name"), images: JSON.parse(sessionStorage.getItem("fullp_image")!)})                                        
