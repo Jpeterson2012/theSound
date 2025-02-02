@@ -12,6 +12,7 @@ import Discover from '../../routes/Discover.tsx';
 import Categories from '../../routes/Categories.tsx';
 import BottomBar from '../BottomBar/BottomBar.tsx';
 import PollPlayer from '../PollPlayer.tsx';
+import { useInterval } from '../Seekbar/SeekBar.tsx';
 
 declare global {
     interface Window{
@@ -33,6 +34,7 @@ const track: any = {
     ],
     uri: ""
 }
+
 export default function WebPlayback() {
 
     const [player, setPlayer] = useState<any>(undefined);
@@ -52,18 +54,23 @@ export default function WebPlayback() {
             script.async = true;
             var token = ''
             const fetchToken = async () => {
-                const response = await fetch(import.meta.env.VITE_URL + "/token")
-                const data = await response.json()
-                token = data.items
-                import.meta.env.VITE_TOKEN = data.items
-                sessionStorage.setItem("token", data.items)                
+                try{
+                    const response = await fetch(import.meta.env.VITE_URL + "/token")
+                    const data = await response.json()
+                    token = data.items                
+                    sessionStorage.setItem("token", data.items)    
+                    }
+                    catch(e){console.log(`Error requesting access token: ${e}`)}                
             }
             fetchToken()
             //Handles refresh token
             setInterval(() => {
-                fetch(import.meta.env.VITE_URL + "/token/refresh_token")
-                .then(data => data.json()).then(a => sessionStorage.setItem("token", a.items))                
-            },1000 * 60 * 59)            
+                try{
+                    fetch(import.meta.env.VITE_URL + "/token/refresh_token")
+                    .then(data => data.json()).then(a => {sessionStorage.setItem("token", a.items), token = a.items})
+                    }
+                    catch (e) {`Error requesting access token: ${e}`}              
+            },1000 * 59 * 59)            
             
             document.body.appendChild(script);
             
@@ -72,7 +79,7 @@ export default function WebPlayback() {
                     const player = new window.Spotify.Player({ 
                         name: 'TheSound',
                         getOAuthToken: (cb: any) => { cb(token); },
-                        volume: 1
+                        volume: 1,                              
                     });
                     setPlayer(player);                    
                     
