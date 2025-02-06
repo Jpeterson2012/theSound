@@ -309,7 +309,7 @@ export default function BottomBar({player,is_active,is_paused, setPaused, durati
                                     }}>
                                        <p>TheSound</p> 
                                     </a> 
-                                {devices.map((a,i) =>
+                                {devices.map((a:any,i:any) =>
                                     a.name === "TheSound" ? null : <a key={i} onClick={function handleClick(){
                                         // console.log(a)
                                         setCurrentDev({name: a.name, id: a.id})

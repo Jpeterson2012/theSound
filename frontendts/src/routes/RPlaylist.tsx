@@ -9,7 +9,7 @@ import MySnackbar from '../components/MySnackBar.tsx';
 import ButtonScroll from '../components/ButtonScroll/ButtonScroll.tsx';
 import { useGetPlaylistsQuery,useDeletePlaylistMutation } from '../App/ApiSlice.ts';
 
-function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setmodal:any,settrack:any){
+function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setmodal:any,settrack:any,rplay:any){
   let key = 0
   return (
     ptracks?.map((t: any) => 
@@ -37,7 +37,7 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setm
           liked={liked_urls}
           artist={t.artists}
           t_uri={t.uri}
-          pause={paused}
+          rplay={rplay}          
           />
         <p hidden>{key++}</p>
       </div>
@@ -53,6 +53,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
     const [modal, setModal] = useState(false)
     const[trackData, setTrackData] = useState(null)
     const[snack, setSnack] = useState(false)
+    const [rplay, setRplay] = useState(true)
 
     const {data: playlists = [], refetch} = useGetPlaylistsQuery()
     let found = playlists?.find((e: any) => e?.playlist_id === lastSegment)
@@ -156,7 +157,8 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                                       }, 1000)                    
                                     
                                       if (found === undefined ){           
-                                        setSnack(true)         
+                                        setSnack(true)
+                                        setRplay(false)         
                                           setTimeout (() => {
                                             fetch(import.meta.env.VITE_URL + `/users/playlist`, {
                                               method: 'POST',
@@ -167,8 +169,8 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                                           setTimeout(() => {refetch()},800)                 
                                       }
                                       else{                                        
-                                        setSnack(true)        
-                                        setTimeout(() => { deletePlaylist({pID: lastSegment!}) },300)                                                                           
+                                        setSnack(true)                                                
+                                        setTimeout(() => { deletePlaylist({pID: lastSegment!}), setRplay(true) },300)                                                                           
                                       }                  
                                     
                                     }}>{found === undefined ? "+" : "✓"}</p>
@@ -180,7 +182,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                                     <span className="lol">Title</span>
                                     <span className="lolP">Duration</span>
                                     </div>
-                                  {regPlaylists(ptracks, lastSegment, liked_uris, paused,setModal,setTrackData) }
+                                  {regPlaylists(ptracks, lastSegment, liked_uris, paused,setModal,setTrackData,rplay) }
                                 </div>
                                 
                 

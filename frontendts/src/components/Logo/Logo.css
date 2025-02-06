@@ -55,7 +55,7 @@
   left: 0;
   right: 0;
   margin-inline: auto; 
-  width: 95vw;
+  width: 95vw;  
   
 }
 
@@ -109,15 +109,16 @@
   transform: translate(-50%, -50%);
 }
 
+
 #modal3{
   margin: 0px;
   padding: 0px;
-  min-width: 75vw;
-  min-height: 800px;
-  overflow: hidden;
+  min-width: 75vw;  
+  min-height: 800px;  
   margin-bottom: 150px;
   background: rgb(33, 33, 33);
 }
+
 .fade-in-image{
   animation: fadeIn 0.5s;
 }

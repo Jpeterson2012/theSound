@@ -1,19 +1,22 @@
 //session storage variable name set hereimport musicBar from "../musicBar/musicBar.tsx"
 import './Track.css'
+import SavedSong from '../SavedSong'
 
 function timeCalc (ms: number) {
     const temp = Math.round(ms / 1000)
-    const mins = Math.floor(temp / 60)
-    const secs = temp - mins * 60
+    let mins = Math.floor(temp / 60)
+    let secs = temp - mins * 60
+    secs > 59 ? (mins += 1, secs -= 60) : null
+    secs.toString().length === 1 && secs > 5 ? (mins += 1, secs -= 6) : null
 
-    if (secs.toString().length == 1) return `${mins}.${secs}0`
-    else return `${mins}.${secs}`
+    if (secs.toString().length == 1) return `${mins}:${secs}0`
+    else return `${mins}:${secs}`
 }
 
-export default function Track ( {uri, name, number, duration, album_name, artist,show,customWidth}: any ) {
+export default function Track ( {uri, name, number, duration, album_name, artist,t_uri,show,customWidth}: any ) {
     return (
         <div className='trackContainer' style={customWidth ? {width: `${customWidth}%`} : {width: '100%'}}>
-            <a onClick={function handleClick () {
+            <a onClick={function handleClick () {                
                 // console.log(sessionStorage.get
                 // console.log(sessionStorage.getItem("uri"))
                 // console.log(sessionStorage.getItem("token"))
@@ -47,7 +50,7 @@ export default function Track ( {uri, name, number, duration, album_name, artist
             </div>
             <br></br>            
             </a>
-            {show === false ? null : <span className="songLength">{timeCalc(duration)}</span>}
+            {show === false ? null : <div style={{display: 'flex'}}><SavedSong track={t_uri} /><span className="songLength">{timeCalc(duration)}</span></div>}
       </div>
     )
 }
