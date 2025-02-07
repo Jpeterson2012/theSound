@@ -169,10 +169,11 @@
   }
   .u2Container{
     display: block;
+    margin-top: 4px;
   }
   .userName2{    
     margin-left: 9px;    
-    font-size: 22px;
+    font-size: 22px;    
   }
   
 

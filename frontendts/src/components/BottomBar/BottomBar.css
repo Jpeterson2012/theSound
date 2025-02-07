@@ -260,7 +260,7 @@ input[type=range]{
 
   @media only screen and (max-width: 768px){
     .wrapper{
-      width: 100%;
+      width: 100vw;
       height: 50px;
     }
     .now-playing__name p, .now-playing__artist p{
