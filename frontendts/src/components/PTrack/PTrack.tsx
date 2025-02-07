@@ -1,7 +1,6 @@
 //session storage variable name set here
-import musicBar from "../musicBar/musicBar.tsx"
 import './PTrack.css'
-import SavedSong from "../SavedSong.tsx"
+import SavedSong from "../SavedSong/SavedSong.tsx"
 
 function timeCalc (ms: number) {
     const temp = Math.round(ms / 1000)

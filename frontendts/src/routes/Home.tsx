@@ -30,13 +30,7 @@ function generatePassword() {
 
 function Albums(listItems: any){
   return(
-    <div style={{
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'space-evenly',
-      alignItems: 'center',
-      paddingTop: '15px',width: '90vw',position: 'absolute', left: '5vw', top: '16vw'
-    }}>
+    <div className="albumContainer">
       {listItems}
     </div>
   )

@@ -182,6 +182,10 @@ export default function Logo () {
           {!isSuccess ? null :
           <div className='mainLogo'>
               <h2 className='userName'>{isSuccess ? user!.items : 'hi'}</h2>
+              <div className='u2Container' style={{backgroundColor: 'rgb(90, 210, 216)', width: '29px', height: '29px', borderRadius: '50%'}}>
+              <h2 className='userName2'>{isSuccess ? user!.items[0] : 'hi'}</h2>
+              </div>
+              
 
               <h2 className='navIcon1' onClick={function handleClick(){
                 if (window.history?.length && window.history.length > 1) navigate(-1, {replace: true})
@@ -204,6 +208,9 @@ export default function Logo () {
 
 
               <div>
+                <div>
+                  
+                </div>
 
                   <Modal modalId='modal3' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>
                   
@@ -242,7 +249,7 @@ export default function Logo () {
                       {tracks.length > 0 ? <button onClick={function handleSubmit(){
                         counter += 10
                         fetchSearch()
-                      }} style={{marginLeft: 'auto', marginRight: 'auto'}} >Load More</button> : null}                      
+                      }} style={{width: '100%', marginTop: '10px', height: '54px', fontSize: '25px', fontWeight: 'bolder'}} >Load More</button> : null}                      
                   </Modal>
               </div>
           </div>

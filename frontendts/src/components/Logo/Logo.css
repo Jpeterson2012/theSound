@@ -43,9 +43,12 @@
   width: fit-content;
  
 }
-.userName{  
+.userName,.userName2{  
   position:absolute;  
   top: 0;
+}
+.u2Container{
+  display: none;
 }
 
 .mainLogo{
@@ -137,6 +140,40 @@
 }
 @media only screen and (max-width: 768px){
   .mainLogo{
-    top: 0;
+    /* top: 0; */
+    
   }
+  .userName{
+    width: 20px;
+    overflow: none;
+    display: none;
+  }
+  .navIcon1,.navIcon2{
+    display: none;
+  }
+  
+  .searchimg{
+    width: 55px;
+    height: 55px;
+    right: 43vw;
+    top: -1.9vh;
+  }
+  .Discover{
+    font-size: 20px;
+    right: 25vw;
+  }
+  .logoIcon{
+    width: 60px;
+    height: 60px;
+    top: -20px;
+  }
+  .u2Container{
+    display: block;
+  }
+  .userName2{    
+    margin-left: 9px;    
+    font-size: 22px;
+  }
+  
+
 }

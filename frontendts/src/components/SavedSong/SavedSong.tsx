@@ -1,5 +1,6 @@
-import { useGetLikedQuery, useGetPlaylistsQuery } from "../App/ApiSlice";
+import { useGetLikedQuery, useGetPlaylistsQuery } from "../../App/ApiSlice";
 import { useEffect } from "react";
+import './SavedSong.css'
 
 export default function SavedSong({track}:any){
     const {data: liked} = useGetLikedQuery()
@@ -19,8 +20,8 @@ export default function SavedSong({track}:any){
             if (found === true) break
         }        
     return (
-        <div style={found ? {backgroundColor: 'rgb(90, 210, 216)', marginRight: '20px', width: '29px', height: '29px', borderRadius: '50%'} : {backgroundColor: '', marginRight: '', width: '', height: '', borderRadius: ''}}>
-            <div style={{color: "#7a19e9", fontSize: '20px'}}>{found ? "✓" : null}</div>
+        <div className={found ? "savedContainer" : "savedContainer2"}>
+            <div className={found ? "subSaved" : "subSaved2"}>{found ? "✓" : null}</div>
         </div>
     )
 }

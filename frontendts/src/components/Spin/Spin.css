@@ -130,3 +130,22 @@
       height: 590px;
     }
   }
+  @media only screen and (max-width: 768px){
+    .svgContainer{
+      min-width: 600px;      
+    }
+    .svgImage{
+      width: 200px;
+      height: 200px;
+      left: 20px;
+    }
+    #svg1{
+      width: 215px;
+      height: 240px;
+      right: 86px;
+    }
+    #svg2{
+      width: 55px;
+      height: 50px;
+    }
+  }

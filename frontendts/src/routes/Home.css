@@ -196,6 +196,17 @@ form{
   justify-content: center;
   align-items: center;
 }
+.albumContainer{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  padding-top: 15px;
+  width: 90vw;
+  position: absolute;
+  left: 5vw;
+  top: 16vw;
+}
 
 @media(min-height: 1000px){
   .homeContainer{
@@ -207,16 +218,23 @@ form{
 }
 @media only screen and (max-width: 768px){
   .homeContainer{
-    max-width: 350px;
+    /* max-width: 350px; */
+    margin-top: 60px;
+    right: 5vw;
   }
   .buttonContainer{
-    max-width: 350px;
+    width: 90vw;
+    overflow-x: scroll;
+    white-space: nowrap;
     top: 20vh;
+    left: 10vw;
   }
   .homeButtons{
-    width:50px;
-    font-size: 15px;
-    overflow: hidden;
-    
+    width: fit-content;
+    font-size: 12px;
+    /* overflow: hidden;     */
+  }
+  .albumContainer{
+    top: 35vw;
   }
 }
