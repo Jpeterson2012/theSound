@@ -135,6 +135,10 @@
         margin-left: 4vw;
     }
     .topDiv{
-        max-height: 105vh;
+        max-height: 105vh;        
+    }
+    .musicBars{
+        left: 215px !important;
+        margin-top: 1px !important;
     }
   }  
