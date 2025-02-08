@@ -16,7 +16,7 @@ export default function PTrack ( {uri, name, number, duration, liked, artist, t_
     
     const artists = JSON.parse(sessionStorage.getItem("currentTrack")!)
     return (
-        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+        <div className='pTrackContainer' style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
             <a onClick={function handleClick () {
                                                 
                 sessionStorage.setItem("name", sessionStorage.getItem("playlist_name")!)
