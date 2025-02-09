@@ -5,7 +5,7 @@ const { con } = require('../sql.js')
 router.post('/album', async (req, res) => {
   try{
     // console.log(req.body)
-    var sql = `INSERT INTO ualbums (album_type, total_tracks, album_id, images, name, release_date, uri, artists, copyrights, label_name) VALUES ('${req.body.album_type}','${req.body.total_tracks}','${req.body.album_id}','${JSON.stringify(req.body.images)}',"${req.body.name}",'${req.body.release_date}','${req.body.uri}','${JSON.stringify(req.body.artists)}',${con.escape(JSON.stringify(req.body.copyrights))},${con.escape(req.body.label_name)})`
+    var sql = `INSERT INTO ualbums (album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name) VALUES ('${req.body.album_type}','${req.body.total_tracks}','${req.body.album_id}','${JSON.stringify(req.body.images)}',"${req.body.name}",'${req.body.release_date}','${req.body.uri}',${con.escape(JSON.stringify(req.body.artists))}, ${con.escape(JSON.stringify(req.body.tracks))}, ${con.escape(JSON.stringify(req.body.copyrights))},${con.escape(req.body.label_name)})`
     con.query(sql, (err) => {
       if (err) throw err
       console.log('Album added!')
@@ -37,7 +37,7 @@ router.post('/liked', async (req, res) => {
     try{
       // console.log(req.body)
       // console.log(req.body.name)
-        var sql = `INSERT INTO likedsongs (album_id, images, artists, duration, track_id, name) VALUES ('${req.body.album_id}','${JSON.stringify(req.body.images)}','${JSON.stringify(req.body.artists)}','${req.body.duration_ms}','${req.body.uri}',"${req.body.name}")`
+        var sql = `INSERT INTO likedsongs (album_id, images, artists, duration, track_id, name) VALUES ('${req.body.album_id}','${JSON.stringify(req.body.images)}',${con.escape(JSON.stringify(req.body.artists))},'${req.body.duration_ms}','${req.body.uri}',"${req.body.name}")`
       con.query(sql, (err) => {
         if (err) throw err;
         console.log('Song added!')
