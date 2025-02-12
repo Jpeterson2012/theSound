@@ -45,6 +45,37 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setm
   )
 }
 
+function playlistSort(tplaylist: any, setTPlaylist: any){
+  let temp: any
+  return(
+    <>
+    <button className="theme" onClick={function handleClick(){      
+      temp = tplaylist                        
+      temp.sort((a:any,b:any) => a.name.localeCompare(b.name))      
+      setTPlaylist([...temp])
+    }}>A-Z</button>
+
+    <button className="theme" onClick={function handleClick(){ 
+      temp = tplaylist     
+      temp.sort((a:any,b:any) => b.name.localeCompare(a.name))
+      setTPlaylist([...temp])
+    }}>Z-A</button>
+
+    <button className="theme" onClick={function handleClick(){  
+      temp = tplaylist  
+      temp.sort((a:any,b:any) => a.artists[0].name.localeCompare(b.artists[0].name))
+      setTPlaylist([...temp])
+    }}>Artist A-Z</button>
+
+    <button className="theme" onClick={function handleClick(){   
+      temp = tplaylist   
+      temp.sort((a:any,b:any) => b.artists[0].name.localeCompare(a.artists[0].name))
+      setTPlaylist([...temp])
+    }}>Artist Z-A</button>
+    </>
+  )
+}
+
 export default function RPlaylist({lastSegment, active, paused}: any){
     const [ptracks, setpTracks] = useState<any>([]);
     const [total, setTotal] = useState(null)
@@ -143,7 +174,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                             <div style={{marginBottom: '60px', marginTop: '40px'}}>
                 
                                 <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>
-                                <div className="desc2" style={{display: 'flex', marginRight: '10px'}}>
+                                <div className="desc2" style={{display: 'flex', marginRight: '10px', alignItems: 'center'}}>
                                     <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
                                     <h5 style={{color: 'rgb(90, 210, 216)'}}>{ptracks?.length} Song(s)</h5>
                                     <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
@@ -174,6 +205,14 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                                       }                  
                                     
                                     }}>{found === undefined ? "+" : "✓"}</p>
+
+                                    <div className="dropdown" id="dropdown">
+                                                                      
+                                      <button className="dropbtn">Sort</button>
+                                      <div className="dropdown-content">
+                                            {playlistSort(ptracks, setpTracks)}
+                                      </div>
+                                    </div>
     
                     
                                 </div>
