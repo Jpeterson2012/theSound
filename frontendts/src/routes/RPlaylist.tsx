@@ -154,7 +154,8 @@ export default function RPlaylist({lastSegment, active, paused}: any){
         // }
         // assignTracks()
 
-        }            
+        }       
+            
         
       }, [sessionStorage.getItem("playlist_name")!]);
 
@@ -208,11 +209,26 @@ export default function RPlaylist({lastSegment, active, paused}: any){
 
                                     <div className="dropdown" id="dropdown">
                                                                       
-                                      <button className="dropbtn">Sort</button>
+                                      <button className="dropbtn" style={{marginLeft: '100%'}}>Sort</button>
                                       <div className="dropdown-content">
                                             {playlistSort(ptracks, setpTracks)}
                                       </div>
                                     </div>
+
+                                    {/* <div> */}
+                                      {/* Working on filter function */}
+                                    {/* <input type='text' className='filterTrack' id='filterTrack' placeholder='Looking for something?' />
+                                    <button onClick={function handleClick(){
+                                      let temp = [...ptracks]
+                                      console.log(temp)
+                                      let temp2 = (document.getElementById('filterTrack') as HTMLInputElement)!.value 
+                                      temp = temp.filter((a:any)=> a.name.includes(temp2))
+                                      console.log(temp)
+                                      console.log(temp2)
+                                      setpTracks([...temp])
+                                    }}></button>
+                                    </div> */}
+                                    
     
                     
                                 </div>
