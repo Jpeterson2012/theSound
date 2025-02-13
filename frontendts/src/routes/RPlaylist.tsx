@@ -8,6 +8,7 @@ import musicBar from '../components/musicBar/musicBar.tsx';
 import MySnackbar from '../components/MySnackBar.tsx';
 import ButtonScroll from '../components/ButtonScroll/ButtonScroll.tsx';
 import { useGetPlaylistsQuery,useDeletePlaylistMutation } from '../App/ApiSlice.ts';
+import { filterTracks } from "../components/filterTracks.tsx";
 
 function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setmodal:any,settrack:any,rplay:any,filter_val:any){
   let key = 0
@@ -220,13 +221,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                     
                                 </div>
 
-                                <div>
-                                      {/* Working on filter function */}
-                                    <input type='text' className='filterTrack' id='filterTrack' placeholder='Looking for something?' style={{borderRadius: '13px',width: '170px', height: '40px', marginRight: '100%', backgroundColor: 'rgb(90, 210, 216)', color: 'black', fontWeight: 'bolder'}}  onChange={function handleChange(e){
-                                      let temp = e.target.value
-                                      setFilter_val(temp)
-                                    }} />                                    
-                                    </div>
+                                {filterTracks(setFilter_val)}
 
 
                                 <div className="tdContainer" style={{width: '80vw'}} >
