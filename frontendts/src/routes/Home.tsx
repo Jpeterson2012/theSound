@@ -107,7 +107,7 @@ function Podcasts(podcasts:any){
           body: JSON.stringify({context_uri: a.show.uri})
       })
     }}>
-      <div className="audioPodcast" style={{display: 'flex', alignItems: 'center'}}>
+      <div className="audioPodcast">
       < img className="fade-in-image2" src={a.show.images.length == 1 ? a.show.images.map((s: any) => s.url) : a.show.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.show.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
         <h2>{a.show.name}</h2>
       </div>
@@ -115,7 +115,7 @@ function Podcasts(podcasts:any){
       )
   
   return(
-    <div style={{marginTop: '10vw'}}>
+    <div style={{marginTop: '10vw', paddingBottom: '100px'}}>
       {listItems}
     </div>
     
@@ -137,7 +137,7 @@ function Audiobooks(audiobooks:any){
             body: JSON.stringify({context_uri: a.uri})
         })
       }}>
-      <div className="audioPodcast" style={{display: 'flex', alignItems: 'center'}}>
+      <div className="audioPodcast">
       < img className="fade-in-image2" src={a.images.length == 1 ? a.images.map((s: any) => s.url) : a.images.filter((s: any) => s.height == 300).map((s: any) => s.url)} alt={a.name} style={{height: '300px', width: '300px', marginRight: '50px'}}/>
         <h2>{a.name}</h2>
       </div>
@@ -145,7 +145,7 @@ function Audiobooks(audiobooks:any){
       )
   
   return(
-    <div style={{marginTop: '10vw'}}>      
+    <div style={{marginTop: '10vw', paddingBottom: '100px'}}>      
       {listItems}
     </div>
     
@@ -338,10 +338,10 @@ export default function Home() {
       <div className="homeContainer">
         <div>
             {/* Working on filter function */}
-          {sessionStorage.getItem('home') !== "album" ? null : <input type='text' className='filterTrack' id='filterTrack' placeholder='Looking for something?' style={{borderRadius: '13px',width: '170px', height: '40px', marginLeft: '100px', backgroundColor: 'rgb(90, 210, 216)', color: 'black', fontWeight: 'bolder'}}  onChange={function handleChange(e){
+          {(sessionStorage.getItem('home') === null || sessionStorage.getItem('home') === 'album') ? <input type='text' className='filterTrack' id='filterTrack' placeholder='Looking for something?' style={{borderRadius: '13px',width: '170px', height: '40px', marginLeft: '100px', backgroundColor: 'rgb(90, 210, 216)', color: 'black', fontWeight: 'bolder'}}  onChange={function handleChange(e){
             let temp = e.target.value
             setFilter_val(temp)
-          }} />}                                    
+          }} /> : null}                                    
         </div>
           <div className="buttonContainer">            
             <button className="homeButtons" onClick={() => {setHtml(Albums(listItems)),sessionStorage.setItem('home','album')}}>Albums</button>
