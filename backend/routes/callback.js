@@ -50,30 +50,34 @@ router.get('/', async (req, res) => {
     .then(response => response.json())
     .then(data => {
       var temp = data.display_name
+      console.log(data.display_name)
       process.env['username'] = data.display_name
-      var sql = `CREATE DATABASE IF NOT EXISTS ${temp}`
-      con.query(sql, (err) => {
-        if (err) throw err;
-        // console.log(`Database for user ${data.display_name} created!`)
-      })
-      sql = `USE ${temp}`
-      process.env['DB'] = temp
-      con.query(sql, (err) => {
-        if (err) throw err;
-        // console.log('Database selected!')
-      })
-      sql = "CREATE TABLE IF NOT EXISTS ualbums (id INT AUTO_INCREMENT PRIMARY KEY, album_type VARCHAR(30), total_tracks SMALLINT(2), album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, copyrights MEDIUMTEXT, label_name VARCHAR(75))"
+      // var sql = `CREATE DATABASE IF NOT EXISTS ${temp}`
+      // con.query(sql, (err) => {
+      //   if (err) throw err;
+      //   // console.log(`Database for user ${data.display_name} created!`)
+      // })
+      // sql = `USE ${temp}`
+      // // process.env['DB'] = temp
+      // con.query(sql, (err) => {
+      //   if (err) throw err;
+      //   // console.log('Database selected!')
+      // })
+      // sql = "CREATE TABLE IF NOT EXISTS ualbums (id INT AUTO_INCREMENT PRIMARY KEY, album_type VARCHAR(30), total_tracks SMALLINT(2), album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, copyrights MEDIUMTEXT, label_name VARCHAR(75))"
+      sql = `CREATE TABLE IF NOT EXISTS ${data.display_name}albums (id INT AUTO_INCREMENT PRIMARY KEY, album_type VARCHAR(30), total_tracks SMALLINT(2), album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, copyrights MEDIUMTEXT, label_name VARCHAR(75))`
       con.query(sql, (err) => {
         if (err) throw err;
         // console.log('User Album table created!')
       })
       // sql = "CREATE TABLE IF NOT EXISTS uplaylists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(70), images LONGTEXT, name VARCHAR(100), public BOOL, uri varCHAR(40), tracks MEDIUMTEXT)"
-      sql = "CREATE TABLE IF NOT EXISTS uplaylists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(70), images LONGTEXT, name VARCHAR(100), public BOOL, uri varCHAR(40), tracks JSON)"
+      // sql = "CREATE TABLE IF NOT EXISTS uplaylists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(70), images LONGTEXT, name VARCHAR(100), public BOOL, uri varCHAR(40), tracks JSON)"
+      sql = `CREATE TABLE IF NOT EXISTS ${data.display_name}playlists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(70), images LONGTEXT, name VARCHAR(100), public BOOL, uri varCHAR(40), tracks JSON)`
       con.query(sql, (err) => {
         if (err) throw err;
         // console.log('User Playlist table created!')
       })
-      sql = "CREATE TABLE IF NOT EXISTS likedsongs (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images MEDIUMTEXT, artists MEDIUMTEXT, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(200))"
+      // sql = "CREATE TABLE IF NOT EXISTS likedsongs (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images MEDIUMTEXT, artists MEDIUMTEXT, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(200))"
+      sql = `CREATE TABLE IF NOT EXISTS ${data.display_name}liked (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images MEDIUMTEXT, artists MEDIUMTEXT, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(200))`
       con.query(sql, (err) => {
         if (err) throw err;
         // console.log('Liked songs table created!')
@@ -83,7 +87,8 @@ router.get('/', async (req, res) => {
         if (err) throw err;
         // console.log('Category table created!')
       })
-      sql = 'select exists (select 1 from ualbums) AS Output'
+      // sql = 'select exists (select 1 from ualbums) AS Output'
+      sql = `select exists (select 1 from ${data.display_name}albums) AS Output`
       con.query(sql, function(err, result) {
           if (err) throw err;
           var empty = result[0].Output
@@ -113,7 +118,8 @@ router.get('/', async (req, res) => {
                   trackJSON.items = trackInfo
                   
                   values.push([a.id, JSON.stringify(a.images), a.name, a.public, a.uri, JSON.stringify(trackJSON)])
-                  var sql = "INSERT INTO uplaylists (playlist_id, images, name, public, uri, tracks) VALUES ?"
+                  // var sql = "INSERT INTO uplaylists (playlist_id, images, name, public, uri, tracks) VALUES ?"
+                  var sql = `INSERT INTO ${process.env.username}playlists (playlist_id, images, name, public, uri, tracks) VALUES ?`
                   con.query(sql, [values], function(err, result) {
                       if (err) throw err;
                       console.log("Number of playlists inserted: " + result.affectedRows);
@@ -143,7 +149,8 @@ router.get('/', async (req, res) => {
                   var data = await resp.json()
                   var values = []
                   data.items.map(a => values.push([a.album.album_type, a.album.total_tracks, a.album.id, JSON.stringify(a.album.images), a.album.name, a.album.release_date, a.album.uri, JSON.stringify(a.album.artists), JSON.stringify(a.album.tracks), JSON.stringify(a.album.copyrights), a.album.label]))
-                  var sql = "INSERT INTO ualbums (album_type,total_tracks,album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name) VALUES ?"
+                  // var sql = "INSERT INTO ualbums (album_type,total_tracks,album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name) VALUES ?"
+                  var sql = `INSERT INTO ${process.env.username}albums (album_type,total_tracks,album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name) VALUES ?`
                   con.query(sql, [values], function(err, result) {
                       if (err) throw err;
                       console.log("Number of albums inserted: " + result.affectedRows);
@@ -163,7 +170,8 @@ router.get('/', async (req, res) => {
                   var data = await resp.json()
                   var values = []
                   data.items.map(a => values.push([a.track.album.id, JSON.stringify(a.track.album.images), JSON.stringify(a.track.album.artists), a.track.duration_ms, `spotify:track:${a.track.id}`, a.track.name]))
-                  var sql = "INSERT INTO likedsongs (album_id, images, artists, duration, track_id, name) VALUES ?"
+                  // var sql = "INSERT INTO likedsongs (album_id, images, artists, duration, track_id, name) VALUES ?"
+                  var sql = `INSERT INTO ${process.env.username}liked (album_id, images, artists, duration, track_id, name) VALUES ?`
                   con.query(sql, [values], function(err, result) {
                       if (err) throw err;
                       console.log("Number of liked songs inserted: " + result.affectedRows);

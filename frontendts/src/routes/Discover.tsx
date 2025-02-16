@@ -39,6 +39,7 @@ export default function Discover() {
         if (rel && cat && fplay){
             setReleases(JSON.parse(rel));
             setCategories(JSON.parse(cat))
+            console.log(JSON.parse(cat))
             setFplaylists(JSON.parse(fplay))
             setLoading(false)
         }
@@ -48,6 +49,7 @@ export default function Discover() {
                 const resp = await fetch(import.meta.env.VITE_URL + '/categories')
                 const data = await resp.json()
                 setCategories(data)
+                console.log(data)
                 sessionStorage.setItem("categories", JSON.stringify(data))
                 setLoading(false)
             }
@@ -81,7 +83,13 @@ export default function Discover() {
         <a key={i} onClick={function handleClick() {
             sessionStorage.setItem("c_icon", a.icons.map((s: any) => s.url))
             sessionStorage.setItem("c_name", a.name)
-            // navigate(`/app/categories/${a.id}`)            
+            // navigate(`/app/categories/${a.id}`)        
+            const fetchCplay = async () => {
+                const resp = await fetch(import.meta.env.VITE_URL + '/search/cplaylist')
+                const data = await resp.json()
+                console.log(data)            
+            }
+            fetchCplay()
         }}>
             <div className="categoryContainer" style={{width: '200px',height: '305px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 
