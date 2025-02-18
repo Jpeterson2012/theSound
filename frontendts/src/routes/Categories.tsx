@@ -7,6 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import Loading2 from "../components/Loading2/Loading2.tsx"
 import './Categories.css'
 
+function randColor(){
+    return "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
+}
+
 
 
 export default function Categories() {
@@ -25,25 +29,26 @@ export default function Categories() {
         const fetchcPlaylists = async () => {
             setLoading(true)
             const resp = await fetch(import.meta.env.VITE_URL + `/cplaylists/${lastSegment}`)
-            // const data = await resp.json()
+            const data = await resp.json()
             setLoading(false)
-            let reader = resp.body?.getReader()
-            let result
-            let temp
-            let a = []
-            let decoder = new TextDecoder('utf8')
-            while(!result?.done){
-                result = await reader?.read()
-                let chunk = decoder.decode(result?.value)
-                console.log(chunk ? JSON.parse(chunk) : {})
-                chunk ? (
-                temp = JSON.parse(chunk).playlists,
-                a.push(...temp),  
-                setClists([...a]) )
-                : (sessionStorage.setItem("ref_id", lastSegment!),  sessionStorage.setItem("ref_items", JSON.stringify(a)))
+            // let reader = resp.body?.getReader()
+            // let result
+            // let temp
+            // let a = []
+            // let decoder = new TextDecoder('utf8')
+            // while(!result?.done){
+            //     result = await reader?.read()
+            //     let chunk = decoder.decode(result?.value)
+            //     console.log(chunk ? JSON.parse(chunk) : {})
+            //     chunk ? (
+            //     temp = JSON.parse(chunk).playlists,
+            //     a.push(...temp),  
+            //     setClists([...a]) )
+            //     : (sessionStorage.setItem("ref_id", lastSegment!),  sessionStorage.setItem("ref_items", JSON.stringify(a)))
                 
-            }
-            // setClists(data)
+            // }
+            console.log(data)
+            setClists(data)
             
         }
         fetchcPlaylists()
@@ -54,16 +59,17 @@ export default function Categories() {
         <a onClick={function handleClick() {
             var parts = a.uri.split(':');
             var lastSegment = parts.pop() || parts.pop();
-            sessionStorage.setItem("p_image", a.images.map((s: any) => s.url))
+            sessionStorage.setItem("p_image", a.images.map((s: any) => s.uri))
             sessionStorage.setItem("playlist_name", a.name)
+            sessionStorage.setItem("cplaylist", JSON.stringify(a.tracks))
             navigate(`/app/playlist/${lastSegment}`)
         }}>
-            <div className="card" style={{width: '200px',height: '305px', marginBottom: '50px', background: a.primary_color}}>
+            <div className="card" style={{width: '200px',height: '305px', marginBottom: '50px', background: randColor()}}>
 
-            <img src={a.images.map((s: any) => s.url)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
+            <img src={a.images.map((s: any) => s.uri)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
             <div className="container">
                 <h4><b>{a.name}</b></h4>
-                <p><b>{a.description}</b></p>
+                {/* <p><b>{a.description}</b></p> */}
             </div>
 
             </div>

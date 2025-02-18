@@ -83,13 +83,8 @@ export default function Discover() {
         <a key={i} onClick={function handleClick() {
             sessionStorage.setItem("c_icon", a.icons.map((s: any) => s.url))
             sessionStorage.setItem("c_name", a.name)
-            // navigate(`/app/categories/${a.id}`)        
-            const fetchCplay = async () => {
-                const resp = await fetch(import.meta.env.VITE_URL + '/search/cplaylist')
-                const data = await resp.json()
-                console.log(data)            
-            }
-            fetchCplay()
+            navigate(`/app/categories/${a.name.toLowerCase().replace(' ','').replace('-','').replace('&','')}`)        
+            
         }}>
             <div className="categoryContainer" style={{width: '200px',height: '305px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 

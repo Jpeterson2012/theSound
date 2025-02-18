@@ -24,7 +24,7 @@ router.get('/', async function(req, res, next) {
   //         }        
   //         const vars = ["hip hop", "country", "pop", "latin", "rock", "dance", "indie","r&b","gospel","workout", "mexican traditional", "k-pop", "chill groove", 
   //                       "sleep", "metal", "jazz", "broadway", "classical","folk","soul","anime","punk","ambient","blues"]
-  //         console.log(vars[0])
+          
   //         let images = []
   //         images.push({"uri": "https://t.scdn.co/images/728ed47fc1674feb95f7ac20236eb6d7.jpeg","height": 274, "width": 274})
   //         images.push({"uri": "https://t.scdn.co/media/derived/icon-274x274_5ce6e0f681f0a76f9dcf9270dfd18489_0_0_274_274.jpg","height": 274, "width": 274})
@@ -45,9 +45,9 @@ router.get('/', async function(req, res, next) {
   //             })
   
   //             while (pages < 1000){
-      
-          
-  //               url = `https://api.spotify.com/v1/search?q=offset=${pages}&limit=50&genre="${vars[i]}"&type=track`
+                
+                
+  //               url = `https://api.spotify.com/v1/search?q=genre:"${vars[i]}"&type=track&offset=${pages}&limit=50`
   //               var resp = await fetch(url, {headers})
   //               var data = await resp.json()
   //               let values = []
@@ -56,7 +56,7 @@ router.get('/', async function(req, res, next) {
   //               let pID = generatePassword()
   //               let index = Math.floor(Math.random() * 8)                
                
-              
+                
   //               // data.tracks.items.map(a => a ? temp2.push({name: a.name, album_name: a.album.name, artists: a.artists, images: a.album.images, uri: a.album.uri, track_number: a.track_number, duration_ms: a.duration_ms}) : null)
   //               data.tracks.items.map(a => a && temp2.push(a))      
   //               temp.items = temp2

@@ -96,9 +96,14 @@ export default function RPlaylist({lastSegment, active, paused}: any){
 
     useEffect (() => {                 
           
-        if (sessionStorage.getItem("ref_id") === lastSegment) {
-          setpTracks(JSON.parse(sessionStorage.getItem("ref_items")!))
-          setTotal(JSON.parse(sessionStorage.getItem("ref_items")!).length)
+        // if (sessionStorage.getItem("ref_id") === lastSegment) {
+        //   setpTracks(JSON.parse(sessionStorage.getItem("ref_items")!))
+        //   setTotal(JSON.parse(sessionStorage.getItem("ref_items")!).length)
+        //   setLoading(false)
+        // }
+        if (sessionStorage.getItem("cplaylist") !== undefined) {
+          console.log(JSON.parse(sessionStorage.getItem("cplaylist")!))
+          setpTracks(JSON.parse(sessionStorage.getItem("cplaylist")!))
           setLoading(false)
         }
         else{
