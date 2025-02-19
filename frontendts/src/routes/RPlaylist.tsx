@@ -101,7 +101,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
         //   setTotal(JSON.parse(sessionStorage.getItem("ref_items")!).length)
         //   setLoading(false)
         // }
-        if (sessionStorage.getItem("cplaylist") !== undefined) {
+        if (sessionStorage.getItem("cplaylist") !== undefined && sessionStorage.getItem("cplaylist") !== null) {
           console.log(JSON.parse(sessionStorage.getItem("cplaylist")!))
           setpTracks(JSON.parse(sessionStorage.getItem("cplaylist")!))
           setLoading(false)

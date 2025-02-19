@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Loading2 from "../components/Loading2/Loading2.tsx"
 import './Categories.css'
 import { Spin } from "../components/Spin/Spin.tsx";
+import { useGetPlaylistsQuery } from "../App/ApiSlice.ts";
 
 function randColor(){
     return "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
@@ -32,6 +33,7 @@ export default function Categories({active, paused}: any) {
     var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
     const [clists, setClists] = useState<any>(null);
     const [loading, setLoading] = useState(false)
+    const {data: playlists = []} = useGetPlaylistsQuery()    
     
 
     useEffect (() => {
@@ -69,9 +71,15 @@ export default function Categories({active, paused}: any) {
     }, []);
 
     const listPlaylists = clists?.map((a: any) =>
-        <a onClick={function handleClick() {
+        <a onClick={function handleClick() {            
             var parts = a.uri.split(':');
             var lastSegment = parts.pop() || parts.pop();
+
+            let found = playlists?.find((e: any) => e?.playlist_id === a.playlist_id)
+            console.log(found)
+            console.log(a.playlist_id)
+            found === undefined ? sessionStorage.setItem("uplist", "false") : sessionStorage.setItem("uplist", "true")
+
             sessionStorage.setItem("p_image", a.images.map((s: any) => s.uri))
             sessionStorage.setItem("playlist_name", a.name)
             sessionStorage.setItem("cplaylist", JSON.stringify(a.tracks))
