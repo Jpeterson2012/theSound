@@ -6,14 +6,27 @@ import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Loading2 from "../components/Loading2/Loading2.tsx"
 import './Categories.css'
+import { Spin } from "../components/Spin/Spin.tsx";
 
 function randColor(){
     return "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
 }
+function isLight(color:any) {
+    // Convert hex color to RGB values
+    const r = parseInt(color.substr(1, 2), 16);
+    const g = parseInt(color.substr(3, 2), 16);
+    const b = parseInt(color.substr(5, 2), 16);
+  
+    // Calculate luminance using the relative luminance formula
+    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+  
+    // Return true if light, false if dark
+    return luminance > 127.5;
+}
 
 
 
-export default function Categories() {
+export default function Categories({active, paused}: any) {
     const navigate = useNavigate()
     var parts = window.location.href.split('/');
     var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
@@ -67,8 +80,8 @@ export default function Categories() {
             <div className="card" style={{width: '200px',height: '305px', marginBottom: '50px', background: randColor()}}>
 
             <img src={a.images.map((s: any) => s.uri)} alt="Avatar" style={{width:'80%',height:'190px'}}/>
-            <div className="container">
-                <h4><b>{a.name}</b></h4>
+            <div className="container" style={{display: 'flex', justifyContent: 'center'}}>
+                <h4 style={isLight(randColor()) ? {color: 'black'} : {color: 'white'}} ><b>{a.name}</b></h4>
                 {/* <p><b>{a.description}</b></p> */}
             </div>
 
@@ -78,8 +91,9 @@ export default function Categories() {
     
     return (
       <>
-      <img className="fade-in-image" src={sessionStorage.getItem("c_icon")!} style={{marginTop: '170px', height: '300px'}}/>
-      <h2>{sessionStorage.getItem("c_name")}</h2>
+      {Spin(active,paused,sessionStorage.getItem("c_icon")!,null)}
+      {/* <img className="fade-in-image" src={sessionStorage.getItem("c_icon")!} style={{height: '300px'}}/> */}
+      <h2 style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '20px', fontSize: '40px'}}  >{sessionStorage.getItem("c_name")}</h2>
       {loading ? <Loading2 yes={true} /> : (
         <>
         

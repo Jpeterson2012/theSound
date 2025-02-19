@@ -83,7 +83,7 @@ export default function Discover() {
         <a key={i} onClick={function handleClick() {
             sessionStorage.setItem("c_icon", a.icons.map((s: any) => s.url))
             sessionStorage.setItem("c_name", a.name)
-            navigate(`/app/categories/${a.name.toLowerCase().replace(' ','').replace('-','').replace('&','')}`)        
+            navigate(`/app/categories/${a.name.toLowerCase().replace(' ','').replace('-','').replace('&','and')}`)        
             
         }}>
             <div className="categoryContainer" style={{width: '200px',height: '305px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
