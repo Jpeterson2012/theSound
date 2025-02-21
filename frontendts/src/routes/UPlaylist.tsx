@@ -48,8 +48,7 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
 
           <p hidden>{liked_urls.push(t.uri)}</p>
           <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-            {/* Music bar animation here */}
-            {!paused ? <span className="musicBars2" style={{position: 'absolute', left: '9vw'}}>{(sessionStorage.getItem('current') === t.uri || (t.artists?.name === t.name && t.artists?.artists[0].name === t.artist[0].name)) ? musicBar() : null}</span> : null}
+                        
             <a>
             <div className="removeContainer2" style={{width: '20px'}}>
               <div className="removeAlbum2">
@@ -80,6 +79,7 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
           liked={liked_urls}
           artist={t.artists}
           t_uri={t.uri}          
+          paused={paused}
           />
         <p hidden>{key++}</p>
         {/* <h1 id="deleteSong" onClick={function handleClick(){          
