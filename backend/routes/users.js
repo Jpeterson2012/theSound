@@ -115,7 +115,7 @@ router.post('/:playlist', async (req,res) => {
           console.log(result)
           if (result.length === 1){            
             // sql = `insert into uplaylists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${name}', public, 'spotify:playlist:${req.body.id}',tracks from uplaylists where name = "temp_playlist"`
-            sql = `insert into ${process.env.username}playlists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${name}', public, 'spotify:playlist:${req.body.id}',tracks from uplaylists where name = "temp_playlist"`
+            sql = `insert into ${process.env.username}playlists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${name}', public, 'spotify:playlist:${req.body.id}',tracks from ${process.env.username}playlists where name = "temp_playlist"`
             con.query(sql, (err) => {
               if (err) throw err;
               console.log('New Playlist Added')
