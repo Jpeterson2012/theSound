@@ -17,6 +17,7 @@
     left: 100px;
     
     z-index: 1;
+    border-radius: 10px;
   }
   #svg1 {
     position: relative;
