@@ -10,7 +10,6 @@ import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 
 import { Spin } from "../components/Spin/Spin.tsx";
-import musicBar from "../components/musicBar/musicBar.tsx";
 
 import MySnackbar from "../components/MySnackBar.tsx";
 
@@ -111,7 +110,7 @@ export default function UAlbum({active, paused}: any) {
               setTrackData(temp)
               setModal(true)               
             }}>Edit Playlists</button>
-            <img src={dots} className="removeImg2" onClick={function handleClick(){
+            `<img src={dots} className="removeImg2" onClick={function handleClick(){
               let temp = {images: talbum![0].images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists}                            
               setTrackData(temp)
               setModal(true)
