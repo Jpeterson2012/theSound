@@ -39,7 +39,7 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                     
                     fetch(url, {
                         method: 'PUT',
-                        headers: headers,
+                        headers: headers,                        
                         body: JSON.stringify({context_uri: uri, offset: {position: number - 1}})
                     })
                 

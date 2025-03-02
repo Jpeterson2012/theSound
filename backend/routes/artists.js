@@ -7,7 +7,7 @@ router.get('/:id', async (req, res) => {
     var info = {}
     url = `https://api.spotify.com/v1/artists/${req.params.id}`
     const headers = {
-        Authorization: 'Bearer ' + process.env.access_token
+        Authorization: 'Bearer ' + req.session.access_token
       }
 
     var resp = await fetch(url, {headers})

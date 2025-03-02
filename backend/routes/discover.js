@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     let index = Math.floor(Math.random() * 51)
     url = `https://api.spotify.com/v1/browse/new-releases?offset=${index}&limit=50`
     const headers = {
-        Authorization: 'Bearer ' + process.env.access_token
+        Authorization: 'Bearer ' + req.session.access_token
       }
     try{
     

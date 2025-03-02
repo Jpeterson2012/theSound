@@ -44,7 +44,8 @@ router.get('/', async (req, res) => {
       client_id: process.env.CLIENT_ID,
       scope: scope,
       redirect_uri: process.env.REDIRECTURI,
-      state: state
+      state: state,
+      show_dialog: true,
     }));
 });
 

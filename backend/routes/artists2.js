@@ -5,7 +5,7 @@ router.get('/:id', async (req, res) => {
     // var info = {}
     
     const headers = {
-        Authorization: 'Bearer ' + process.env.access_token,        
+        Authorization: 'Bearer ' + req.session.access_token,        
       }
     try{    
     

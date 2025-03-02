@@ -35,7 +35,7 @@ export default function PTrack ( {uri, name, number, duration, liked, artist, t_
                     try{
                     fetch(url, {
                         method: 'PUT',
-                        headers: headers,
+                        headers: headers,                        
                         /* Old method of playling playlist using playlist uri. doesnt work with sorting */
                         // body: liked !== null ? JSON.stringify({uris: liked, offset: {position: number}}) : JSON.stringify({context_uri: uri, offset: {position: number}})
                         body: JSON.stringify({uris: liked, offset: {position: number}})

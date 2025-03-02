@@ -201,6 +201,7 @@ export default function UPlaylist({lastSegment, active, paused}: any){
                                             fetch(import.meta.env.VITE_URL + `/users/playlist`, {
                                               method: 'POST',
                                               headers: {"Content-Type":"application/json"},
+                                              credentials: "include",
                                               body: JSON.stringify({id: lastSegment,name: sessionStorage.getItem("playlist_name"), images: JSON.parse(sessionStorage.getItem("fullp_image")!)})                                        
                                             })
                                           },500)                                                           

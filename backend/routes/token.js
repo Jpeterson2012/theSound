@@ -6,13 +6,13 @@ var mystuff = require("./AuthRoutes.js");
 router.get('/', function(req, res) {
     // x.registerListener(function() {
     //     console.log('')
-    //     console.log(process.env.access_token)
+    //     console.log(req.session.access_token)
     //     console.log('')
-    //     var token = {items: process.env.access_token}
+    //     var token = {items: req.session.access_token}
     //     res.send(token)
     // })
     try{
-    var token = {items: process.env.access_token}
+    var token = {items: req.session.access_token}
     res.send(token)
     }
     catch(e){
@@ -30,7 +30,7 @@ router.get('/refresh_token', async function(req, res) {
           }
         const body = {
             grant_type: 'refresh_token',
-            refresh_token: process.env.refresh_token
+            refresh_token: req.session.refresh_token
         }
           await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
@@ -39,8 +39,8 @@ router.get('/refresh_token', async function(req, res) {
           })
           .then(response => response.json())
           .then(data => {            
-            process.env.access_token = data.access_token
-            res.send({items: process.env.access_token})
+            req.session.access_token = data.access_token
+            res.send({items: req.session.access_token})
         })
     }
     catch(e){

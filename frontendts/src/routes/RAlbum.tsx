@@ -45,7 +45,7 @@ export default function RAlbum({active, paused}: any) {
       else{
       const fetchTracks = async () => {
           try {
-              var temp = await fetch(import.meta.env.VITE_URL + `/tracks/${lastSegment}`)
+              var temp = await fetch(import.meta.env.VITE_URL + `/tracks/${lastSegment}`,{credentials: "include"})
             .then((res) => {
               // console.log(res.json())
               return res.json();

@@ -5,7 +5,7 @@ const { con } = require('../sql.js')
 // router.get('/:id', async (req, res) => {
 //     // console.log(req.params.id)
 //     const headers = {
-//       Authorization: 'Bearer ' + process.env.access_token
+//       Authorization: 'Bearer ' + req.session.access_token
 //     }
 //     var pages = 0
 //     try{
@@ -50,7 +50,7 @@ router.get('/:id', async (req, res) => {
   arr = arr.split(',')
   // console.log(req.params.id)
   const headers = {
-    Authorization: 'Bearer ' + process.env.access_token
+    Authorization: 'Bearer ' + req.session.access_token
   }
   var pages = 0
   try{
@@ -103,7 +103,7 @@ function generatePassword() {
 // router.get('/cplaylist', async (req,res) => {
 //   console.log('hello')
 //   const headers = {
-//           Authorization: 'Bearer ' + process.env.access_token
+//           Authorization: 'Bearer ' + req.session.access_token
 //         }        
 //         const vars = ["hip hop", "country", "pop", "latin", "rock", "dance", "indie","r&b","gospel","workout", "mexican traditional", "k-pop", "chill groove", 
 //                       "sleep", "metal", "jazz", "broadway", "classical","folk","soul","anime","punk","ambient","blues"]

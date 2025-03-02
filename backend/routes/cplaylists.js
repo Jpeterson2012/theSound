@@ -45,7 +45,7 @@ router.get('/:id', async (req,res) => {
   
   var sql = `SELECT * from ${req.params.id}`
   con.query(sql, function (err,result) {
-    console.log(result.length)
+    // console.log(result.length)
     if (err) throw err;
     var items = []
     for (let i = 0; i < result.length; i++){

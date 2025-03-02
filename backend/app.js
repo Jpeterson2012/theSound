@@ -5,9 +5,15 @@ require('dotenv').config();
 const PORT = process.env.PORT || 8888;
 
 var express = require('express');
+var app = express();
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var session = require('express-session')
 var logger = require('morgan');
+
+app.use(session({secret: 'secretkey', saveUninitialized: true, resave: false, cookie: {secure: false, sameSite: 'lax'}}))
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -29,7 +35,6 @@ var updateRouter = require('./routes/update')
 var homepage2Router = require('./routes/homepage2')
 var playerRouter = require('./routes/player')
 
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,7 +45,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({origin: 'http://localhost:5173'}));
+app.use(cors({origin: 'http://localhost:5173', credentials: true}));
 
 
 app.use('/', indexRouter);
@@ -80,6 +85,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
+  res.send("200")
   res.status(err.status || 500);
   res.render('error');
 });

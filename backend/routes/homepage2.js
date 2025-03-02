@@ -4,9 +4,9 @@ var router = express.Router();
 
 router.get('/albums', async (req, res) => {
     
-    function getAlbums(){
+    function getAlbums(){        
         // sql = 'SELECT album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name from ualbums'
-        sql = `SELECT album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name from ${process.env.username}albums`
+        sql = `SELECT album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name from ${req.session.username}albums`
         con.query(sql, function (err, result) {
             if (err) throw err;
             var items = []
@@ -36,7 +36,7 @@ router.get('/playlists', async (req, res) => {
 
     function getPlaylists(){
         // var sql = 'SELECT playlist_id, images, name, public, uri, tracks from uplaylists where not name="temp_playlist"'
-        var sql = `SELECT playlist_id, images, name, public, uri, tracks from ${process.env.username}playlists where not name="temp_playlist"`
+        var sql = `SELECT playlist_id, images, name, public, uri, tracks from ${req.session.username}playlists where not name="temp_playlist"`
         con.query(sql, function (err,result) {
             if (err) throw err;
             var items = []
@@ -66,7 +66,7 @@ router.get('/playlists', async (req, res) => {
 router.get('/playlists/:id', async (req, res) => {
     function getPlaylist(){
         // var sql = `SELECT playlist_id, images, name, public, uri, tracks from uplaylists WHERE playlist_id = '${req.params.id}'`
-        var sql = `SELECT playlist_id, images, name, public, uri, tracks from ${process.env.username}playlists WHERE playlist_id = '${req.params.id}'`
+        var sql = `SELECT playlist_id, images, name, public, uri, tracks from ${req.session.username}playlists WHERE playlist_id = '${req.params.id}'`
         con.query(sql, function(err,result) {
             console.log(result[0].name)
             if (err) throw err
@@ -96,7 +96,7 @@ router.get('/liked', async (req, res) => {
     
     function getLiked(){
         // var sql = 'select album_id, images, duration, track_id, name, artists from likedsongs'
-        var sql = `select album_id, images, duration, track_id, name, artists from ${process.env.username}liked`
+        var sql = `select album_id, images, duration, track_id, name, artists from ${req.session.username}liked`
         con.query(sql, function (err, result) {
             if (err) throw e
 
@@ -128,7 +128,7 @@ router.get('/podcasts', async (req,res) => {
     url = 'https://api.spotify.com/v1/me/shows'
     try{
         const headers = {
-            Authorization: 'Bearer ' + process.env.access_token
+            Authorization: 'Bearer ' + req.session.access_token
           }
     
         var resp = await fetch(url, {headers})
@@ -145,7 +145,7 @@ router.get('/audiobooks', async (req,res) => {
     url = 'https://api.spotify.com/v1/me/audiobooks'
     try{
         const headers = {
-            Authorization: 'Bearer ' + process.env.access_token
+            Authorization: 'Bearer ' + req.session.access_token
           }
     
         var resp = await fetch(url, {headers})

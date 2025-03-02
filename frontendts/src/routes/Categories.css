@@ -19,11 +19,13 @@
     width: 200px;
     height: 305px;
     margin-bottom: 50px;
+    border-radius: 10px;
 }
 .cCardImg{
     width: 80%;
     height: 190px;
     border-radius: 10px;
+    margin-top: 20px;
 }
 @media only screen and (max-width: 768px) {
     .catHeader{

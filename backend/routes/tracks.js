@@ -8,7 +8,7 @@ router.get('/:id', async (req, res) => {
     
 
     const headers = {
-        Authorization: 'Bearer ' + process.env.access_token
+        Authorization: 'Bearer ' + req.session.access_token
       }
     try{
     var resp = await fetch(url,{headers})
@@ -73,7 +73,7 @@ catch(e){
 
 router.post('/artists', async (req, res) => {
     const headers = {
-        Authorization: 'Bearer ' + process.env.access_token
+        Authorization: 'Bearer ' + req.session.access_token
       }
     // req.body.map(a => console.log(a))
     let temp = []

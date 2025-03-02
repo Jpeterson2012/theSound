@@ -78,6 +78,7 @@ export default function UAlbum({active, paused}: any) {
                 var temp = await fetch(import.meta.env.VITE_URL + `/tracks/artists`,{
                     method: 'POST',
                     headers: {"Content-Type":"application/json"},
+                    credentials: "include",
                     body: JSON.stringify(artistss)
                 })
               .then((res) => {                

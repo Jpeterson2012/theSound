@@ -21,7 +21,7 @@ export default function Artist({paused}: any) {
     lastSegment! !== id ? setArtists2([]): null
     const fetchArtist = async () => {
         try {
-            var temp = await fetch(import.meta.env.VITE_URL + `/artists/${lastSegment}`)
+            var temp = await fetch(import.meta.env.VITE_URL + `/artists/${lastSegment}`,{credentials: "include"})
           .then((res) => {
             // console.log(res.json())
             return res.json();
@@ -40,7 +40,7 @@ export default function Artist({paused}: any) {
 
   //   const fetchArtist2 = async () => {
   //     try {
-  //         var temp = await fetch(import.meta.env.VITE_URL + `/artists2/${lastSegment}`)
+  //         var temp = await fetch(import.meta.env.VITE_URL + `/artists2/${lastSegment}`,{credentials: "include"})
   //       .then((res) => {
   //         // console.log(res.json())
   //         return res.json();
@@ -63,6 +63,7 @@ export default function Artist({paused}: any) {
   const fetchArtist2 = async () => {
     const resp = await fetch(import.meta.env.VITE_URL + `/artists2/${lastSegment}`,{
       method: 'GET',
+      credentials: "include",
       headers: {"Content-Type":"application/json"},
     })
     setLoading2(false)

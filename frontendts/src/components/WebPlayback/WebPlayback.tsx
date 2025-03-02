@@ -47,7 +47,12 @@ export default function WebPlayback() {
     //Used to keep track of current device. used in Track and Ptrack Component
     const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)})             
 
-    useEffect(() => {        
+    useEffect(() => {
+            window.addEventListener('beforeunload', () => {
+                const url = 'https://www.spotify.com/logout/'                                                                                                                                                                                                                                                                               
+                const spotifyLogoutWindow = window.open(url, 'Spotify Logout', 'width=700,height=500,top=40,left=40')                                                                                                
+                setTimeout(() => spotifyLogoutWindow!.close(), 2000)
+            })        
 ///////////////////////////Create Spotify web player client
             const script = document.createElement("script");
             script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -55,7 +60,7 @@ export default function WebPlayback() {
             var token = ''
             const fetchToken = async () => {
                 try{
-                    const response = await fetch(import.meta.env.VITE_URL + "/token")
+                    const response = await fetch(import.meta.env.VITE_URL + "/token", {credentials: "include"})
                     const data = await response.json()
                     token = data.items                
                     sessionStorage.setItem("token", data.items)    
@@ -66,7 +71,7 @@ export default function WebPlayback() {
             //Handles refresh token
             setInterval(() => {
                 try{
-                    fetch(import.meta.env.VITE_URL + "/token/refresh_token")
+                    fetch(import.meta.env.VITE_URL + "/token/refresh_token", {credentials: "include"})
                     .then(data => data.json()).then(a => {sessionStorage.setItem("token", a.items), token = a.items})
                     }
                     catch (e) {`Error requesting access token: ${e}`}              

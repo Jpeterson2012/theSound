@@ -6,7 +6,7 @@ router.post('/album', async (req, res) => {
   try{
     // console.log(req.body)
     // var sql = `INSERT INTO ualbums (album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name) VALUES ('${req.body.album_type}','${req.body.total_tracks}','${req.body.album_id}','${JSON.stringify(req.body.images)}',"${req.body.name}",'${req.body.release_date}','${req.body.uri}',${con.escape(JSON.stringify(req.body.artists))}, ${con.escape(JSON.stringify(req.body.tracks))}, ${con.escape(JSON.stringify(req.body.copyrights))},${con.escape(req.body.label_name)})`
-    var sql = `INSERT INTO ${process.env.username}albums (album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name) VALUES ('${req.body.album_type}','${req.body.total_tracks}','${req.body.album_id}','${JSON.stringify(req.body.images)}',"${req.body.name}",'${req.body.release_date}','${req.body.uri}',${con.escape(JSON.stringify(req.body.artists))}, ${con.escape(JSON.stringify(req.body.tracks))}, ${con.escape(JSON.stringify(req.body.copyrights))},${con.escape(req.body.label_name)})`
+    var sql = `INSERT INTO ${req.session.username}albums (album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name) VALUES ('${req.body.album_type}','${req.body.total_tracks}','${req.body.album_id}','${JSON.stringify(req.body.images)}',"${req.body.name}",'${req.body.release_date}','${req.body.uri}',${con.escape(JSON.stringify(req.body.artists))}, ${con.escape(JSON.stringify(req.body.tracks))}, ${con.escape(JSON.stringify(req.body.copyrights))},${con.escape(req.body.label_name)})`
     con.query(sql, (err) => {
       if (err) throw err
       console.log('Album added!')
@@ -22,7 +22,7 @@ router.delete('/album', async (req, res) => {
   try{
     // console.log(req.body)
     // sql = `DELETE FROM ualbums WHERE album_id = "${req.body.aID}"`
-    sql = `DELETE FROM ${process.env.username}albums WHERE album_id = "${req.body.aID}"`
+    sql = `DELETE FROM ${req.session.username}albums WHERE album_id = "${req.body.aID}"`
     con.query(sql, (err) => {
       if (err) throw err;
       console.log('Album deleted!')
@@ -40,7 +40,7 @@ router.post('/liked', async (req, res) => {
       // console.log(req.body)
       // console.log(req.body.name)
         // var sql = `INSERT INTO likedsongs (album_id, images, artists, duration, track_id, name) VALUES ('${req.body.album_id}','${JSON.stringify(req.body.images)}',${con.escape(JSON.stringify(req.body.artists))},'${req.body.duration_ms}','${req.body.uri}',"${req.body.name}")`
-        var sql = `INSERT INTO ${process.env.username}liked (album_id, images, artists, duration, track_id, name) VALUES ('${req.body.album_id}','${JSON.stringify(req.body.images)}',${con.escape(JSON.stringify(req.body.artists))},'${req.body.duration_ms}','${req.body.uri}',"${req.body.name}")`
+        var sql = `INSERT INTO ${req.session.username}liked (album_id, images, artists, duration, track_id, name) VALUES ('${req.body.album_id}','${JSON.stringify(req.body.images)}',${con.escape(JSON.stringify(req.body.artists))},'${req.body.duration_ms}','${req.body.uri}',"${req.body.name}")`
       con.query(sql, (err) => {
         if (err) throw err;
         console.log('Song added!')
@@ -56,7 +56,7 @@ router.delete('/liked', async (req, res) => {
 
   try{
       // sql = `DELETE FROM likedsongs WHERE name = "${req.body.name}"`
-      sql = `DELETE FROM ${process.env.username}liked WHERE name = "${req.body.name}"`
+      sql = `DELETE FROM ${req.session.username}liked WHERE name = "${req.body.name}"`
     con.query(sql, (err) => {
       if (err) throw err;
       console.log('Song deleted!')
@@ -74,7 +74,7 @@ router.post('/playlist/:id', async (req, res) => {
     // console.log(req.params.id)
     // console.log(req.body)
     // sql = `SELECT tracks FROM uplaylists WHERE playlist_id = '${req.params.id}'`
-    sql = `SELECT tracks FROM ${process.env.username}playlists WHERE playlist_id = '${req.params.id}'`
+    sql = `SELECT tracks FROM ${req.session.username}playlists WHERE playlist_id = '${req.params.id}'`
     con.query(sql, (err,result) => {
       if (err) throw err;
     
@@ -91,7 +91,7 @@ router.post('/playlist/:id', async (req, res) => {
       temp.items.push(temp2)      
       // console.log(temp.items)
       // sql = `UPDATE uplaylists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}'`
-      sql = `UPDATE ${process.env.username}playlists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}'`
+      sql = `UPDATE ${req.session.username}playlists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}'`
       con.query(sql, (err,result) => {
         if (err) throw err;
         console.log("Track added!")
@@ -110,12 +110,12 @@ router.delete('/playlist/:id', async (req, res) => {
     // console.log(req.params.id)
     // console.log(req.body.name)
     // sql = `SELECT tracks FROM uplaylists WHERE playlist_id = '${req.params.id}'`
-    sql = `SELECT tracks FROM ${process.env.username}playlists WHERE playlist_id = '${req.params.id}'`
+    sql = `SELECT tracks FROM ${req.session.username}playlists WHERE playlist_id = '${req.params.id}'`
     con.query(sql, (err,result) => {
       if (err) throw err;
       let temp = JSON.parse(result[0].tracks)
       temp.items = temp.items.filter(a => a.name !== req.body.name)
-      sql = `UPDATE uplaylists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}' `
+      sql = `UPDATE ${req.session.username}playlists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}' `
       con.query(sql, (err,result) => {
         if (err) throw err;
         console.log("Track removed!")
@@ -133,7 +133,7 @@ router.delete('/playlist', async(req,res) => {
   try{
     // console.log(req.body)
     // sql = `DELETE FROM uplaylists WHERE playlist_id = "${req.body.pID}" and not name="temp_playlist"`
-    sql = `DELETE FROM ${process.env.username}playlists WHERE playlist_id = "${req.body.pID}" and not name="temp_playlist"`
+    sql = `DELETE FROM ${req.session.username}playlists WHERE playlist_id = "${req.body.pID}" and not name="temp_playlist"`
     con.query(sql, (err) => {
       if (err) throw err;
       console.log('Playlist deleted!')

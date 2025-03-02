@@ -3,9 +3,9 @@ var router = express.Router();
 const { con } = require('../sql.js')
 
 router.get('/', async (req, res) => {
-    // console.log(req.params.id)
+    // console.log(req.params.id)    
     const headers = {
-        Authorization: 'Bearer ' + process.env.access_token
+        Authorization: 'Bearer ' + req.session.access_token
       }
     let main = {}
     let index = Math.floor(Math.random() * 76)

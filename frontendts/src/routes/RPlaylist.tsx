@@ -110,6 +110,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
               // setLoading(true)
               const resp = await fetch(import.meta.env.VITE_URL + `/ptracks/${lastSegment}`,{
                 method: 'GET',
+                credentials: "include",
                 headers: {"Content-Type":"application/json"},
               })
               setLoading(false)
@@ -139,7 +140,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
 
         //   const fetchTracks = async () => {
         //     try {
-        //         var temp = await fetch(import.meta.env.VITE_URL + `/ptracks/${lastSegment}`)
+        //         var temp = await fetch(import.meta.env.VITE_URL + `/ptracks/${lastSegment}`,{credentials: "include"})
         //       .then((res) => {
         //         // console.log(res.json())
         //         return res.json();
@@ -201,6 +202,7 @@ export default function RPlaylist({lastSegment, active, paused}: any){
                                             fetch(import.meta.env.VITE_URL + `/users/playlist`, {
                                               method: 'POST',
                                               headers: {"Content-Type":"application/json"},
+                                              credentials: "include",
                                               body: JSON.stringify({id: lastSegment,name: sessionStorage.getItem("playlist_name"), images: JSON.parse(sessionStorage.getItem("fullp_image")!)})                                        
                                             })
                                           },500)

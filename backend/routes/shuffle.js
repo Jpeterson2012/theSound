@@ -3,7 +3,7 @@ var router = express.Router();
 
 router.post('/', async (req, res) => {
     const headers = {
-      Authorization: 'Bearer ' + process.env.access_token
+      Authorization: 'Bearer ' + req.session.access_token
     }
     try{
     console.log(req.body.state)

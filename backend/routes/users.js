@@ -94,7 +94,7 @@ async function makePlaylists(){
 /* GET users listing. */
 router.get('/', async function(req, res, next) {  
   
-  let temp = {items: process.env.username}
+  let temp = {items: req.session.username}
   // console.log(temp)
   res.send(temp)     
 
@@ -110,12 +110,12 @@ router.post('/:playlist', async (req,res) => {
       if(req.body.public === undefined){
          
         // sql = `select playlist_id, name from uplaylists where playlist_id="${req.body.id}" and name = "temp_playlist"`
-        sql = `select playlist_id, name from ${process.env.username}playlists where playlist_id="${req.body.id}" and name = "temp_playlist"`
+        sql = `select playlist_id, name from ${req.session.username}playlists where playlist_id="${req.body.id}" and name = "temp_playlist"`
         con.query(sql, function(err,result){ 
           console.log(result)
           if (result.length === 1){            
             // sql = `insert into uplaylists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${name}', public, 'spotify:playlist:${req.body.id}',tracks from uplaylists where name = "temp_playlist"`
-            sql = `insert into ${process.env.username}playlists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${name}', public, 'spotify:playlist:${req.body.id}',tracks from ${process.env.username}playlists where name = "temp_playlist"`
+            sql = `insert into ${req.session.username}playlists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${name}', public, 'spotify:playlist:${req.body.id}',tracks from ${req.session.username}playlists where name = "temp_playlist"`
             con.query(sql, (err) => {
               if (err) throw err;
               console.log('New Playlist Added')
@@ -125,7 +125,7 @@ router.post('/:playlist', async (req,res) => {
     }
     else{
         // sql = `INSERT INTO uplaylists (playlist_id, name, public, uri) VALUES ('${req.body.id}', '${req.body.name}', ${req.body.public}, 'spotify:playlist:${req.body.id}')`
-        sql = `INSERT INTO ${process.env.username}playlists (playlist_id, name, public, uri) VALUES ('${req.body.id}', '${req.body.name}', ${req.body.public}, 'spotify:playlist:${req.body.id}')`
+        sql = `INSERT INTO ${req.session.username}playlists (playlist_id, name, public, uri) VALUES ('${req.body.id}', '${req.body.name}', ${req.body.public}, 'spotify:playlist:${req.body.id}')`
         con.query(sql, (err) => {
           if (err) throw err;
           console.log('New Playlist Added')
