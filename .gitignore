@@ -13,6 +13,8 @@ frontendts/node_modules/
 backend/node_modules/
 backend/.env
 backend/ori/
+backend/Test.session.sql
+backend/.vscode/*
 frontend/public/
 frontendts/public/
 dist
