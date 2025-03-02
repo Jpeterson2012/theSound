@@ -14,6 +14,7 @@ backend/node_modules/
 backend/.env
 backend/ori/
 backend/Test.session.sql
+backend/34-LumaPool.mp3
 backend/.vscode/*
 frontend/public/
 frontendts/public/
