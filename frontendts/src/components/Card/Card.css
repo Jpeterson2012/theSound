@@ -60,7 +60,8 @@ p {
 .mainArtistContainer2{
   display: none;
 }
-@media only screen and (max-width: 768px){
+@media only screen and (max-width: 768px),
+(max-height: 400px){
   .card{
     width: 60vw;
     height: 0px;

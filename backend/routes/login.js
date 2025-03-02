@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
       scope: scope,
       redirect_uri: process.env.REDIRECTURI,
       state: state,
-      show_dialog: true,
+      // show_dialog: true,
     }));
 });
 

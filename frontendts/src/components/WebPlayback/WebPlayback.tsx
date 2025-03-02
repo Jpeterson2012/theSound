@@ -12,7 +12,6 @@ import Discover from '../../routes/Discover.tsx';
 import Categories from '../../routes/Categories.tsx';
 import BottomBar from '../BottomBar/BottomBar.tsx';
 import PollPlayer from '../PollPlayer.tsx';
-import { useInterval } from '../Seekbar/SeekBar.tsx';
 
 declare global {
     interface Window{
@@ -39,6 +38,7 @@ export default function WebPlayback() {
 
     const [player, setPlayer] = useState<any>(undefined);
     const [isLoading, setIsLoading] = useState(true) 
+    const [isLoading2, setIsLoading2] = useState(true) 
     const [is_paused, setPaused] = useState<any>(false);
     const [is_active, setActive] = useState<any>(false);
     const [current_track, setTrack] = useState(track);
@@ -47,12 +47,7 @@ export default function WebPlayback() {
     //Used to keep track of current device. used in Track and Ptrack Component
     const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)})             
 
-    useEffect(() => {
-            window.addEventListener('beforeunload', () => {
-                const url = 'https://www.spotify.com/logout/'                                                                                                                                                                                                                                                                               
-                const spotifyLogoutWindow = window.open(url, 'Spotify Logout', 'width=700,height=500,top=40,left=40')                                                                                                
-                setTimeout(() => spotifyLogoutWindow!.close(), 2000)
-            })        
+    useEffect(() => { 
 ///////////////////////////Create Spotify web player client
             const script = document.createElement("script");
             script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -141,9 +136,9 @@ export default function WebPlayback() {
         <>
             {isLoading ? null : (
                 <>
-                    <Logo />
+                    {isLoading2 ? null : <Logo />}
                     <Routes>
-                    <Route path = '/' element={<Home/>} key={0}/>
+                    <Route path = '/' element={<Home setIsLoading2={setIsLoading2} />} key={0}/>
                     <Route path='/discover' element={<Discover/>} key={1} />
                     <Route path='/categories/:id' element={<Categories active={is_active}  paused={is_paused} />} key={2}/>
                     <Route path='/album/:id' element={<Album active={is_active}  paused={is_paused} />} key={3}/>
@@ -151,7 +146,7 @@ export default function WebPlayback() {
                     <Route path='/artist/:id' element={<Artist paused={is_paused} />} key={5}/>
                     </Routes>    
 
-                    <BottomBar player={player} is_active={is_active} is_paused={is_paused} setPaused={setPaused} duration={duration} current_track={current_track} pos={pos} currentDev={currentDev} setCurrentDev={setCurrentDev}  />
+                    {isLoading2 ? null : <BottomBar player={player} is_active={is_active} is_paused={is_paused} setPaused={setPaused} duration={duration} current_track={current_track} pos={pos} currentDev={currentDev} setCurrentDev={setCurrentDev}  />}
                     <PollPlayer setCurrentDev={setCurrentDev} currentDev={currentDev} setTrack={setTrack} duration={setDuration} paused={setPaused}/>            
                 </>
             )}
