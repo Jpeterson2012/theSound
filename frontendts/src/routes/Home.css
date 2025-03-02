@@ -59,7 +59,7 @@
 .removeAlbum{
   display: none;
   position: relative;
-  left: -110px;
+  left: -80px;
   /* bottom: 15px; */
   color: black;
   background: rgb(90, 210, 216);
