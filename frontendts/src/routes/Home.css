@@ -128,12 +128,14 @@
   left: 37vw;  
   line-height: 28px;  
   padding: 3px 5px;     
+  transform: scale(1);
+  animation: pulse3 2.5s infinite;
   
 }
-.addPlaylist:hover{  
+/* .addPlaylist:hover{  
   transform: scale(1);
   animation: pulse3 1.5s infinite;
-}
+} */
 
 form label {
   display: block;
@@ -355,6 +357,6 @@ form{
     left: 0;
     min-width: 10px;
     width: 80px;
-    z-index: 3;
+    
   }
 }
