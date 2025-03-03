@@ -346,10 +346,13 @@ form{
     width: 55px;
     font-size: 9px;
     margin: 2px;
+    padding: 5px 0px;
   }  
-  .dropdown-content{
+  #dropdown-content{
     position: absolute;
-    top: 5px;
-    left: 65px;
+    top: 40px;
+    left: 0;
+    min-width: 10px;
+    width: 80px;
   }
 }
