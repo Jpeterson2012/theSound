@@ -91,7 +91,7 @@ export default function BottomBar({player,is_active,is_paused, setPaused, durati
                         
                             
                         
-                        <div className="now-playing__artist2" data-direction="right" style={{display: 'flex', flexDirection: 'row', overflowX: 'hidden',whiteSpace: 'nowrap', alignItems: 'center'}}>
+                        <div className="now-playing__artist2" data-direction="right" style={{display: 'flex', flexDirection: 'row',whiteSpace: 'nowrap', alignItems: 'center'}}>
                             {current_track?.artists.map((s:any,i:number,row:any) => <p key={i} 
                             style={{color: 'black'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</p>)}                                                    
                         </div>
