@@ -72,26 +72,30 @@ export default function BottomBar({player,is_active,is_paused, setPaused, durati
     const {data: albums = []} = useGetAlbumsQuery()
     
     const navigate = useNavigate()
-    let pVol: any = "1"    
+    let pVol: any = "1"
+    let trackName = document.getElementById('now-playing__name2')!   
+    let artistName = document.getElementById('now-playing__artist2')!
+    let windowWidth = Number(sessionStorage.getItem("windowWidth"))
+    let boolVal = (trackName?.clientWidth > windowWidth || artistName?.clientWidth > windowWidth)
 
     useEffect(() => {
-
-    },[])
+    
+    },[current_track?.name])
 
     return(
         <>
             <div className='wrapper'>
             
                 <div className="main-wrapper">
-                    <div className="now-playing__side2">                        
-                        <div className="now-playing__name2" style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}><p style={{margin: '0px', padding: '0px', gap: '1rem', color: 'black'}}>{
+                    <div className="now-playing__side2" id='now-playing__side2' style={boolVal ? {alignItems: 'start'} : {alignItems: 'center'}}>                        
+                        <div className="now-playing__name2" id='now-playing__name2' style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}><p style={{margin: '0px', padding: '0px', gap: '1rem', color: 'black'}}>{
                             current_track?.name
                             }</p>                                                                                    
                         </div>
                         
                             
                         
-                        <div className="now-playing__artist2" data-direction="right" style={{display: 'flex', flexDirection: 'row',whiteSpace: 'nowrap', alignItems: 'center'}}>
+                        <div className="now-playing__artist2" id='now-playing__artist2' data-direction="right" style={{display: 'flex', flexDirection: 'row',whiteSpace: 'nowrap', alignItems: 'center'}}>
                             {current_track?.artists.map((s:any,i:number,row:any) => <p key={i} 
                             style={{color: 'black'}}>{row.length - 1 !== i ? s.name + ", " : s.name}</p>)}                                                    
                         </div>

@@ -295,20 +295,22 @@ form{
   }
   .buttonContainer{
     width: 90vw;
-    /* overflow-x: scroll; */
+    /* overflow-x: auto; */
     white-space: nowrap;
     top: 20vh;
-    left: 10vw;
+    /* left: 10vw; */
+    margin-left: 10%;
   }
   .homeButtons{
     width: fit-content;
+    padding: 10px 5px;
     font-size: 12px;
     /* overflow: hidden;     */
   }
   .albumContainer{
     top: 50vw;
     padding-top: 25px;
-    padding-bottom: 150px;            
+    padding-bottom: 200px;            
   }
   .likedSongImg{
     height: 150px;
@@ -321,6 +323,7 @@ form{
   }
   .playlistContainer{
     margin-top: 90px;
+    margin-bottom: 200px;
   }
   .filterHome button{
     margin-right: 10vw;

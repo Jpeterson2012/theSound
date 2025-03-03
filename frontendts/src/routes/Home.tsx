@@ -103,8 +103,7 @@ function Podcasts(podcasts:any){
       
       fetch(url, {
           method: 'PUT',
-          headers: headers,
-          credentials: "include",
+          headers: headers,          
           body: JSON.stringify({context_uri: a.show.uri})
       })
     }}>
@@ -134,8 +133,7 @@ function Audiobooks(audiobooks:any){
         
         fetch(url, {
             method: 'PUT',
-            headers: headers,
-            credentials: "include",
+            headers: headers,            
             body: JSON.stringify({context_uri: a.uri})
         })
       }}>
@@ -314,7 +312,8 @@ export default function Home({setIsLoading2}: any) {
 
       <div className="removePContainer" style={{width: '20px'}}>
         <button className="removePlay" id={"removePlay" + i} onClick={function handleClick(){
-          setOpensnack(true)        
+          setOpensnack(true)     
+          document.getElementById('removePlay' + i)!.style.display = 'none'   
           setTimeout(() => { deletePlaylist({pID: a.playlist_id}) },300)
           setTimeout(()=>{refetch() },400)
         }}>Remove From Library</button>

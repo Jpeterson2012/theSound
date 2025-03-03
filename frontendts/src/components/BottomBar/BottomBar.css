@@ -275,6 +275,15 @@ input[type=range]{
       max-width: 100vw;
     }
   }
+
+  @keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+  }
   
   @media only screen and (max-width: 768px),
   (max-height: 400px){
@@ -296,10 +305,13 @@ input[type=range]{
       mask: linear-gradient(180deg, transparent, white 15% 85%, transparent);
       
     }
+    #now-playing__name2{
+      animation: fadeIn 3s;
+    }
     .now-playing__artist2 p, .now-playing__name2 p{      
       font-weight: 900;
       font-size: 20px;
-      margin: 0px;
+      margin: 0px;      
       /* animation: scrollText 10s reverse linear infinite; */
     }
     .wrapper{
