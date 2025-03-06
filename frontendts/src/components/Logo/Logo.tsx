@@ -183,7 +183,7 @@ export default function Logo () {
           {!isSuccess ? null :
           <div className='mainLogo'>
               <h2 className='userName'>{isSuccess ? user!.items : 'hi'}</h2>
-              <div className='u2Container' style={{backgroundColor: 'rgb(90, 210, 216)', width: '29px', height: '29px', borderRadius: '50%'}}>
+              <div className='u2Container' style={{backgroundColor: 'rgb(90, 210, 216)', width: '32px', height: '32px', borderRadius: '50%'}}>
               <h2 className='userName2'>{isSuccess ? user!.items[0] : 'hi'}</h2>
               </div>
               
