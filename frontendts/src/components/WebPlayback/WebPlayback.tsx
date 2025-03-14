@@ -2,7 +2,7 @@
 //Fix current track session variable situation at some point
 import { useState, useEffect } from 'react';
 import './WebPlayback.css'
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import Home from '../../routes/Home';
 import Album from '../../routes/Album';
 import Playlist from '../../routes/Playlist.tsx';
@@ -49,7 +49,13 @@ export default function WebPlayback() {
     const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)})         
     const navigate = useNavigate()    
 
-    useEffect(() => { 
+    useEffect(() => {        
+        sessionStorage.setItem("token", "something")
+        // document.addEventListener('beforeunload', () => {
+        //     sessionStorage.clear()
+        //     localStorage.clear()
+        //     return ''
+        // })
 ///////////////////////////Create Spotify web player client
             const script = document.createElement("script");
             script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -58,7 +64,7 @@ export default function WebPlayback() {
             const fetchToken = async () => {
                 try{
                     const response = await fetch(import.meta.env.VITE_URL + "/token", {credentials: "include"})
-                    const data = await response.json()
+                    const data = await response.json()                    
                     token = data.items                
                     sessionStorage.setItem("token", data.items)    
                     }
@@ -74,9 +80,9 @@ export default function WebPlayback() {
                     catch (e) {`Error requesting access token: ${e}`}              
             },1000 * 59 * 59)            
             
-            document.body.appendChild(script);
-            
+            document.body.appendChild(script);            
             window.onSpotifyWebPlaybackSDKReady = () => {  
+                
                 
                     const player = new window.Spotify.Player({ 
                         name: 'TheSound',
@@ -158,6 +164,7 @@ export default function WebPlayback() {
                     <Route path='/album/:id' element={<Album active={is_active}  paused={is_paused} />} key={3}/>
                     <Route path='/playlist/:id' element={<Playlist active={is_active}  paused={is_paused} />} key={4}/>
                     <Route path='/artist/:id' element={<Artist paused={is_paused} />} key={5}/>
+                    <Route path='*' element={<Navigate to = "/" replace />} />
                     </Routes>    
 
                     {isLoading2 ? null : <BottomBar player={player} is_active={is_active} is_paused={is_paused} setPaused={setPaused} duration={duration} current_track={current_track} pos={pos} currentDev={currentDev} setCurrentDev={setCurrentDev}  />}

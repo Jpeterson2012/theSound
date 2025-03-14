@@ -12,6 +12,7 @@ export default function Login() {
       </div>
       <button className="home"onClick={() => {
         location.href = import.meta.env.VITE_URL + '/login'
+        sessionStorage.setItem("token", "something")
       }}>Login
         </button>
         {/* <p>Coming soon...</p> */}
