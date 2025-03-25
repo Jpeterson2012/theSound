@@ -19,6 +19,7 @@ import Loading from './components/Loading/Loading.tsx'
 //   </StrictMode>,
 // )
 let token = sessionStorage.getItem("token")
+let loading = sessionStorage.getItem("loading")
 console.log(token)
 
 createRoot(document.getElementById('root')!).render(
@@ -29,7 +30,7 @@ createRoot(document.getElementById('root')!).render(
             <Routes>
               <Route path='/' element={token ? <Navigate to = "/app" replace /> : <App />} errorElement={<ErrorPage />} />
               {/* <Route path = '/login' element={!token ? <Login /> : <Navigate to = "/app" replace />}/> */}
-              <Route path = '/loading' element={token ? <Navigate to = "/app" replace /> : <Loading />} />
+              <Route path = '/loading' element={token && loading ? <Navigate to = "/app" replace /> : <Loading />} />
               <Route path='/app/*' element={token ? <WebPlayback /> : <Navigate to = "/" replace /> } />
 
               <Route path='*' element={token ? <Navigate to = "/app" replace /> : <Navigate to = "/" replace /> }/>

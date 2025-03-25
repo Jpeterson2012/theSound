@@ -118,7 +118,7 @@ router.get('/', async (req, res) => {
                 var resp = await fetch(url, {headers})
                 var data = await resp.json()
                 
-                data.items.map(async a => {
+                data?.items?.map(async a => {
                     // values.push([a.id, JSON.stringify(a.images), a.name, a.public, JSON.stringify(a.tracks)])
                   var values = []
                   var trackInfo = []
