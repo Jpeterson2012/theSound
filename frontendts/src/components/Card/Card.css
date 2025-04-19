@@ -13,9 +13,9 @@
 
     font-size: 17px;
     color: rgb(90, 210, 216);
-    text-overflow: ellipsis;
+    /* text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: hidden; */
     
     /* display: flex;
     flex-direction: column; */
@@ -38,12 +38,18 @@ a:hover{
   width: 80%;
   height: 190px;
 }
+
+.cardName{
+  width: 100%;
+}
 p {
   color: rgb(90, 210, 216);
   font-size: 17px;
-  text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden; 
+  overflow-x: auto;
+  /* text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;  */
 } 
 @keyframes fadeIn {
   0%{
@@ -56,21 +62,31 @@ p {
 .cardArtist{
   color: rgb(90, 210, 216);
   font-weight: bold;
+  white-space: nowrap;
+  overflow-x: auto;  
+  
 }
 .mainArtistContainer2{
   display: none;
 }
+.mainArtistContainer{  
+  
+  display: flex;      
+  overflow-x: auto;
+
+}
+
+.cardArtistContainer{
+  margin: auto;
+}
 @media only screen and (max-width: 768px),
 (max-height: 400px){
   .card{
-    width: 60vw;
-    height: 0px;
-    display: flex;    
-    justify-content: center;
-    align-items: center; 
-    margin-bottom: 30px;       
+    width: 165px;
+    height: 250px;        
+    font-size: 15px;
   }
-  .cardArtist{        
+  /* .cardArtist{        
   }
   .cardImg{
     position:absolute;
@@ -94,6 +110,6 @@ p {
   .mainArtistContainer2{
     display: block;
     margin-top: 15px;
-  }
+  } */
 
 }
