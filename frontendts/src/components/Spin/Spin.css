@@ -140,19 +140,27 @@
   }
   @media only screen and (max-width: 768px){
     .svgContainer{
-      min-width: fit-content;      
-      margin-right: 0ps;
+      /* min-width: fit-content;            
+       */
+      max-width: 99vw;
+      margin-right: 0p;
       margin-left: 5vw;
+      
+      overflow-x: hidden;
     }
     .svgImage{
-      width: 200px;
-      height: 200px;
+      min-width: 185px;
+      min-height: 185px;
+      max-width: 185px;
+      max-height: 185px;
       left: 10px;
     }
     #svg1{
-      width: 215px;
-      height: 240px;
-      right: 96px;
+      min-width: 200px;
+      min-height: 225px;
+      max-width: 200px;
+      max-height: 225px;
+      right: 87px;
     }
     #svg2{
       width: 55px;

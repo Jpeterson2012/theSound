@@ -5,7 +5,9 @@
     padding-top: 20vh;
     text-align: center;
   }
-  
+  .welcome{
+    display: flex;
+  }
   @media (prefers-reduced-motion: no-preference) {
     a:nth-of-type(2) .logo {
       animation: logo-spin infinite 20s linear;
@@ -40,15 +42,17 @@
 
 @media only screen and (max-width: 768px) {
   .loginImage{
-    display: flex;
-    flex-wrap: wrap;
+    
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 96vw !important;
   }
   .intro{
-  font-size: 23px;
-  width: 135px;
+  font-size: 50px;
+  
   }
   .introImg{
-    width: 70px;
+    width: 80px;
     height: auto;
   }
 }
