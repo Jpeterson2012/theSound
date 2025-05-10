@@ -215,11 +215,11 @@ div .fade-in-imageP{
     }
     .mainImage2{
         height: auto;
-        width: 300px;
+        width: 280px;
     }
     .subsubImage{
-        height:100px;
-        width: 100px;
+        width: 95px;
+        height:95px;
     }    
     .dropdown-content2{
         position: absolute;

@@ -40,6 +40,8 @@ function returnUrl(ptracks: any){
 {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
 function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, removePTrack: any, lastSegment: any,setmodal:any,settrack: any,setsnack:any,filter_val:any) {
   let key = 0  
+  let temp2 = document.getElementById('dropdown-content2')!
+  temp2 !== null ? temp2.style.display = 'none' : null;
   return (
     userLists?.tracks?.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any) =>
 
@@ -95,14 +97,14 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
   )
 }
 
-function playlistSort(tplaylist: any, setTPlaylist: any){
+function playlistSort(tplaylist: any, setTPlaylist: any){  
   let temp: any
   return(
     <>
-    <button className="theme" onClick={function handleClick(){            
+    <button className="theme" onClick={function handleClick(){                  
       temp = tplaylist.tracks.slice()                  
       temp.sort((a:any,b:any) => a.name.localeCompare(b.name))      
-      setTPlaylist({...tplaylist, tracks: temp})
+      setTPlaylist({...tplaylist, tracks: temp})      
     }}>A-Z</button>
 
     <button className="theme" onClick={function handleClick(){ 
