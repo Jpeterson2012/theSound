@@ -50,6 +50,7 @@ export default function WebPlayback() {
     const navigate = useNavigate()    
 
     useEffect(() => {        
+        // localStorage.clear()
         sessionStorage.setItem("token", "something")
         // document.addEventListener('beforeunload', () => {
         //     sessionStorage.clear()
@@ -127,7 +128,26 @@ export default function WebPlayback() {
                         
                         sessionStorage.setItem("name", state?.track_window?.current_track?.album.name)
                         sessionStorage.setItem("current", state?.track_window?.current_track?.uri)
-                        sessionStorage.setItem("currentTrack",JSON.stringify(state?.track_window?.current_track))                                                 
+                        sessionStorage.setItem("currentTrack",JSON.stringify(state?.track_window?.current_track))                                                      
+                        
+                        let temp = localStorage.getItem("recent") ? JSON.parse(localStorage.getItem("recent")!) : {}
+                        var parts = state?.track_window?.current_track.album.uri.split(':');
+                        var lastSegment = parts.pop() || parts.pop();           
+                        let keys = Object.keys(temp)                                     
+                        
+                        temp[lastSegment] ? (
+                            parts = temp[lastSegment],
+                            delete  temp[lastSegment],
+                            temp = {[lastSegment]: parts, ...temp}) 
+                            : temp = {[lastSegment]: {name: state?.track_window?.current_track?.album.name,artists: state?.track_window?.current_track?.artists,images: state?.track_window?.current_track?.album.images}, ...temp}        
+                        // console.log(temp)
+                                
+                        // console.log(keys)     
+                        if (keys.length > 20){
+                            let lastKey: any = keys.pop()
+                            delete temp[lastKey]
+                        }   
+                        localStorage.setItem("recent", JSON.stringify(temp))                        
                     
                         player.getCurrentState().then( (state: any) => { 
                             !state ? setActive(false) : setActive(true)                            
@@ -158,7 +178,7 @@ export default function WebPlayback() {
                 <>
                     {isLoading2 ? null : <Logo />}
                     <Routes>
-                    <Route path = '/' element={<Home setIsLoading2={setIsLoading2} />} key={0}/>
+                    <Route path = '/' element={<Home setIsLoading2={setIsLoading2} paused={is_paused} />} key={0}/>
                     <Route path='/discover' element={<Discover/>} key={1} />
                     <Route path='/categories/:id' element={<Categories active={is_active}  paused={is_paused} />} key={2}/>
                     <Route path='/album/:id' element={<Album active={is_active}  paused={is_paused} />} key={3}/>

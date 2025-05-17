@@ -27,6 +27,7 @@ router.get('/', async (req, res) => {
   `user-modify-playback-state
   user-read-playback-state
   user-read-currently-playing
+  user-read-recently-played
   streaming
   user-read-email
   user-read-private
