@@ -418,13 +418,13 @@ export default function Home({setIsLoading2,paused}: any) {
     let temp2 = JSON.parse(localStorage.getItem("recent")!)        
 
     if (temp2){          
-    Object.keys(temp2).forEach((val:any) => temp.push( {"id": val,"name": temp2[val].name,"artists": temp2[val].artists,"img": temp2[val].images.filter((t: any)=>t.height == 640)[0]} ))    
+    Object.keys(temp2).forEach((val:any) => temp.push( {"id": temp2[val].id,"name": temp2[val].name,"artists": temp2[val].artists,"img": temp2[val].images.filter((t: any)=>t.height == 640)[0]} ))    
     return (
       <div style={{display: 'flex'}} >
         {temp.map((val:any,i: number) => 
         <div key={i} >        
           <a onClick={function handleClick(){
-          console.log(val.name)
+          console.log(val)
           console.log(sessionStorage.getItem("name"))
 
             let found = albums?.find((e: any) => e?.album_id === val.id)
