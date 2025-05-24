@@ -340,7 +340,7 @@ export default function BottomBar({player,is_active,is_paused, setPaused, durati
                         <img className='deviceImg' src={device} onClick={function handleClick(){      
                             refetch()
                             onOpenModal()
-                            console.log(devices)                                          
+                            // console.log(devices)                                          
                             !isFetching ? console.log(devices) : null                                                
                             }} />
 
@@ -363,7 +363,7 @@ export default function BottomBar({player,is_active,is_paused, setPaused, durati
                                     </a> 
                                 {devices.map((a:any,i:any) =>
                                     a.name === "TheSound" ? null : <a key={i} onClick={function handleClick(){
-                                        // console.log(a)
+                                        // console.log(a)                                        
                                         setCurrentDev({name: a.name, id: a.id})
                                         sessionStorage.setItem("currentContext", a.id)
                                         fetch(import.meta.env.VITE_URL + `/player/${a.id}`, {

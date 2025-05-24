@@ -28,9 +28,14 @@ export default function PollPlayer({setCurrentDev,currentDev,setTrack,duration,p
             const resp = await fetch(import.meta.env.VITE_URL + '/player',{credentials: "include"})
             const data = await resp.json()
             if (currentDev.name !== data.device.name) {
-              if (data.device.name === "TheSound") setCurrentDev({name: "TheSound", id: sessionStorage.getItem("device_id"!)})
-                else setCurrentDev({name: data.device.name, id: data.device.id})
-              sessionStorage.setItem("currentContext", "null")
+              if (data.device.name === "TheSound") {
+                setCurrentDev({name: "TheSound", id: sessionStorage.getItem("device_id"!)})
+                sessionStorage.setItem("currentContext", "null")
+              }
+                else {
+                  setCurrentDev({name: data.device.name, id: data.device.id})   
+                  sessionStorage.setItem("currentContext", data.device.id)
+                }           
             }
             if (data.is_playing === false) paused(true)
             else paused(false)
@@ -38,8 +43,8 @@ export default function PollPlayer({setCurrentDev,currentDev,setTrack,duration,p
             duration(data.item.duration_ms)
             sessionStorage.setItem("name", data.item.album.name)
             sessionStorage.setItem("current", data.item.uri)
-            sessionStorage.setItem("currentTrack",JSON.stringify(data.item))
-            sessionStorage.setItem("progress",data.progress_ms)
+            sessionStorage.setItem("currentTrack",JSON.stringify(data.item))            
+            sessionStorage.setItem("progress",data.progress_ms)            
                         
         } 
         //Checks if current device is The Sound. If not uses spotify api to get current track

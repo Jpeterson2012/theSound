@@ -20,7 +20,7 @@ import Loading from './components/Loading/Loading.tsx'
 // )
 let token = sessionStorage.getItem("token")
 let loading = sessionStorage.getItem("loading")
-console.log(token)
+
 
 createRoot(document.getElementById('root')!).render(
   <>
