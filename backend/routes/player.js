@@ -24,7 +24,7 @@ router.get('/', async(req,res) => {
             Authorization: 'Bearer ' + req.session.access_token
           }
     
-        var resp = await fetch(url, {headers})
+        var resp = await fetch(url, {headers})        
         var data = await resp.json()
         res.send({device: data.device, progress_ms: data.progress_ms, is_playing: data.is_playing, item: data.item})
     

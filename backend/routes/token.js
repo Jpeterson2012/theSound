@@ -12,15 +12,15 @@ router.get('/', function(req, res) {
     //     res.send(token)
     // })
     try{
-    var token = {items: req.session.access_token}
-    res.send(token)
+        var items = {access_token: req.session.access_token, refresh_token: req.session.refresh_token, expires_in: req.session.expires_in}
+        res.send(items)
     }
     catch(e){
         console.error(e)
     }
 })
 //Handle refresh token
-router.get('/refresh_token', async function(req, res) {
+router.post('/refresh_token', async function(req, res) {    
 
     url = 'https://accounts.spotify.com/api/token'
     try{
@@ -30,7 +30,7 @@ router.get('/refresh_token', async function(req, res) {
           }
         const body = {
             grant_type: 'refresh_token',
-            refresh_token: req.session.refresh_token
+            refresh_token: req.body.refresh_token
         }
           await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
@@ -38,9 +38,9 @@ router.get('/refresh_token', async function(req, res) {
             body: mystuff.encodeFormData(body)                        
           })
           .then(response => response.json())
-          .then(data => {            
+          .then(data => {                                                
             req.session.access_token = data.access_token
-            res.send({items: req.session.access_token})
+            res.send({token: req.session.access_token})
         })
     }
     catch(e){

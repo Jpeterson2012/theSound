@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
       if (err) throw err;
 
       var empty = result[0].Output
-      if (empty == 1) {
+      if (empty === 1) {
         sql = 'SELECT icons, c_id, name from categories'
         con.query(sql, function (err, result) {
           if (err) throw err;

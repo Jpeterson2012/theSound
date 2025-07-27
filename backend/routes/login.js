@@ -5,6 +5,7 @@
 // var express = require('express');
 // var router = express.Router();
 var mystuff = require("./AuthRoutes.js");
+const {myEmitter} = require('./callback')
 
 function generateRandomString(length) {
     let result = '';

@@ -1,48 +1,33 @@
+const { con } = require('../sql.js')
 var mystuff = require("./AuthRoutes.js");
 var express = require('express');
 var router = express.Router();
-const { con } = require('../sql.js')
 
-x = {
-  aInternal: 10,
-  aListener: function (val) {},
-  set a(val) {
-    this.aInternal = val;
-    this.aListener(val);
-  },
-  get a() {
-    return this.aInternal;
-  },
-  registerListener: function(listener) {
-    this.aListener = listener
-  }
-}
-
+const EventEmitter = require('events');
+const myEmitter = new EventEmitter()
 
 router.get('/', async (req, res) => {
 
   const body = {
       grant_type: 'authorization_code',
       code: req.query.code,
-      redirect_uri: process.env.REDIRECTURI,
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
+      redirect_uri: process.env.REDIRECTURI,                  
     }
   
   await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Accept": "application/json"
+      "Accept": "application/json",
+      'Authorization': 'Basic ' + (new Buffer.from(process.env.CLIENT_ID + ':' + process.env.CLIENT_SECRET).toString('base64'))
     },
     body: mystuff.encodeFormData(body)
   })
   .then(response => response.json())
   .then(data => {
-    process.env['access_token'] = data.access_token    
-    process.env['refresh_token'] = data.refresh_token
     req.session.access_token = data.access_token
     req.session.refresh_token = data.refresh_token
+    req.session.expires_in = data.expires_in
     
     var url = 'https://api.spotify.com/v1/me'
     const headers = {
@@ -52,24 +37,10 @@ router.get('/', async (req, res) => {
     .then(response => response.json())
     .then(data => {
       // var temp = data.display_name.replace(/\W/g,'')
-      // console.log(data.display_name)
+       
       process.env['username'] = data.display_name.replace(/\W/g,'')
-      req.session.username = data.display_name.replace(/\W/g,'')
-      // console.log(req.session.username)
-
+      req.session.username = data.display_name.replace(/\W/g,'')      
       
-      
-      // var sql = `CREATE DATABASE IF NOT EXISTS ${temp}`
-      // con.query(sql, (err) => {
-      //   if (err) throw err;
-      //   // console.log(`Database for user ${data.display_name} created!`)
-      // })
-      // sql = `USE ${temp}`
-      // // process.env['DB'] = temp
-      // con.query(sql, (err) => {
-      //   if (err) throw err;
-      //   // console.log('Database selected!')
-      // })
       // sql = "CREATE TABLE IF NOT EXISTS ualbums (id INT AUTO_INCREMENT PRIMARY KEY, album_type VARCHAR(30), total_tracks SMALLINT(2), album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, copyrights MEDIUMTEXT, label_name VARCHAR(75))"
       sql = `CREATE TABLE IF NOT EXISTS ${req.session.username}albums (id INT AUTO_INCREMENT PRIMARY KEY, album_type VARCHAR(30), total_tracks SMALLINT(2), album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, copyrights MEDIUMTEXT, label_name VARCHAR(75))`
       con.query(sql, (err) => {
@@ -94,26 +65,25 @@ router.get('/', async (req, res) => {
         if (err) throw err;
         // console.log('Category table created!')
       })
-      // sql = 'select exists (select 1 from ualbums) AS Output'
+      
       sql = `select exists (select 1 from ${req.session.username}albums) AS Output`
       con.query(sql, function(err, result) {
           if (err) throw err;
           var empty = result[0].Output
           //If table already has data read relevent data and send to front end
           if (empty !== 1) {
-            res.redirect('http://localhost:5173/loading');
+            res.redirect('http://localhost:5173/loading');            
             sql = `INSERT INTO users (username) values ("${req.session.username}")`
             con.query(sql, (err) => {
               if (err) throw err;
               // console.log('User Album table created!')
             })
 
-            const getStuff = async() => {
+            const getStuff = async () => {
               //Fetch user's saved playlists
               var pages = 0
               while(true) {
                   
-
                 url = `https://api.spotify.com/v1/me/playlists?offset=${pages}&limit=5`
                 var resp = await fetch(url, {headers})
                 var data = await resp.json()
@@ -129,7 +99,7 @@ router.get('/', async (req, res) => {
   
                   data2.items.map(a => {a.track ? trackInfo.push(a.track) : null})
                   trackJSON.items = trackInfo
-                  console.log(a.name)
+                  
                   values.push([a.id, JSON.stringify(a.images), a.name.replace(/\W/g,' '), a.public, a.uri, JSON.stringify(trackJSON)])
                   // var sql = "INSERT INTO uplaylists (playlist_id, images, name, public, uri, tracks) VALUES ?"
                   var sql = `INSERT INTO ${req.session.username}playlists (playlist_id, images, name, public, uri, tracks) VALUES ?`
@@ -137,10 +107,7 @@ router.get('/', async (req, res) => {
                       if (err) throw err;
                       console.log("Number of playlists inserted: " + result.affectedRows);
                   })
-                    
-                    
-                    //Gearsofwar3!
-                    
+                                                                                
                 })
                 
                 pages += 5
@@ -149,9 +116,7 @@ router.get('/', async (req, res) => {
                     console.log("done")
                     break
                 } 
-              }
-
-              
+              }              
               
               var pages = 0
 
@@ -192,36 +157,35 @@ router.get('/', async (req, res) => {
                   pages += 30
                  
                   if(data.next == null) {
-                    // console.log('FINISHED!')
-                    x.a = 42
-                    
-                      break
+                    console.log('FINISHED!')                                        
+                    break
                   }
               }
 
             }
-            getStuff()
-            console.log('FINISHED!')
+            getStuff().then(() => {                            
+              myEmitter.emit('loaded')
+            })                        
           }
-          else res.redirect('http://localhost:5173/app/');
+          else {                                                
+            res.redirect('http://localhost:5173/app');
+          }
 
       })
     })
     .catch(error => {
       throw error
-    });
-    
+    });    
     
   });
-
-
-
-})
-router.get('/emit', async (req, res) => {
-  x.registerListener(function(val) {
-    res.send('hello')
-  }) 
 })
 
-module.exports = router;
+router.get('/emit', (req,res) => {
+  myEmitter.on('loaded', () => {    
+    res.send({"status": "done"})
+  })
+})
+
+
+module.exports = router
   
