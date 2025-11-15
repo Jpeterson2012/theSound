@@ -5,14 +5,14 @@
                 "authProtocol": "default",
                 "enableSsl": "Disabled"
             },
+            "ssh": "Disabled",
             "previewLimit": 50,
             "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "Test",
-            "database": "bookshop",
-            "username": "root",
-            "password": "Gearsofwar3!"
+            "name": "Main",
+            "database": "spotify",
+            "username": "jpeterson93"
         }
     ]
 }

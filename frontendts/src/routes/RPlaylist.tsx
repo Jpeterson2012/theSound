@@ -83,18 +83,18 @@ function playlistSort(tplaylist: any, setTPlaylist: any){
 
 export default function RPlaylist({lastSegment}: any){
   const [ptracks, setpTracks] = useState<any>([]);
-  const [total, setTotal] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [loading2, setLoading2] = useState(true)
-  const [modal, setModal] = useState(false)
-  const[trackData, setTrackData] = useState(null)
-  const[snack, setSnack] = useState(false)
-  const [rplay, setRplay] = useState(true)
+  const [total, setTotal] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
+  const [modal, setModal] = useState(false);
+  const[trackData, setTrackData] = useState(null);
+  const[snack, setSnack] = useState(false);
+  const [rplay, setRplay] = useState(true);
   const [filter_val, setFilter_val] = useState<string>('')
 
-  const {data: playlists = [], refetch} = useGetPlaylistsQuery()
-  let found = playlists?.find((e: any) => e?.playlist_id === lastSegment)
-  const [deletePlaylist] = useDeletePlaylistMutation()
+  const {data: playlists = [], refetch} = useGetPlaylistsQuery();
+  let found = playlists?.find((e: any) => e?.playlist_id === lastSegment);
+  const [deletePlaylist] = useDeletePlaylistMutation();
 
   var liked_uris: any = []
 
@@ -107,8 +107,8 @@ export default function RPlaylist({lastSegment}: any){
     //   setLoading(false)
     // }
     if (sessionStorage.getItem("cplaylist") !== undefined && sessionStorage.getItem("cplaylist")) {      
-      setpTracks(JSON.parse(sessionStorage.getItem("cplaylist")!))
-      setLoading(false)
+      setpTracks(JSON.parse(sessionStorage.getItem("cplaylist")!));
+      setLoading(false);
     }
     else{
       const fetchpTracks = async () => {
@@ -119,23 +119,33 @@ export default function RPlaylist({lastSegment}: any){
           headers: {"Content-Type":"application/json"},
         })
         setLoading(false)
-        let reader = resp.body!.getReader()
-        let result
-        let temp
-        let a = []
-        let decoder = new TextDecoder('utf8')
-        while(!result?.done){
-          result = await reader.read()
-          if (!result?.done){
+        
+        const reader = resp?.body?.getReader();
+        const decoder = new TextDecoder();
+        let buffer: any = "";
+
+        while (true) {
+          const { value, done }: any = await reader?.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, {stream: true});          
+
+          buffer += chunk;
+
+          let lines = buffer.split("\n");
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (line.trim() === "") continue;
+
+            const obj = JSON.parse(line);
+
+            console.log(obj.items);
             
-          let chunk = decoder.decode(result.value)
-          console.log(chunk ? JSON.parse(chunk) : {})                
-          !total && setTotal(JSON.parse(chunk).total),
-          temp = JSON.parse(chunk).items,
-          a.push(...temp),  
-          setpTracks([...a])                
+            !total && setTotal(obj.total),
+            setpTracks((prev: []) => [...prev, ...obj.items]);
           }
-        }      
+        }
   
       }
       fetchpTracks()

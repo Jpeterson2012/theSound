@@ -24,8 +24,13 @@ router.get('/', async(req,res) => {
             Authorization: 'Bearer ' + req.session.access_token
           }
     
-        var resp = await fetch(url, {headers})        
+        var resp = await fetch(url, {headers})   
+        if (resp.status === 204 || resp.status === 202) {
+            console.log('No active playback');
+            return;
+        }     
         var data = await resp.json()
+        console.log('Active playback')
         res.send({device: data.device, progress_ms: data.progress_ms, is_playing: data.is_playing, item: data.item})
     
         

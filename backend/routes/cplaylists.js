@@ -55,7 +55,8 @@ router.get('/:id', async (req,res) => {
         temp.name = result[i].name
         temp.public = result[i].public
         temp.uri = result[i].uri
-        var temp2 = JSON.parse(result[i].tracks)                
+        //var temp2 = JSON.parse(result[i].tracks)                
+        var temp2 = result[i].tracks                
         
         var temp3 = []
         temp2 === null ? null : temp2.items?.map(a => {

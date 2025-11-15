@@ -19,6 +19,8 @@ export default function Categories() {
     const [loading, setLoading] = useState(false)    
 
     const {is_active, playerState} = useContext(UsePlayerContext);
+
+    const [colors, setColors] = useState<any>([]);
     
     useEffect (() => {
         if (sessionStorage.getItem("ref_id") === lastSegment) {
@@ -30,7 +32,11 @@ export default function Categories() {
                 const resp = await fetch(import.meta.env.VITE_URL + `/cplaylists/${lastSegment}`, {credentials: "include"})
                 const data = await resp.json()
                 setLoading(false)
-                setClists(data)                
+                setClists(data)                 
+                
+                for (let i = 0; i < data.length; i++) {
+                    setColors((prev: any) => [...prev, randColor()])                    
+                }                
             }
             fetchcPlaylists()
         }
@@ -48,7 +54,7 @@ export default function Categories() {
             sessionStorage.setItem("cplaylist", JSON.stringify(a.tracks))
             navigate(`/app/playlist/${lastSegment}`)
         }}>
-            <div className="catCard" style={{background: randColor()}}>
+            <div className="catCard" style={{background: colors[index]}}>
 
                 <img className="cCardImg" src={a.images.map((s: any) => s.uri)} alt="Avatar"/>
                 <div className="container" style={{display: 'flex', justifyContent: 'center'}}>

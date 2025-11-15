@@ -288,7 +288,7 @@ export default function Home({setIsLoading2}: any) {
     .map((album: any, index:any) =>
       <div key={index}>
 
-        <div className="removeContainer" style={{width: '20px'}}>
+        <div className="removeContainer" style={{width: '20px', position: 'relative'}}>
 
           <button className="removeAlbum" id={"removeAlbum" +  index} onClick={function handleClick(){
             setOpensnack(true)        
@@ -336,7 +336,7 @@ export default function Home({setIsLoading2}: any) {
             {row.map((item: any, itemIndex: any) => (
               <div key={itemIndex} className="item">
                 
-                <div className="removeContainer" style={{width: '20px'}}>
+                <div className="removeContainer" style={{width: '20px', position: 'relative'}}>
                   <button className="removeAlbum" id={"removeAlbum" +  (rowIndex * 10) + itemIndex} onClick={function handleClick(){
                     setOpensnack(true)        
                     document.getElementById('removeAlbum' + rowIndex * itemIndex + itemIndex)!.style.display = 'none'

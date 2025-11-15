@@ -20,11 +20,13 @@ export default function Artist() {
 
   const {playerState} = useContext(UsePlayerContext);
 
-  const projectTypes = {"appears_on": "Appears On", "album": "Albums", "single": "Singles", "compilation": "Compilations"}
+  //const projectTypes = {"appears_on": "Appears On", "album": "Albums", "single": "Singles", "compilation": "Compilations"}
+  const projectTypes = {"album": "Albums", "single": "Singles", "compilation": "Compilations"}
 
   useEffect (() => {
-    setUrl(id)
-    lastSegment! !== id ? setArtists2([]): null
+    setUrl(id);
+    lastSegment! !== id ? setArtists2([]): null;
+
     const fetchArtist = async () => {
       try {
         var temp = await fetch(import.meta.env.VITE_URL + `/artists/${lastSegment}`,{credentials: "include"})
@@ -37,11 +39,11 @@ export default function Artist() {
       catch (err) {}
     }
     const assignArtists = async () => {      
-      const tempArtists = await fetchArtist()
-      setLoading(false)
-      setArtists(tempArtists)      
+      const tempArtists = await fetchArtist();
+      setLoading(false);
+      setArtists(tempArtists);      
     }
-    assignArtists()    
+    assignArtists();    
 
   //   const fetchArtist2 = async () => {
   //     try {
@@ -68,27 +70,34 @@ export default function Artist() {
         method: 'GET',
         credentials: "include",
         headers: {"Content-Type":"application/json"},
-      })
-      setLoading2(false)
-      let reader = resp.body!.getReader()
-      let result
-      let temp
-      let a = []
-      let decoder = new TextDecoder('utf8')
-      while(!result?.done){
-        result = await reader.read()
-        if (!result?.done){
-        let chunk = decoder.decode(result.value)
-        // console.log(chunk ? JSON.parse(chunk) : {})
-        // console.log('\n')                    
-        temp = JSON.parse(chunk).albums.items,
-        a.push(...temp),  
-        // a.push(...artists2),
-        setArtists2([...a])
-        }      
+      });
+
+      setLoading2(false);
+      const reader = resp?.body?.getReader();
+      const decoder = new TextDecoder();
+      let buffer: any = "";
+
+      while (true) {
+        const { value, done }: any = await reader?.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, {stream: true});          
+
+        buffer += chunk;
+
+        let lines = buffer.split("\n");
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          if (line.trim() === "") continue;
+
+          const obj = JSON.parse(line);
+                    
+          setArtists2((prev: []) => [...prev, ...obj.music]);
+        }
       }
     }
-    fetchArtist2()
+    fetchArtist2();
     // console.log(artists2)     
   }, [id]);
   

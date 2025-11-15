@@ -16,7 +16,14 @@ const track: any = {
         { name: "" }
     ],
     uri: ""
-}
+};
+
+const intialPlayerState = {
+    current_track: track,
+    is_paused: false,
+    duration: 0,
+    pos: 0
+};
 
 function stateUpdates(state: any, setPlayerState: any){
     console.log('hi')      
@@ -50,16 +57,38 @@ function stateUpdates(state: any, setPlayerState: any){
     }
 }
 
+function transferPlayback(device_id: string, accessToken: string) {
+  fetch("https://api.spotify.com/v1/me/player", {
+    method: "PUT",
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      device_ids: [device_id],
+      play: true,
+    })
+  });
+}
+
+
 export const usePlayer = () => {
-    const [player, setPlayer] = useState(); 
-    const [playerState, setPlayerState] = useState({current_track: track, is_paused: false, duration: 0, pos: 0})                   
+    const [player, setPlayer] = useState<any>(null); 
+    const [playerState, setPlayerState] = useState(intialPlayerState)                   
     const [is_active, setActive] = useState(false);                    
 
-    const access_token = useAuth()
+    const access_token = useAuth();
+
+    const resetPlayer = async () => {    
+        await player.disconnect();
+        setPlayer(null);
+        setPlayerState(intialPlayerState);
+        setActive(false);  
+    };
 
     useEffect(() => {
-        if(!access_token) return        
-
+        if(!access_token) return;
+        
         const debUpdate = throttle(stateUpdates, 500);
 
         const script = document.createElement("script");
@@ -73,7 +102,7 @@ export const usePlayer = () => {
                 getOAuthToken: (cb: any) => { cb(access_token); },
                 volume: 1,                              
             });
-            setPlayer(player);                    
+            setPlayer(player);                                
             
             player.addListener('ready', ({ device_id }:any) => {
                 console.log('Ready with Device ID', device_id);
@@ -105,8 +134,8 @@ export const usePlayer = () => {
             }))
                                                     
             player.connect();                                    
-        };
+        };    
     }, [access_token]);
     
-    return {player, playerState, setPlayerState, is_active};
+    return {player, playerState, setPlayerState, is_active, resetPlayer};
 }

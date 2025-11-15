@@ -45,7 +45,8 @@ router.get('/playlists', async (req, res) => {
                 temp.name = result[i].name
                 temp.public = result[i].public
                 temp.uri = result[i].uri
-                var temp2 = JSON.parse(result[i].tracks)                
+                //var temp2 = JSON.parse(result[i].tracks)                
+                var temp2 = result[i].tracks                
                 
                 var temp3 = []
                 temp2 === null ? null : temp2.items?.map(a => {
@@ -94,7 +95,7 @@ router.get('/liked', async (req, res) => {
     function getLiked(){        
         var sql = `select album_id, images, duration, track_id, name, artists from ${req.session.username}liked`
         con.query(sql, function (err, result) {
-            if (err) throw e
+            if (err) throw err
 
             var items = []
             for (let i = 0; i < result.length; i++){

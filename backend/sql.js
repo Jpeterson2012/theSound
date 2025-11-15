@@ -1,9 +1,9 @@
-var mysql = require('mysql')
+var mysql = require('mysql2')
 var con = mysql.createConnection({
   host: process.env.HOST,
   user: process.env.DBUSER,
   password: process.env.PASSWORD,
-  database: process.env.DB
+  database: process.env.DB,
   //Once WebPlayback route is finished on frontend above code will work
   //DB name is defined in users.js
   // database: 'zerogravity124'

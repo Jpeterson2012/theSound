@@ -26,7 +26,7 @@ export default function WebPlayback() {
   const player = usePlayer()    
 
   useEffect(() => {            
-    if (!player.player) return          
+    if (!player.player) return;      
     //localStorage.clear()        
     // document.addEventListener('beforeunload', () => {
     //     sessionStorage.clear()
@@ -54,9 +54,9 @@ export default function WebPlayback() {
   return (
     <>
       {!isLoading && (
-        <>
-          {!isLoading2 && <Logo />}                    
+        <>                              
           <UsePlayerContext.Provider value={{ ...player }}>
+            {!isLoading2 && <Logo />}
             <Routes>                                              
               <Route path = '/' element={<Home setIsLoading2={setIsLoading2} />} key={0}/>
               <Route path='/discover' element={<Discover />} key={1} />

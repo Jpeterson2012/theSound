@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Spin3 } from "../components/Spin/Spin";
 import Card from "../components/Card/Card";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll";
+import { spotifyRequest } from '../utils.ts';
 
 function customRender(name: any, item: any){
     return (
@@ -44,33 +45,37 @@ export default function Discover() {
             setLoading(false)
         }
         else {
-            const fetchCategories = async () => {
-                const resp = await fetch(import.meta.env.VITE_URL + '/categories', {credentials: "include"})
-                const data = await resp.json()
-                setAlbums(data.hipster)
-                setCategories(data.categories)
-                // console.log(data)
-                sessionStorage.setItem("categories", JSON.stringify(data))
-                setLoading(false)
+            const fetchCategories = async () => {      
+                try{
+                    const resp = await spotifyRequest('/categories');
+                    const data = await resp.json();
+                    setAlbums(data.hipster);
+                    setCategories(data.categories);                    
+                    sessionStorage.setItem("categories", JSON.stringify(data));
+                    setLoading(false);
+                }
+                catch (e){
+                    console.error(e);
+                }                          
             }
-            fetchCategories()
+            fetchCategories();
 
             const fetchDiscover = async () => {
-                try {
-                    var temp = await fetch(import.meta.env.VITE_URL + '/discover', {credentials: "include"})
-                        .then((res) => {
-                            return res.json();
-                        }).then((data) => {return data})
-                            return temp
+                try {                    
+                    const resp = await spotifyRequest('/discover');
+                    const data = await resp.json();
+                    return data;
                 }
-                catch (err) {}
+                catch (err) {
+                    console.error(err);                    
+                }
             }
             const assignDiscover = async () => {
-                const tempDiscover = await fetchDiscover()
-                setReleases(tempDiscover.releases)                                    
-                sessionStorage.setItem("releases", JSON.stringify(tempDiscover.releases))                        
+                const tempDiscover = await fetchDiscover();
+                setReleases(tempDiscover.releases);                                    
+                sessionStorage.setItem("releases", JSON.stringify(tempDiscover.releases));                        
             }
-            assignDiscover()
+            assignDiscover();
         }
 
     }, []);

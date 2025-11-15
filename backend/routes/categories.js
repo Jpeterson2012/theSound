@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     var resp = await fetch(url, {headers})
     var data = await resp.json()
     var values = []
-    data.albums.items.map(a => values.push({album_id: a.id, images: a.images, name: a.name, artists: a.artists}))
+    data?.albums?.items.map(a => values.push({album_id: a.id, images: a.images, name: a.name, artists: a.artists}))
     main.hipster = values
     
 

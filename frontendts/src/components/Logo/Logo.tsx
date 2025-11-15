@@ -3,12 +3,14 @@ import 'react-responsive-modal/styles.css';
 import { useGetUserQuery,useGetAlbumsQuery, useGetPlaylistsQuery } from '../../App/ApiSlice';
 import { useNavigate } from 'react-router-dom'
 import { Modal } from 'react-responsive-modal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Track from '../Track/Track';
 import escape from '../../images/escape.jpg'
 import search from '../../images/search.png'
 import space from '../../images/music.gif'
 import logo from '../../images/logo.png'
+import { usePlayer } from '../.././hooks/usePlayer.ts';
+import UsePlayerContext from '../.././hooks/PlayerContext.tsx';
 
 function getTracks(ptracks: any) {
     var key = 0
@@ -123,6 +125,9 @@ export default function Logo () {
   const onOpenModal = () => {setOpen(true)};
   const onCloseModal = () => {setOpen(false); setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0};
 
+  //const {resetPlayer} = usePlayer();
+  const {resetPlayer} = useContext(UsePlayerContext);
+
   const fetchSearch = async () => {        
     try {
       var temp = fetch(import.meta.env.VITE_URL + `/search/${(document.getElementById("searchTerm") as HTMLInputElement).value},${counter}`,{credentials: "include"})
@@ -174,16 +179,31 @@ export default function Logo () {
       default:
         setHtml(getTracks(tracks))
     }
-  }, [tracks])
+  }, [tracks]);
 
   return(
     <>
       {isSuccess &&
       
         <div className='mainLogo'>
-          <h2 className='userName'>{isSuccess ? user!.items : 'hi'}</h2>
+          <h2 
+            className='userName' 
+            style={{cursor: 'pointer'}} 
+            onClick={() => {
+              resetPlayer();
+              navigate('/', {replace: true});              
+            }}
+          >
+            {isSuccess ? user!.items : 'hi'}
+          </h2>
           <div className='u2Container' style={{backgroundColor: 'rgb(90, 210, 216)', width: '32px', height: '32px', borderRadius: '50%'}}>
-            <h2 className='userName2'>{isSuccess ? user!.items[0] : 'hi'}</h2>
+            <h2 
+              className='userName2' 
+              style={{cursor: 'pointer'}} 
+              //onClick={() => handleLogout(navigate)}
+            >
+              {isSuccess ? user!.items[0] : 'hi'}
+            </h2>
           </div>          
 
           <h2 className='navIcon1' onClick={function handleClick(){
