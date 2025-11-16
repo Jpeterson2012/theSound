@@ -38,9 +38,15 @@ router.post('/refresh_token', async function(req, res) {
             body: mystuff.encodeFormData(body)                        
           })
           .then(response => response.json())
-          .then(data => {                                                
-            req.session.access_token = data.access_token
-            res.send({token: req.session.access_token})
+          .then(data => {             
+            console.log(data)                                   
+            req.session.access_token = data.access_token;            
+            req.session.expires_in = data.expires_in;
+            
+            res.send({
+                access_token: req.session.access_token,                
+                expires_in: req.session.expires_in,
+            });
         })
     }
     catch(e){

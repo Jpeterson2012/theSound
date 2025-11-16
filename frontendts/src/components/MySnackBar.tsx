@@ -1,7 +1,7 @@
 import Snackbar from "@mui/material/Snackbar";
 import { useState } from "react";
 
-function MySnackbar({state,setstate,message}: any){
+function MySnackbar({state,setstate,message}: any) {
   const [open, setOpen] = useState(state);    
 
   const handleClose = (event:any, reason:any) => {
@@ -11,7 +11,8 @@ function MySnackbar({state,setstate,message}: any){
     }
 
     setOpen(false);
-    setstate(false)
+
+    setstate(false);
   };    
 
   return (
@@ -42,4 +43,4 @@ function MySnackbar({state,setstate,message}: any){
   );
 };
   
-export default MySnackbar
+export default MySnackbar;

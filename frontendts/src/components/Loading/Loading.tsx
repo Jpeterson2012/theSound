@@ -21,6 +21,7 @@ export default function Loading () {
 
                 <div className="noot-8">&#9839;</div>                                        
             </div>
+            
             <div className='loadingSpin'>{Spin3()}</div>                
         </div>
     )

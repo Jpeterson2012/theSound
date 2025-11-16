@@ -13,13 +13,14 @@ import MySnackbar from "../components/MySnackBar.tsx";
 import dots from '../images/dots.png'
 import EditPlaylist from '../components/EditPlaylist/EditPlaylist.tsx';
 import { filterTracks } from "../components/filterTracks.tsx";
+import { spotifyRequest } from '../utils.ts';
 
 export default function UAlbum() {
   const navigate = useNavigate()
   var parts = window.location.href.split('/');
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash    
   const [isLoading, setIsLoading] = useState(true)
-  var zip = JSON.parse(sessionStorage.getItem("artist")!).map(function(e: any,i: number){
+  var zip = JSON.parse(sessionStorage.getItem("artist")!).map((e: any,i: number) => {
     return [e, JSON.parse(sessionStorage.getItem("artist_id")!)[i]]
   })
 
@@ -61,50 +62,57 @@ export default function UAlbum() {
         : ( setTAlbum(JSON.parse(sessionStorage.getItem("ualbum")!)), setArtists(JSON.parse(sessionStorage.getItem("uartist")!)) )            
     }
       
-    singleAlbum !== undefined ? singleAlbum![0].artists?.map((a:any) => artistss.push(a.id)) : null
+    singleAlbum !== undefined && singleAlbum![0]?.artists?.map((a:any) => artistss.push(a.id));
           
     const fetchArtists = async () => {
-      try {
-        var temp = await fetch(import.meta.env.VITE_URL + `/tracks/artists`,{
-          method: 'POST',
-          headers: {"Content-Type":"application/json"},
-          credentials: "include",
-          body: JSON.stringify(artistss)
-        })
+      try {        
+        const temp = await spotifyRequest(`/tracks/artists`, "POST", {body: JSON.stringify(artistss)})
           .then((res) => {                
             return res.json();
-          }).then((data) => {return data})
-            return temp
+          }).then((data) => {return data});
+
+        return temp;
+      } catch (err) {
+        console.log(err);
       }
-      catch (err) {console.log(err)}
-    }
+    };
+
     const assignArtists = async () => {            
-      const tempArtists = await fetchArtists()
-      sessionStorage.setItem("uartist",JSON.stringify(tempArtists))                                          
-      setArtists(tempArtists)                            
-    }
-    assignArtists()
+      const tempArtists = await fetchArtists();
+
+      sessionStorage.setItem("uartist",JSON.stringify(tempArtists));
+
+      setArtists(tempArtists);                            
+    };
+
+    assignArtists();
 
     //This fixes render bug where fetch doesn't activate when clicking on currently playing album
   }, [sessionStorage.getItem("image"),asuccess]);
     
   const listItems2 = talbum[0]?.tracks?.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any,i:any) =>         
     <div className="listContainer" key={i}>                
-
       <div className="removeContainer3" id="removeContainer3">
+        <button className="removeAlbum3" onClick={() => {     
+          let temp = {images: talbum![0].images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists} ;
 
-        <button className="removeAlbum3" onClick={function handleClick(){     
-          let temp = {images: talbum![0].images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists}                            
-          setTrackData(temp)
-          setModal(true)               
-        }}>Edit Playlists</button>
-        `<img src={dots} className="removeImg2" onClick={function handleClick(){
-          let temp = {images: talbum![0].images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists}                            
-          setTrackData(temp)
-          setModal(true)
+          setTrackData(temp);
+
+          setModal(true);               
+        }}>
+          Edit Playlists
+        </button>
+
+        `<img src={dots} className="removeImg2" onClick={() => {
+          let temp = {images: talbum![0].images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists} ;
+
+          setTrackData(temp);
+
+          setModal(true);
         }}/>            
 
       </div>
+
       <Track 
         uri={`spotify:album:${talbum[0]?.album_id}`}
         name={t.name}
@@ -116,64 +124,84 @@ export default function UAlbum() {
         paused={playerState.is_paused}
       />
     </div>
-  )
+  );
   
   return (
     <>      
         <>          
           <div className="topDiv">
-          <h2 style={{fontSize: '30px'}} >{talbum[0]?.name}</h2>
-            
-          {/* Spin Component import now instead of prop */}
-          {Spin(is_active,playerState.is_paused,sessionStorage.getItem("image")!,null)}
-                      
-          <h2 className="artistName">{zip.map((artist: any,index: number, row: any) =>
-            <a key={index}  onClick={function handleClick() {
-              navigate(`/app/artist/${artist[1]}`)
-            }}>{row.length - 1 !== index ? artist[0] + ", " : artist[0]}</a>             
-          )}</h2>
+            <h2 style={{fontSize: '30px'}} >{talbum[0]?.name}</h2>
+              
+            {/* Spin Component import now instead of prop */}
+            {Spin(is_active,playerState.is_paused,sessionStorage.getItem("image")!,null)}
+                        
+            <h2 className="artistName">
+              {zip.map((artist: any,index: number, row: any) =>
+                <a 
+                  key={index}  
+                  onClick={() => {
+                    navigate(`/app/artist/${artist[1]}`);
+                  }}
+                >
+                  {row.length - 1 !== index ? artist[0] + ", " : artist[0]}
+                </a>             
+              )}
+            </h2>
 
-          <div className="albumDescription">
-            <div className="innerDescription">
-              <h5 className="desc1">{talbum[0]?.album_type === 'single' && talbum[0]?.total_tracks > 1 ? 'EP' :talbum[0]?.album_type.toUpperCase() } &#8226;</h5>
-              <h5>{talbum[0]?.tracks.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length + " Song(s)" }</h5>              
+            <div className="albumDescription">
+              <div className="innerDescription">
+                <h5 className="desc1">{talbum[0]?.album_type === 'single' && talbum[0]?.total_tracks > 1 ? 'EP' :talbum[0]?.album_type.toUpperCase() } &#8226;</h5>
+
+                <h5>{talbum[0]?.tracks.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length + " Song(s)" }</h5>              
+              </div>
+
+              {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
+
+              {artists?.images?.map((a: any,i:any) => <img key={i} className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
+
+              <p 
+                id="addAlbum" 
+                style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} 
+                onClick={(e) => {
+                  const el = e.target as HTMLElement;
+
+                  setSnack(true);
+
+                  el.style.transform = 'scale(1)';
+
+                  el.style.animation = 'pulse3 linear 1s';
+
+                  setTimeout(()=>{
+                    el.style.removeProperty('animation');
+
+                    el.style.removeProperty('transform');
+                  }, 1000);                    
+
+                  if (!singleAlbum!.length){                    
+                    setTimeout (() => {
+                      addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, 
+                        release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name}) 
+                    },1100);                    
+                  } else {                                        
+                    setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100);                                        
+                  }                  
+                }}
+              >
+                {!singleAlbum!.length ? "+" : "✓"}
+              </p>
+              
             </div>
 
-            {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
-
-            {artists?.images?.map((a: any,i:any) => <img key={i} className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}                
-            <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
-              setSnack(true)
-              let temp2 = document.getElementById('addAlbum')!
-              temp2.style.transform = 'scale(1)'
-              temp2.style.animation = 'pulse3 linear 1s'
-              setTimeout(()=>{
-                temp2.style.removeProperty('animation')
-                temp2.style.removeProperty('transform')
-              }, 1000)                    
-
-              if (!singleAlbum!.length){                    
-                setTimeout (() => {
-                  addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, 
-                    release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name}) 
-                },1100)                    
-              }
-              else{                                        
-                setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100)                                        
-              }                  
-
-            }}>{!singleAlbum!.length ? "+" : "✓"}</p>
-            
-          </div>
-          {filterTracks(setFilter_val)}              
-            
+            {filterTracks(setFilter_val)}                          
           </div>
           
           <div className="tdContainer">
             <div style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
               <span className="uTitle">Title</span>
+
               <span className="uTitle2">Duration</span>
             </div>
+
             {listItems2}
           </div>
           
@@ -182,15 +210,19 @@ export default function UAlbum() {
           </div>
           
           <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {talbum[0]?.release_date}</h5>
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ talbum[0]?.copyrights[0]?.text} </h5>
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {talbum[0]?.label_name}</h5>
-          <p style={{marginBottom: '150px'}}></p>
 
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ talbum[0]?.copyrights[0]?.text} </h5>
+
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {talbum[0]?.label_name}</h5>
+
+          <p style={{marginBottom: '150px'}}></p>
         </>
       
       <ButtonScroll />
+
       {modal && <EditPlaylist track={trackData} boolVal={modal} setbool={setModal} setsnack={setSnack} />}
+
       {snack && <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>}
     </>
-  )
-}
+  );
+};

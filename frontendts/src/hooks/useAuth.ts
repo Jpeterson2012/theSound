@@ -1,54 +1,75 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
+import { spotifyRequest } from '../utils';
 
 export default function useAuth(){
-    const [accessToken, setAccessToken] = useState()
-    const [refreshToken, setRefreshToken] = useState()
-    const [expiresIn, setExpiresIn] = useState(0)
+    const [auth, setAuth] = useState({
+        access_token: null,
+        refresh_token: null,
+    });
+    const timeoutRef = useRef<any>(null);    
 
-    useEffect(() => {                                            
-        const fetchToken = async () => {
-            try{
-                const response = await fetch(import.meta.env.VITE_URL + "/token", {credentials: "include"})
-                const data = await response.json()           
+    const tokenManager = async () => {
+        try{                
+            const response = await spotifyRequest("/token");
+            const data = await response.json();
+            
+            setAuth({
+                access_token: data.access_token,
+                refresh_token: data.refresh_token
+            });                                   
+            
+            sessionStorage.setItem("token", data.access_token);                
 
-                setAccessToken(data.access_token)                
-                setRefreshToken(data.refresh_token)                
-                setExpiresIn(data.expires_in)                                         
-                
-                sessionStorage.setItem("token", data.access_token)    
-            }
-            catch(e){
-                console.log(`Error requesting access token: ${e}`)
-                window.location.href = '/'
-            }                
+            scheduleRefresh(data.expires_in, data.refresh_token);
         }
+        catch(e){
+            console.error(`Error requesting access token: ${e}`);
+            //window.location.href = '/';
+            clearTimeout(timeoutRef.current);
 
-        fetchToken()
-    }, []);
+            timeoutRef.current = setTimeout(tokenManager, 5000);
+        }
+    };
+
+    const scheduleRefresh = (expires: any, refresh: any) => {
+        clearTimeout(timeoutRef.current);
+
+        const refreshTime = (expires - 60) * 1000;
+
+        timeoutRef.current = setTimeout(() => refreshAccessToken(refresh), refreshTime);
+    };
+
+    const refreshAccessToken = async (refresh: any) => {
+        console.log(refresh)
+        try{
+            await spotifyRequest("/token/refresh_token", "POST", {
+                body: JSON.stringify({refresh_token: refresh})
+            })
+            .then(data => data.json())
+            .then(item => {                                
+                sessionStorage.setItem("token", item.token);
+
+                setAuth({                        
+                    access_token: item.access_token,        
+                    refresh_token: refresh,
+                });     
+                
+                scheduleRefresh(item.expires_in, refresh);
+            });
+        } catch (e) {
+            console.error(`Error requesting access token: ${e}`);
+
+            clearTimeout(timeoutRef.current);
+
+            timeoutRef.current = setTimeout(() => refreshAccessToken(refresh), 10000);
+        }
+    };
 
     useEffect(() => {              
-        if (!refreshToken || !expiresIn) return        
-        setInterval(() => {
-            console.log('hi', refreshToken)
-            try{
-                fetch(import.meta.env.VITE_URL + "/token/refresh_token", {
-                    method: 'POST',
-                    headers: {"Content-Type":"application/json"},
-                    credentials: "include", 
-                    body: JSON.stringify({refresh_token: refreshToken})
-                })
-                .then(data => data.json())
-                .then(item => {                    
-                    sessionStorage.setItem("token", item.token), 
-                    setAccessToken(item.token)                                                                            
-                })
-            }
-            catch (e) {
-                `Error requesting access token: ${e}`
-            }              
-        }, (expiresIn - 60) * 1000)
+        tokenManager();
 
-    }, [refreshToken, expiresIn]);    
+        return () => clearTimeout(timeoutRef.current);
+    }, []);    
 
-    return accessToken;
-}
+    return auth.access_token;
+};

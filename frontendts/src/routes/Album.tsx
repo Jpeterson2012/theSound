@@ -6,20 +6,19 @@ import { useParams } from "react-router-dom";
 
 function render(UAlbum: any, RAlbum: any){
   //Check if album is already in library or not, also prevents rerenders when adding/removing to/from library
-  if (sessionStorage.getItem("albumStatus") === "notuser"){
+  if (sessionStorage.getItem("albumStatus") === "notuser") {
     return <RAlbum />
-  }
-  else {
+  } else {
     return <UAlbum />
   }    
 }
 
 export default function Album() {
   let {id} = useParams()
-  const [url, setUrl] = useState(id)
+  const [url, setUrl] = useState(id);
   
   useEffect (() => {
-    setUrl(id)
+    setUrl(id);
     //This fixes render bug where fetch doesn't activate when clicking on currently playing album
   }, [sessionStorage.getItem("image"),id]);
     
@@ -27,5 +26,5 @@ export default function Album() {
     <>
       {render(UAlbum,RAlbum)}            
     </>
-  )
-}
+  );
+};

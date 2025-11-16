@@ -9,9 +9,12 @@ import { useParams } from 'react-router-dom';
 
 export default function Playlist() {
   var parts = window.location.href.split('/');
-  var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
-  let {id} = useParams()  
-  const [url, setUrl] = useState(id)
+
+  var lastSegment = parts.pop() || parts.pop();
+
+  let {id} = useParams();
+
+  const [url, setUrl] = useState(id);
   
   useEffect(() => {
     setUrl(id)
@@ -21,5 +24,5 @@ export default function Playlist() {
     <>
       { sessionStorage.getItem("uplist") === "true" ? <UPlaylist lastSegment={lastSegment} /> : <RPlaylist lastSegment={lastSegment} /> }
     </>      
-  )
-}
+  );
+};

@@ -78,7 +78,7 @@ router.post('/playlist/:id', async (req, res) => {
     con.query(sql, (err,result) => {
       if (err) throw err;
     
-      let temp = JSON.parse(result[0].tracks)
+      let temp = result[0].tracks;
       if (temp === null){
         temp = {}
         temp.items = []
@@ -113,7 +113,7 @@ router.delete('/playlist/:id', async (req, res) => {
     sql = `SELECT tracks FROM ${req.session.username}playlists WHERE playlist_id = '${req.params.id}'`
     con.query(sql, (err,result) => {
       if (err) throw err;
-      let temp = JSON.parse(result[0].tracks)
+      let temp = result[0].tracks;
       temp.items = temp.items.filter(a => a.name !== req.body.name)
       sql = `UPDATE ${req.session.username}playlists SET tracks = ${con.escape(JSON.stringify(temp))} WHERE playlist_id = '${req.params.id}' `
       con.query(sql, (err,result) => {

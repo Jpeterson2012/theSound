@@ -11,6 +11,7 @@ import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 import dots from '../images/dots.png'
 import EditPlaylist from '../components/EditPlaylist/EditPlaylist.tsx';
 import { filterTracks } from "../components/filterTracks.tsx";
+import { spotifyRequest } from '../utils.ts';
 
 export default function RAlbum() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ export default function RAlbum() {
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
   const [tracks, setTracks] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true)
-  var zip = JSON.parse(sessionStorage.getItem("artist")!).map(function(e: any,i: number){
+  var zip = JSON.parse(sessionStorage.getItem("artist")!).map((e: any,i: number) => {
     return [e, JSON.parse(sessionStorage.getItem("artist_id")!)[i]]
   })
   
@@ -42,8 +43,8 @@ export default function RAlbum() {
     }
     else {
       const fetchTracks = async () => {
-        try {
-          var temp = await fetch(import.meta.env.VITE_URL + `/tracks/${lastSegment}`,{credentials: "include"})
+        try {          
+          const temp = await spotifyRequest(`/tracks/${lastSegment}`)
             .then((res) => {
               // console.log(res.json())
               return res.json();
@@ -54,7 +55,7 @@ export default function RAlbum() {
       }
       const assignTracks = async () => {
         // setIsLoading(true)
-        const tempTracks = await fetchTracks()
+        const tempTracks = await fetchTracks();
         setIsLoading(false)
         // console.log(tempTracks)
         setTracks(tempTracks)
@@ -71,13 +72,13 @@ export default function RAlbum() {
 
       <div className="removeContainer3" id="removeContainer3">
       
-        <button className="removeAlbum3" onClick={function handleClick(){               
+        <button className="removeAlbum3" onClick={() => {               
           let temp = {images: tracks?.albums?.images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists}                                   
           setTrackData(temp)
           setModal(true)               
           }}>Edit Playlists</button>
 
-        <img src={dots} className="removeImg2" onClick={function handleClick(){
+        <img src={dots} className="removeImg2" onClick={() => {
           let temp = {images: tracks?.albums?.images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists}                            
           setTrackData(temp)
           setModal(true)
@@ -108,54 +109,73 @@ export default function RAlbum() {
             {/* Spin Component import now instead of prop */}
             {Spin(is_active,playerState.is_paused,sessionStorage.getItem("image")!,null)}
 
-            <h2 className="artistName">{zip.map((artist: any,index: number, row: any) =>
-              <a key={index}  onClick={function handleClick() {
-                navigate(`/app/artist/${artist[1]}`)
-              }}>{row.length - 1 !== index ? artist[0] + ", " : artist[0]}</a>             
-            )}</h2>
+            <h2 className="artistName">
+              {zip.map((artist: any,index: number, row: any) =>
+                <a 
+                  key={index}  
+                  onClick={() => {
+                    navigate(`/app/artist/${artist[1]}`);
+                  }}
+                >
+                  {row.length - 1 !== index ? artist[0] + ", " : artist[0]}
+                </a>             
+              )}
+            </h2>
 
             <div className="albumDescription">
               <div className="innerDescription">
                 <h5 className="desc1">{tracks.albums?.album_type === 'single' && tracks.albums?.total_tracks > 1 ? 'EP' : tracks.albums?.album_type.toUpperCase() } &#8226;</h5>
+
                 <h5>{tracks.albums?.tracks.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length + " Song(s)" }</h5>              
               </div>
 
               {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
-              {tracks.images?.map((a: any, i:any) => <img key={i} className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}                
-              <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(this:any){
-                setSnack(true)                  
-                let temp = document.getElementById('addAlbum')!
-                temp.style.transform = 'scale(1)'
-                temp.style.animation = 'pulse3 linear 1s'
-                setTimeout(()=>{
-                  temp.style.removeProperty('animation')
-                  temp.style.removeProperty('transform')
-                }, 1000)                    
+              {tracks.images?.map((a: any, i:any) => <img key={i} className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}       
 
-                if (found === undefined){                                        
-                  setTimeout(() => {
-                    addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, 
-                      name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, 
-                      copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label}) 
-                  },1100)                 
-                }
-                else{                    
-                  setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100)                                 
-                }                  
+              <p 
+                id="addAlbum" 
+                style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} 
+                onClick={(e) => {
+                  setSnack(true);
 
-              }}>{found === undefined ? "+" : "✓"}</p>
+                  const el = e.target as HTMLElement;
+
+                  el.style.transform = 'scale(1)';
+
+                  el.style.animation = 'pulse3 linear 1s';
+
+                  setTimeout(() => {                  
+                    el.style.animation = "";
+
+                    el.style.transform = "";
+                  }, 1100);                    
+
+                  if (found){                    
+                    setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100);                                 
+                  } else {                                        
+                    setTimeout(() => {
+                      addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, 
+                        name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, 
+                        copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label}) 
+                    },1100);                 
+                  }          
+                }}
+              >
+                {found ? "✓" : "+"}
+              </p>
               
             </div>
 
-            {filterTracks(setFilter_val)}
-            
+            {filterTracks(setFilter_val)}            
           </div>
 
           <div className="tdContainer" style={{width: '80vw'}}>
             <div style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
               <span className="rTitle">Title</span>
+
               <span className="rTitle2">Duration</span>
             </div>
+
             {listItems}
           </div>
           
@@ -164,16 +184,21 @@ export default function RAlbum() {
           </div>
           
           <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {tracks.albums?.release_date}</h5>
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ tracks.albums?.copyrights[0]?.text} </h5>
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {tracks.albums?.label}</h5>
-          <p style={{marginBottom: '150px'}}></p>
 
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ tracks.albums?.copyrights[0]?.text} </h5>
+
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {tracks.albums?.label}</h5>
+
+          <p style={{marginBottom: '150px'}}></p>
         </>
 
       )}
+
       <ButtonScroll />
+      
       {modal && <EditPlaylist track={trackData} boolVal={modal} setbool={setModal} setsnack={setSnack} />}
+
       {snack && <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>}
     </>
-  )
-}
+  );
+};

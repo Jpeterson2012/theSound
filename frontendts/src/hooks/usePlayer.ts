@@ -57,30 +57,15 @@ function stateUpdates(state: any, setPlayerState: any){
     }
 }
 
-function transferPlayback(device_id: string, accessToken: string) {
-  fetch("https://api.spotify.com/v1/me/player", {
-    method: "PUT",
-    headers: {
-      "Authorization": `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      device_ids: [device_id],
-      play: true,
-    })
-  });
-}
-
-
 export const usePlayer = () => {
     const [player, setPlayer] = useState<any>(null); 
     const [playerState, setPlayerState] = useState(intialPlayerState)                   
     const [is_active, setActive] = useState(false);                    
 
-    const access_token = useAuth();
+    const access_token = useAuth();    
 
     const resetPlayer = async () => {    
-        await player.disconnect();
+        await player?.disconnect();
         setPlayer(null);
         setPlayerState(intialPlayerState);
         setActive(false);  
@@ -88,6 +73,7 @@ export const usePlayer = () => {
 
     useEffect(() => {
         if(!access_token) return;
+        resetPlayer();
         
         const debUpdate = throttle(stateUpdates, 500);
 

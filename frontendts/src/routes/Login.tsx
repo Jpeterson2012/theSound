@@ -7,25 +7,29 @@ export default function Login() {
   useEffect(() => {
     setTimeout(() => {
       sessionStorage.clear();
-    }, 500)
-  }, [])
+    }, 500);
+  }, []);
+
+  const URL = window.location.hostname === "localhost" 
+      ? import.meta.env.VITE_URL 
+      : import.meta.env.VITE_PROD_URL;
   
   return (
     <>
       <Loading2 />
 
       <div className='loginImage' style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <img className='introImg' src={logo} alt='Avatar' />
+        <img className='introImg' src={logo} alt='Avatar'/>
+
         <h1 className="intro">TheSound<sup>TM</sup></h1>
       </div>
 
       <button className="home"onClick={() => {
-        location.href = import.meta.env.VITE_URL + '/login'
-        sessionStorage.setItem("token", "something")
+        location.href = URL + '/login';
+
+        //sessionStorage.setItem("token", "something")
       }}>Login
       </button>      
     </>
-  )
-}
-
-
+  );
+};

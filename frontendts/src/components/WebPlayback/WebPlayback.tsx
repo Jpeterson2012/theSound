@@ -18,12 +18,12 @@ import UsePlayerContext from '../../hooks/PlayerContext.tsx';
 
 export default function WebPlayback() {
   //Used to keep track of current device. used in Track and Ptrack Component
-  const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)})         
-  const [isLoading, setIsLoading] = useState(false) 
-  const [isLoading2, setIsLoading2] = useState(true)
-  const navigate = useNavigate()        
+  const [currentDev, setCurrentDev] = useState({name: "TheSound", id: sessionStorage.getItem("device_id"!)});         
+  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading2, setIsLoading2] = useState(true);
+  const navigate = useNavigate();        
       
-  const player = usePlayer()    
+  const player = usePlayer();    
 
   useEffect(() => {            
     if (!player.player) return;      
@@ -33,10 +33,10 @@ export default function WebPlayback() {
     //     localStorage.clear()
     //     return ''
     // })                
-    setIsLoading(false)
+    setIsLoading(false);
 
-    sessionStorage.setItem("windowWidth", window.innerWidth.toString())
-    sessionStorage.setItem("reload", "false")
+    sessionStorage.setItem("windowWidth", window.innerWidth.toString());
+    sessionStorage.setItem("reload", "false");
 
     let pageAccessedByReload = (
       (window.performance.navigation && window.performance.navigation.type === 1) ||
@@ -45,12 +45,11 @@ export default function WebPlayback() {
       .map((nav:any) => nav.type)
       .includes('reload')
     );
-    pageAccessedByReload && sessionStorage.setItem("reload", "true")
-    pageAccessedByReload && sessionStorage.getItem("reload") === "true" && (navigate("/app/"), sessionStorage.setItem("reload", "false"))
+    pageAccessedByReload && sessionStorage.setItem("reload", "true");
+    pageAccessedByReload && sessionStorage.getItem("reload") === "true" && (navigate("/app/"), sessionStorage.setItem("reload", "false"));
       
   }, [player]);    
     
-
   return (
     <>
       {!isLoading && (
@@ -73,5 +72,5 @@ export default function WebPlayback() {
         </>
       )}        
     </>
-  )
-}
+  );
+};

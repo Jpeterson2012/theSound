@@ -9,77 +9,81 @@ import MySnackbar from '../components/MySnackBar.tsx';
 import ButtonScroll from '../components/ButtonScroll/ButtonScroll.tsx';
 import { useGetPlaylistsQuery,useDeletePlaylistMutation } from '../App/ApiSlice.ts';
 import { filterTracks } from "../components/filterTracks.tsx";
+import { spotifyRequest } from '../utils.ts';
 
 function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setmodal:any,settrack:any,rplay:any,filter_val:any){
-  let temp2 = document.getElementById('dropdown-content2')!
-  if(temp2) temp2.style.display = 'none'
+  let temp2 = document.getElementById('dropdown-content2')!;
+
+  if (temp2) temp2.style.display = 'none';
   
   return (
-    ptracks?.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any, index: number) => 
-
+    ptracks?.filter((a:any) => a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any, index: number) => 
       <div style={{display: 'flex', alignItems: 'center'}} key={t.uri.split(':').pop()}>
+        <p hidden>{liked_urls.push(t.uri)}</p>   
 
-        <p hidden>{liked_urls.push(t.uri)}</p>            
         <div className="removeContainer3" id='removeContainer3' style={{display: 'flex', alignItems: 'center'}}>
+          <button className="removeAlbum3" onClick={() => {        
+            settrack(t);
 
-          <button className="removeAlbum3" onClick={function handleClick(){        
-            settrack(t)
-            setmodal(true) 
+            setmodal(true) ;
           }}>Edit Playlists</button>
-          <img src={dots} onClick={function handleClick(){
-            settrack(t)
-            setmodal(true)
-          }} className="removeImg2" />
-          <img className="uPlaylistImgs" src={t.images?.filter((t: any)=>t.height == 64).map((s: any) => s.url)} />
 
+          <img src={dots} onClick={() => {
+            settrack(t);
+
+            setmodal(true);
+          }} className="removeImg2" />
+
+          <img className="uPlaylistImgs" src={t.images?.filter((t: any)=>t.height == 64).map((s: any) => s.url)}/>
         </div>
 
         <PTrack 
-        uri={"spotify:playlist:" + last}
-        name={t.name}
-        number={index}
-        duration={t.duration_ms}
-        liked={liked_urls}
-        artist={t.artists}
-        t_uri={t.uri}
-        rplay={rplay}
-        paused={paused}
+          uri={"spotify:playlist:" + last}
+          name={t.name}
+          number={index}
+          duration={t.duration_ms}
+          liked={liked_urls}
+          artist={t.artists}
+          t_uri={t.uri}
+          rplay={rplay}
+          paused={paused}
         />        
       </div>
     )
-  )
-}
+  );
+};
 
 function playlistSort(tplaylist: any, setTPlaylist: any){
   let temp: any
+
   return(
     <>
-      <button className="theme" onClick={function handleClick(){      
+      <button className="theme" onClick={() => {      
         temp = tplaylist                        
         temp.sort((a:any,b:any) => a.name.localeCompare(b.name))      
         setTPlaylist([...temp])
       }}>A-Z</button>
 
-      <button className="theme" onClick={function handleClick(){ 
+      <button className="theme" onClick={() => { 
         temp = tplaylist     
         temp.sort((a:any,b:any) => b.name.localeCompare(a.name))
         setTPlaylist([...temp])
       }}>Z-A</button>
 
-      <button className="theme" onClick={function handleClick(){  
+      <button className="theme" onClick={() => {  
         temp = tplaylist  
         temp.sort((a:any,b:any) => a.artists[0].name.localeCompare(b.artists[0].name))
         setTPlaylist([...temp])
       }}>Artist A-Z</button>
 
-      <button className="theme" onClick={function handleClick(){   
+      <button className="theme" onClick={() => {   
         temp = tplaylist   
         temp.sort((a:any,b:any) => b.artists[0].name.localeCompare(a.artists[0].name))
         setTPlaylist([...temp])
       }}>Artist Z-A</button>
     </>
-  )
-}
+  );
+};
 
 export default function RPlaylist({lastSegment}: any){
   const [ptracks, setpTracks] = useState<any>([]);
@@ -108,16 +112,13 @@ export default function RPlaylist({lastSegment}: any){
     // }
     if (sessionStorage.getItem("cplaylist") !== undefined && sessionStorage.getItem("cplaylist")) {      
       setpTracks(JSON.parse(sessionStorage.getItem("cplaylist")!));
+
       setLoading(false);
-    }
-    else{
+    } else {
       const fetchpTracks = async () => {
-        // setLoading(true)
-        const resp = await fetch(import.meta.env.VITE_URL + `/ptracks/${lastSegment}`,{
-          method: 'GET',
-          credentials: "include",
-          headers: {"Content-Type":"application/json"},
-        })
+        // setLoading(true)        
+        const resp = await spotifyRequest(`/ptracks/${lastSegment}`);
+
         setLoading(false)
         
         const reader = resp?.body?.getReader();
@@ -148,7 +149,7 @@ export default function RPlaylist({lastSegment}: any){
         }
   
       }
-      fetchpTracks()
+      fetchpTracks();
       //   const fetchTracks = async () => {
       //     try {
       //         var temp = await fetch(import.meta.env.VITE_URL + `/ptracks/${lastSegment}`,{credentials: "include"})
@@ -187,48 +188,65 @@ export default function RPlaylist({lastSegment}: any){
             <div>              
               <div style={{marginBottom: '60px', marginTop: '40px'}}>      
                 <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>
+
                 <div className="desc2" style={{display: 'flex', marginRight: '10px', alignItems: 'center'}}>
                   <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
+
                   <h5 style={{color: 'rgb(90, 210, 216)'}}>{ptracks?.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length} Song(s)</h5>
-                  {(sessionStorage.getItem("cplaylist") === undefined && !sessionStorage.getItem("cplaylist")) && <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
-                    setSnack(true)
-                    let temp2 = document.getElementById('addAlbum')!
-                    temp2.style.transform = 'scale(1)'
-                    temp2.style.animation = 'pulse3 linear 1s'
-                    setTimeout(()=>{
-                      temp2.style.removeProperty('animation')
-                      temp2.style.removeProperty('transform')
-                    }, 1000)                    
-                  
-                    if (found === undefined){           
-                      setSnack(true)
-                      setRplay(false)         
-                        setTimeout (() => {
-                          fetch(import.meta.env.VITE_URL + `/users/playlist`, {
-                            method: 'POST',
-                            headers: {"Content-Type":"application/json"},
-                            credentials: "include",
-                            body: JSON.stringify({id: lastSegment,name: sessionStorage.getItem("playlist_name"), images: JSON.parse(sessionStorage.getItem("fullp_image")!)})                                        
-                          })
-                        },500)
-                        setTimeout(() => {refetch()},800)                 
-                    }
-                    else{                                        
-                      setSnack(true)                                                
-                      setTimeout(() => { deletePlaylist({pID: lastSegment!}), setRplay(true) },300)                                                                           
-                    }                  
-                  
-                  }}>{found === undefined ? "+" : "✓"}</p>}
+
+                  {/* {(sessionStorage.getItem("cplaylist") === undefined && !sessionStorage.getItem("cplaylist")) &&  */}
+                    <p 
+                      id="addAlbum" 
+                      style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} 
+                      onClick={(e) => {
+                        const el = e.target as HTMLElement;
+                        setSnack(true);                        
+
+                        el.style.transform = 'scale(1)';
+
+                        el.style.animation = 'pulse3 linear 1s';
+
+                        setTimeout(() => {
+                          el.style.removeProperty('animation');
+
+                          el.style.removeProperty('transform');
+                        }, 1000);                    
+                      
+                        if (found) {                                        
+                          setSnack(true);
+
+                          setTimeout(() => { deletePlaylist({pID: lastSegment!}), setRplay(true) }, 300);                                                                           
+                        } else {           
+                          setSnack(true);
+
+                          setRplay(false);
+
+                          setTimeout (() => {
+                            spotifyRequest("/users/playlist", "POST", {
+                              body: JSON.stringify({id: lastSegment,name: sessionStorage.getItem("playlist_name"), images: JSON.parse(sessionStorage.getItem("fullp_image")!)})
+                            });
+                          },500);
+
+                          setTimeout(() => {refetch()}, 800);                 
+                        }                  
+                      
+                      }}
+                    >
+                      {found ? "✓" : "+"}
+                    </p>
+                  {/* } */}
 
                   <div className="dropdown" id="dropdown">                                                        
-                    <button className="dropbtn" style={{marginLeft: '100%'}} onClick={function handleClick(){
-                      let temp = document.getElementById('dropdown-content2')!
-                      if (temp.style.display === 'flex') temp.style.display = 'none'
+                    <button className="dropbtn" style={{marginLeft: '100%'}} onClick={() => {
+                      let temp = document.getElementById('dropdown-content2')!;
+                      
+                      if (temp.style.display === 'flex') temp.style.display = 'none';
                       else {
-                        temp.style.display = 'flex'
-                        temp.style.flexDirection = 'column'
+                        temp.style.display = 'flex';
+
+                        temp.style.flexDirection = 'column';
                       }
-                      }} >Sort</button>
+                    }}>Sort</button>
                       <div className="dropdown-content2" id='dropdown-content2'>
                         {playlistSort(ptracks, setpTracks)}
                       </div>
@@ -240,22 +258,23 @@ export default function RPlaylist({lastSegment}: any){
                 <div className="tdContainer" style={{width: '80vw'}} >
                   <div className="subTdContainer" style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
                     <span className="lol">Title</span>
+
                     <span className="lolP">Duration</span>
                   </div>
+
                   {regPlaylists(ptracks, lastSegment, liked_uris, playerState.is_paused,setModal,setTrackData,rplay,filter_val) }
-                </div>
-                        
+                </div>                        
               </div>
             </div>
-
           </div>
         </>
       )}
+
       <ButtonScroll />
+
       {modal && <EditPlaylist track={trackData} boolVal={modal} setbool={setModal} setsnack={setSnack} />}
+
       {snack && <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>}
     </>
-  )
-}
-
-
+  );
+};

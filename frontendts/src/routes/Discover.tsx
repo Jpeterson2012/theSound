@@ -94,6 +94,7 @@ export default function Discover() {
         }}>
             <div className="categoryContainer" style={{width: '200px',height: '305px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <img className="fade-in-image" src={album.images.filter((t: any)=>t.height == 300).map((s: any) => s.url)} alt="Avatar" style={{width:'80%',height:'190px',borderRadius: '10px'}}/>
+
                 <h4 className="discoverCHeader"><b>{album.name}</b></h4>                
             </div>
         </a>
@@ -108,6 +109,7 @@ export default function Discover() {
         }}>
             <div className="categoryContainer" style={{width: '200px',height: '305px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <img className="fade-in-image" src={a.icons.map((s: any) => s.url)} alt="Avatar" style={{width:'80%',height:'190px',borderRadius: '10px'}}/>
+
                 <h4 style={{marginTop: '200px'}} ><b>{a.name}</b></h4>                
             </div>
         </a>
@@ -127,7 +129,7 @@ export default function Discover() {
         />
     )
     function displayWrap(){
-        if (releases.albums){
+        if (releases.albums) {
             let array = releases?.albums?.items
             const chunkedArray = [];
             for (let i = 0; i < array.length; i += 10) {
@@ -136,45 +138,50 @@ export default function Discover() {
             return (
                 <>
                     <h2 style={{margin: '25px auto'}} >New Releases</h2>
+
                     {chunkedArray.map((row, rowIndex) => (
                         <div key={rowIndex} className="row">
                             {row.map((item: any, itemIndex: any) => (
                                 <div key={itemIndex} className="item">                                                            
                                     <Card
-                                    // key={a.id}
-                                    id={item.id}
-                                    uri={item.uri}
-                                    image={item.images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}
-                                    name={item.name}
-                                    artist={item.artists.map((t: any) => t.name)}
-                                    a_id={item.artists.map((t: any) => t.id)}
+                                        // key={a.id}
+                                        id={item.id}
+                                        uri={item.uri}
+                                        image={item.images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}
+                                        name={item.name}
+                                        artist={item.artists.map((t: any) => t.name)}
+                                        a_id={item.artists.map((t: any) => t.id)}
                                     />                                
                                 </div>
                             ))}
                         </div>
                     ))}
                 </>
-            )
+            );
         }
-    }
+    };
     
     return (
         <>        
-        { loading ? Spin3() :        
-            <div className="discoverContainer" style={{width: '90vw', position: 'absolute', left: '5vw', top: '9vw', paddingBottom: '200px'}}>                   
-                <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >Check These Out</h2>
-                <div className="scroll-container" >
-                    <div className="carousel-primary">
-                        {listAlbums}
-                        {listAlbums}
-                    </div>                                                         
+            { loading ? Spin3() :        
+                <div className="discoverContainer" style={{width: '90vw', position: 'absolute', left: '5vw', top: '9vw', paddingBottom: '200px'}}>                   
+                    <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >Check These Out</h2>
+
+                    <div className="scroll-container" >
+                        <div className="carousel-primary">
+                            {listAlbums}
+
+                            {listAlbums}
+                        </div>                                                         
+                    </div>
+                    
+                    {customRender("Categories", listCategories)}
+
+                    {window.innerWidth > 500 ? customRender("New Releases", listReleases) : displayWrap()} 
+                                
+                    <ButtonScroll />      
                 </div>
-                
-                {customRender("Categories", listCategories)}
-                {window.innerWidth > 500 ? customRender("New Releases", listReleases) : displayWrap()}                
-                <ButtonScroll />      
-            </div>
-        }         
+            }         
         </>
-    )
-}
+    );
+};

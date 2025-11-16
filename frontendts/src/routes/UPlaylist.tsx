@@ -14,6 +14,7 @@ import EditPlaylist from "../components/EditPlaylist/EditPlaylist.tsx";
 import MySnackbar from "../components/MySnackBar.tsx";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 import { filterTracks } from "../components/filterTracks.tsx";
+import { spotifyRequest } from '../utils.ts';
 
 function customImage(ptracks: any){
   return(
@@ -31,90 +32,119 @@ function customImage(ptracks: any){
 }
 
 function returnUrl(ptracks: any){    
-  if (ptracks.images.length === 0) return 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg'
-  else if (ptracks.images.length === 1) return ptracks.images.map((s:any) => s.url)
-  else return ptracks.images.filter((t: any) => t.height == 640).map((s: any) => s.url)  
+  if (ptracks.images.length === 0) return 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg';
+  else if (ptracks.images.length === 1) return ptracks.images.map((s:any) => s.url);
+  else return ptracks.images.filter((t: any) => t.height == 640).map((s: any) => s.url); 
 }
 {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
 {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
-function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, removePTrack: any, lastSegment: any,setmodal:any,settrack: any,setsnack:any,filter_val:any) {  
-  let temp2 = document.getElementById('dropdown-content2')!
+function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, removePTrack: any, lastSegment: any, setmodal:any, settrack: any, setsnack:any, filter_val:any) {  
+  let temp2 = document.getElementById('dropdown-content2')!;
+
   if(temp2) temp2.style.display = 'none'           
   
   return (
     userLists?.tracks?.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any, index: number) =>
 
       <div key={t.uri.split(':').pop()} style={{display: 'flex', alignItems: 'center'}}>
-
         <p hidden>{liked_urls.push(t.uri)}</p>
-        <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                      
+
+        <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>                      
           <a>
             <div className="removeContainer2" id="removeContainer2">
               <div className="removeAlbum2" id="removeAlbum2">
+                <button 
+                  type="button" 
+                  tabIndex={0} 
+                  style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px',width: '130px', height: '60px'}} 
+                  onClick={() => {  
+                    settrack(t);
 
-                <button type="button" tabIndex={0} style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px',width: '130px', height: '60px'}} onClick={function handleClick(){  
-                  settrack(t)
-                  setmodal(true)                                     
-                }}>Edit Playlists</button>
+                    setmodal(true);                                     
+                  }}
+                >
+                  Edit Playlists
+                </button>
 
-                {lastSegment === 'likedsongs' && <button style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px', width: '130px', height: '60px'}} onClick={function handleClick(){  
-                  setsnack(true)
-                
-                  lastSegment === 'likedsongs' ? setTimeout(() => { removeSong({name: t.name}) },300) : setTimeout(() => { removePTrack({pID: userLists.playlist_id, name: t.name}) },500)
-                }}>Remove From Liked Songs</button>}
-
+                {lastSegment === 'likedsongs' && 
+                  <button 
+                    style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px', width: '130px', height: '60px'}} 
+                    onClick={() => {  
+                      setsnack(true)
+                    
+                      setTimeout(() => {
+                        lastSegment === 'likedsongs' ? removeSong({name: t.name}) : removePTrack({pID: userLists.playlist_id, name: t.name}); 
+                      }, lastSegment === 'likedsongs' ? 300 : 500);
+                    }}
+                  >
+                    Remove From Liked Songs
+                  </button>}
               </div>
-              <img src={dots} onClick={function handleClick(){
-                settrack(t)
-                setmodal(true)
-              }} className="removeImg2" />      
+
+              <img 
+                src={dots} 
+                className="removeImg2"
+                onClick={() => {
+                  settrack(t);
+
+                  setmodal(true);                  
+                }} 
+               />      
             </div>
           </a>
+
           <img className="uPlaylistImgs" src={t.images.filter((t: any)=>t.height == 64).map((s: any) => s.url)} style={{height: '64px', width: '64px',borderRadius: '10px'}}/>
         </div>
         
         <PTrack 
-        uri={userLists.uri}
-        name={t.name}
-        number={index}
-        duration={t.duration_ms}
-        liked={liked_urls}
-        artist={t.artists}
-        t_uri={t.uri}          
-        paused={paused}
-        />        
-        
+          uri={userLists.uri}
+          name={t.name}
+          number={index}
+          duration={t.duration_ms}
+          liked={liked_urls}
+          artist={t.artists}
+          t_uri={t.uri}          
+          paused={paused}
+        />                
       </div>
     )
-  )
-}
+  );
+};
 
-function playlistSort(tplaylist: any, setTPlaylist: any){  
-  let temp: any
+function playlistSort(tplaylist: any, setTPlaylist: any) {  
+  let temp: any;
+
   return(
     <>
-    <button className="theme" onClick={function handleClick(){                  
-      temp = tplaylist.tracks.slice()                  
-      temp.sort((a:any,b:any) => a.name.localeCompare(b.name))      
+    <button className="theme" onClick={() => {                  
+      temp = tplaylist.tracks.slice();
+
+      temp.sort((a:any,b:any) => a.name.localeCompare(b.name))      ;
+
       setTPlaylist({...tplaylist, tracks: temp})      
     }}>A-Z</button>
 
-    <button className="theme" onClick={function handleClick(){ 
-      temp = tplaylist.tracks.slice()     
-      temp.sort((a:any,b:any) => b.name.localeCompare(a.name))
+    <button className="theme" onClick={() => { 
+      temp = tplaylist.tracks.slice();
+
+      temp.sort((a:any,b:any) => b.name.localeCompare(a.name));
+
       setTPlaylist({...tplaylist, tracks: temp})
     }}>Z-A</button>
 
-    <button className="theme" onClick={function handleClick(){  
-      temp = tplaylist.tracks.slice()    
-      temp.sort((a:any,b:any) => a.artists[0].name.localeCompare(b.artists[0].name))
+    <button className="theme" onClick={() => {  
+      temp = tplaylist.tracks.slice();
+
+      temp.sort((a:any,b:any) => a.artists[0].name.localeCompare(b.artists[0].name));
+
       setTPlaylist({...tplaylist, tracks: temp})
     }}>Artist A-Z</button>
 
-    <button className="theme" onClick={function handleClick(){   
-      temp = tplaylist.tracks.slice()   
-      temp.sort((a:any,b:any) => b.artists[0].name.localeCompare(a.artists[0].name))
+    <button className="theme" onClick={() => {   
+      temp = tplaylist.tracks.slice();
+
+      temp.sort((a:any,b:any) => b.artists[0].name.localeCompare(a.artists[0].name));
+
       setTPlaylist({...tplaylist, tracks: temp})
     }}>Artist Z-A</button>
     </>
@@ -122,21 +152,21 @@ function playlistSort(tplaylist: any, setTPlaylist: any){
 }
 
 export default function UPlaylist({lastSegment}: any){
-  const [loading, setLoading] = useState(true)
-  var liked_uris: any = []
-  const stockImage = "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg"
+  const [loading, setLoading] = useState(true);
+  var liked_uris: any = [];
+  const stockImage = "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg";
 
   const {data: liked, isSuccess: lsuccess} = useGetLikedQuery()
   const [removeSong] = useDeleteNewLikedMutation()
   const [removePTrack] = useDeletePTrackMutation()
   const [modal, setModal] = useState(false)
-  const[trackData, setTrackData] = useState(null)
-  const[snack, setSnack] = useState(false)
+  const [trackData, setTrackData] = useState(null)
+  const [snack, setSnack] = useState(false)
   const [deletePlaylist] = useDeletePlaylistMutation()
   const [tplaylist, setTplaylist] = useState<any>([])
   const [filter_val, setFilter_val] = useState<string>('')
 
-  const {data: pStorm = []} = useGetPlaylistsQuery()
+  const {data: pStorm = []} = useGetPlaylistsQuery();
 
   const {is_active, playerState} = useContext(UsePlayerContext);
 
@@ -151,105 +181,124 @@ export default function UPlaylist({lastSegment}: any){
   const { singlePlist, isSuccess: psuccess } = useGetPlaylistsQuery(undefined, {
     selectFromResult: result => ({
       ...result,
-      singlePlist: selectOnePlaylist(result, lastSegment!)
+      singlePlist: selectOnePlaylist(result, lastSegment!),
     })
   })
 
-  let truth: boolean = lsuccess && psuccess
+  let truth: boolean = lsuccess && psuccess;
 
-  useEffect(()=>{               
+  useEffect(() => {               
     if(truth) setLoading(false)     
       if (psuccess){
         lastSegment! === 'likedsongs' 
           ? setTplaylist(liked) 
           : ( singlePlist!.length > 0 ? (sessionStorage.setItem("u_playlist",JSON.stringify(singlePlist!)), setTplaylist(singlePlist![0])) : setTplaylist(JSON.parse(sessionStorage.getItem("u_playlist")!)[0]) )
       }          
-  },[lsuccess,liked,pStorm])    
+  },[lsuccess,liked,pStorm]);    
 
   return(
     <>        
-      {loading ? null : (
+      {!loading && (
         <>
-          <div style={{marginBottom: '150px'}} >                    
-
+          <div style={{marginBottom: '150px'}}>                    
             {(lastSegment! === 'likedsongs' ? Spin(is_active,playerState.is_paused,stockImage,null) 
-            : (!tplaylist?.images.length && tplaylist?.tracks.length > 3) 
+            : (!tplaylist?.images?.length && tplaylist?.tracks?.length > 3) 
               ? Spin(is_active,playerState.is_paused,"",customImage(tplaylist)) 
               : Spin(is_active,playerState.is_paused,returnUrl(tplaylist!),null) )}
 
             <div>            
-              <div style={{marginBottom: '60px', marginTop: '40px'}}>
-  
+              <div style={{marginBottom: '60px', marginTop: '40px'}}>  
                 <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{sessionStorage.getItem("playlist_name")}</h2>
+
                 <div className="desc2" style={{display: 'flex', marginRight: '10px', alignItems: 'center'}}>
                   <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
-                  <h5  style={{color: 'rgb(90, 210, 216)'}}>{tplaylist!.tracks.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length} Song(s)</h5>
 
-                  {lastSegment !== 'likedsongs' && <p id="addAlbum" style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} onClick={function handleClick(){
-                    setSnack(true)
-                    let temp2 = document.getElementById('addAlbum')!
-                    temp2.style.transform = 'scale(1)'
-                    temp2.style.animation = 'pulse3 linear 1s'
-                    setTimeout(()=>{
-                      temp2.style.removeProperty('animation')
-                      temp2.style.removeProperty('transform')
-                    }, 1000)                    
-                  
-                    if (!singlePlist!.length){           
-                      setSnack(true)         
-                        setTimeout (() => {
-                          fetch(import.meta.env.VITE_URL + `/users/playlist`, {
-                            method: 'POST',
-                            headers: {"Content-Type":"application/json"},
-                            credentials: "include",
-                            body: JSON.stringify({id: lastSegment,name: sessionStorage.getItem("playlist_name"), images: JSON.parse(sessionStorage.getItem("fullp_image")!)})                                        
-                          })
-                        },500)                                                           
-                    }
-                    else{                                        
-                      setSnack(true)        
-                      setTimeout(() => { deletePlaylist({pID: lastSegment!}) },300)                                                                           
-                    }                  
-                  
-                  }}>{!singlePlist!.length ? "+" : "✓"}</p>}
+                  <h5 style={{color: 'rgb(90, 210, 216)'}}>{tplaylist!.tracks.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length} Song(s)</h5>
+
+                  {lastSegment !== 'likedsongs' && 
+                    <p 
+                      id="addAlbum" 
+                      style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} 
+                      onClick={(e) => {
+                        const el = e.target as HTMLElement;
+
+                        setSnack(true);
+                        
+                        el.style.transform = 'scale(1)';
+
+                        el.style.animation = 'pulse3 linear 1s';
+
+                        setTimeout(() => {
+                          el.style.removeProperty('animation');
+
+                          el.style.removeProperty('transform');
+                        }, 1000);                    
+                      
+                        if (!singlePlist!.length) {           
+                          setSnack(true);  
+
+                          setTimeout (() => {
+                            spotifyRequest('/users/playlist', "POST", {
+                              body: JSON.stringify({id: lastSegment,name: sessionStorage.getItem("playlist_name"), images: JSON.parse(sessionStorage.getItem("fullp_image")!)})
+                            });
+                          },500);                                                           
+                        } else{                                        
+                          setSnack(true);
+
+                          setTimeout(() => { deletePlaylist({pID: lastSegment!}) },300);                                                                           
+                        }                                        
+                      }}
+                    >
+                      {!singlePlist!.length ? "+" : "✓"}
+                    </p>}
 
                   <div className="dropdown" id="dropdown">
+                    <button 
+                      className="dropbtn" 
+                      style={{marginLeft: '100%'}} 
+                      onClick={() => {
+                        let temp = document.getElementById('dropdown-content2')!;
 
-                    <button className="dropbtn" style={{marginLeft: '100%'}} onClick={function handleClick(){
-                      let temp = document.getElementById('dropdown-content2')!
-                      if (temp.style.display === 'flex') temp.style.display = 'none'
-                      else {
-                        temp.style.display = 'flex'
-                        temp.style.flexDirection = 'column'
-                      }
-                      
-                    }} >Sort</button>
+                        if (temp.style.display === 'flex') temp.style.display = 'none';
+                        else {
+                          temp.style.display = 'flex';
+
+                          temp.style.flexDirection = 'column';
+                        }                        
+                      }} 
+                    >
+                      Sort
+                    </button>
+
                     <div className="dropdown-content2" id="dropdown-content2">
-                          {playlistSort(tplaylist!, setTplaylist)}
+                      {playlistSort(tplaylist!, setTplaylist)}
                     </div>
-                  </div>                              
-    
+                  </div>                                  
                 </div>
 
                 {filterTracks(setFilter_val)}                            
 
                 <div className="tdContainer" style={{width: '80vw'}} >
-                <div className="subTdContainer" style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
-                  <span className="lolP2">Title</span>
-                  <span className="lolP">Duration</span>
+                  <div className="subTdContainer" style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
+                    <span className="lolP2">Title</span>
+
+                    <span className="lolP">Duration</span>
                   </div>
-                {userPlaylists(tplaylist!, liked_uris, playerState.is_paused,removeSong, removePTrack, lastSegment,setModal,setTrackData,setSnack,filter_val) }
+
+                  {userPlaylists(tplaylist!, liked_uris, playerState.is_paused,removeSong, removePTrack, lastSegment,setModal,setTrackData,setSnack,filter_val) }
                 </div>
                     
               </div>
             </div>
-
           </div>
         </>
       )}
+      
       <ButtonScroll />
+
       {modal && <EditPlaylist track={trackData} boolVal={modal} setbool={setModal} setsnack={setSnack} />}
+      
       {snack && <MySnackbar state={snack} setstate={setSnack} message="Changes Saved"/>}
     </>
-  )
-}
+  );
+};
