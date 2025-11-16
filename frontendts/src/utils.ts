@@ -22,3 +22,7 @@ export async function spotifyRequest(path: string, method?: string, options?: ob
         ...options,                
     });
 };
+
+export const BASE_URL = window.location.hostname === "localhost" 
+    ? import.meta.env.VITE_URL 
+    : import.meta.env.VITE_PROD_URL;

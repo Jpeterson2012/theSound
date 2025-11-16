@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { BASE_URL } from '../utils'
 // import { createSelector } from '@reduxjs/toolkit'
 // import { RootState } from './store'
 
@@ -74,7 +75,7 @@ export type { Playlists, Albums, Devices }
 
 export const apiSlice = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_URL }),
+    baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
     keepUnusedDataFor: 60 * 60,
     endpoints: builder => ({
         getAlbums: builder.query<Albums[], void>({
