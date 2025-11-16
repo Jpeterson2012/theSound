@@ -176,10 +176,14 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
 
                         <img id="volumeIcon" src={volume} 
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.opacity = '1';
+                                const el = e.target as HTMLElement;
+
+                                el.style.opacity = '1';
                             }} 
                             onMouseLeave={(e) => {
-                                player.getVolume().then((vol: any) => e.currentTarget.style.opacity = !vol  ? '0' : pVol);
+                                const el = e.target as HTMLElement;
+
+                                player.getVolume().then((vol: any) => el.style.opacity = !vol  ? '0' : pVol);
                             }} 
                             onClick={(e) => {
                                 let temp: HTMLInputElement = e.currentTarget.parentElement?.querySelector('#volumeBar')!;
@@ -292,7 +296,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                             onClick={() => { 
                                 currentDev.name === "TheSound" 
                                     ? (playerState.pos > 3000 ? player!.seek(0) : player!.previousTrack()) 
-                                    : playbackState('previous'); 
+                                    : playbackState('previous', null, null, currentDev); 
                             }}
                         >
                             &lt;&lt;
@@ -316,7 +320,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                             onClick={() => { 
                                 currentDev.name === "TheSound" 
                                     ? player!.nextTrack() 
-                                    : playbackState('next'); 
+                                    : playbackState('next', null, null, currentDev); 
                             }}
                         >
                             &gt;&gt;
@@ -328,7 +332,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                                 onClick={() => { 
                                     currentDev.name === "TheSound" 
                                         ? (playerState.pos > 3000 ? player!.seek(0) : player!.previousTrack()) 
-                                        : playbackState('previous'); 
+                                        : playbackState('previous', null, null, currentDev); 
                                 }} 
                             >
                                 &lt;&lt;
@@ -349,7 +353,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                             <p 
                                 className="spotifyButtons3"
                                 onClick={() => { 
-                                    currentDev.name === "TheSound" ? player!.nextTrack() : playbackState('next') ;
+                                    currentDev.name === "TheSound" ? player!.nextTrack() : playbackState('next', null, null, currentDev) ;
                                 }} 
                             >
                                 &gt;&gt;
@@ -364,7 +368,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                                 let temp = document.getElementById('toggle2')!
                                 temp.style.animation = 'hithere 1s ease'
                             
-                                if (shuffled === true) setisShuffled(false);
+                                if (shuffled) setisShuffled(false);
                                 else setisShuffled(true);          
                                 
                                 spotifyRequest('/shuffle', 'POST', {body: JSON.stringify({state: shuffled})});
@@ -413,9 +417,8 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                             </a>
 
                             {devices.map((device:any,i:any) =>
-                                device.name === "TheSound" 
-                                    ? null 
-                                    : <a 
+                                device.name === "TheSound"
+                                    && <a 
                                         key={i} 
                                         onClick={() => {
                                             // console.log(a);
