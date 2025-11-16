@@ -49,7 +49,7 @@ function stateUpdates(state: any, setPlayerState: any){
         // console.log(temp)
 
         // console.log(keys)     
-        if (keys.length > 20){
+        if (keys.length > 35){
             let lastKey: any = keys.pop()
             delete temp[lastKey]
         }   

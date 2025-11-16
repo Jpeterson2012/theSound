@@ -28,10 +28,12 @@ export default function UAlbum() {
   const [deleteAlbum] = useDeleteAlbumMutation()
   const [artists, setArtists] = useState<any>([])
   const [talbum, setTAlbum] = useState<any>([])
-  const[snack, setSnack] = useState(false)
+  const [snack, setSnack] = useState(false)
   const [modal, setModal] = useState(false)
-  const[trackData, setTrackData] = useState<any>(null)
-  const [filter_val, setFilter_val] = useState<string>('')
+  const [trackData, setTrackData] = useState<any>(null)
+  const [filter_val, setFilter_val] = useState<string>('');
+
+  const [discog, setDiscog] = useState([]);
 
   const {is_active, playerState} = useContext(UsePlayerContext);
   
@@ -87,6 +89,16 @@ export default function UAlbum() {
 
     assignArtists();
 
+    const fetchDiscog = async () => {
+      const resp = await spotifyRequest(`/artists2/albums/${zip[0][1]}`);
+      const data = await resp.json();
+
+      console.log(data);
+      setDiscog(data);
+    };
+
+    fetchDiscog();
+
     //This fixes render bug where fetch doesn't activate when clicking on currently playing album
   }, [sessionStorage.getItem("image"),asuccess]);
     
@@ -125,10 +137,54 @@ export default function UAlbum() {
       />
     </div>
   );
+
+  const showDiscog = () => {
+    return (
+      <div style={{display: 'flex', gap: '25px'}} >
+          {discog?.map((val:any,i: number) =>                
+            <a key={i} style={{display: 'flex', flexDirection: 'column', gap: '10px'}} onClick={() => {
+            // console.log(val)
+            // console.log(sessionStorage.getItem("name"))
+
+              // let found = (albums?.find((e: any) => e?.album_id === val.id) || (albums?.find((e: any) => e?.name === val.name)))  
+              
+              // if (found) {
+              //   sessionStorage.setItem("albumStatus","user");
+
+              //   if (val.id !== found?.album_id) {
+              //     found?.album_id;
+              //   }                  
+              // } else {
+              //   sessionStorage.setItem("albumStatus","notuser");
+              // }
+              
+              // sessionStorage.setItem("image", val.img.url);
+
+              // sessionStorage.setItem("artist", JSON.stringify(val.artists.map((t: any) => t.name)));
+
+              // sessionStorage.setItem(
+              //   "artist_id", 
+              //   JSON.stringify(
+              //     val.artists.map((t: any) => t.uri.split(':').pop())
+              //   ),
+              // );
+
+              // navigate(`/app/album/${val.id}`);
+            }}>
+              <img key={i} src={val.images.find((b: any) => b.height > 160).url} style={{width: '150px', height: '190px', borderRadius: '10px'}}/>
+
+              <span style={{color: 'rgb(90, 210, 216)'}}>{val.name}</span>
+
+              <span style={{color: 'rgb(90, 210, 216)'}}>{val.release_date}</span>           
+            </a>                    
+          )}        
+      </div>
+    );
+  };
   
   return (
     <>      
-        <>          
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>          
           <div className="topDiv">
             <h2 style={{fontSize: '30px'}} >{talbum[0]?.name}</h2>
               
@@ -205,18 +261,30 @@ export default function UAlbum() {
             {listItems2}
           </div>
           
-          <div style={{display: 'flex', flexDirection: 'column', marginTop: '50px', marginBottom: '50px'}}>
-            {artists?.images?.map((a: any, i:any) => <img key={i} src={a.find((b: any) => b.height > 160).url} style={{width: '90px', height: '90px', borderRadius: '10px'}} />)}
+          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', width: '90%'}}>
+            <div style={{display: 'flex', flexDirection: 'column', marginTop: '50px', marginBottom: '50px'}}>
+              {artists?.images?.map((a: any, i:any) => <img key={i} src={a.find((b: any) => b.height > 160).url} style={{width: '90px', height: '90px', borderRadius: '10px'}} />)}
+            </div>
+            
+            <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {talbum[0]?.release_date}</h5>
+
+            <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ talbum[0]?.copyrights[0]?.text} </h5>
+
+            <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {talbum[0]?.label_name}</h5>
           </div>
-          
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {talbum[0]?.release_date}</h5>
 
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ talbum[0]?.copyrights[0]?.text} </h5>
+          <div style={{display: 'flex', justifyContent: 'space-between', width: '90%'}}>
+            <h5 style={{color: 'rgb(90, 210, 216)'}}>More by {zip[0][0]}</h5>
 
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {talbum[0]?.label_name}</h5>
+            <h5 style={{color: 'rgb(90, 210, 216)'}}>See discography</h5>
+          </div>
+
+          <div style={{maxWidth: '90%', overflowX: 'auto'}}>
+            {showDiscog()}
+          </div>
 
           <p style={{marginBottom: '150px'}}></p>
-        </>
+        </div>
       
       <ButtonScroll />
 

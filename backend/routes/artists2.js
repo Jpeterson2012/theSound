@@ -64,4 +64,17 @@ router.get('/:id', async (req, res) => {
   }   
 })
 
+router.get('/albums/:id', async (req, res) => {
+  const headers = {
+    Authorization: 'Bearer ' + req.session.access_token,        
+  }
+
+  const url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?limit=20`;
+
+  let resp = await fetch(url, {headers});
+  let data = await resp.json();
+
+  res.send(data.items);
+});
+
 module.exports = router;

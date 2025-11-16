@@ -211,10 +211,67 @@ export default function Logo () {
     };
   }, [tracks]);
 
+  function listRecent() { 
+    let temp: any = [];
+    let temp2 = JSON.parse(localStorage.getItem("recent")!);        
+
+    if (temp2 && window.innerWidth > 500) {          
+      Object.keys(temp2).forEach((val:any) => temp.push( {"id": temp2[val].id,"name": temp2[val].name,"artists": temp2[val].artists,"img": temp2[val].images.filter((t: any) => t.height == 640)[0]} ));    
+      return (
+        <div style={{display: 'flex', flexDirection: 'column', position: 'fixed', right: '0', top: '0', zIndex: '3', maxHeight: '100%', overflowY: 'auto', padding: '3px', background: 'linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%)'}}>
+          {temp.map((val:any,i: number) => 
+            <div key={i}>        
+              <a onClick={() => {
+              // console.log(val)
+              // console.log(sessionStorage.getItem("name"))
+
+                let found = (albumss?.find((e: any) => e?.album_id === val.id) || (albums?.find((e: any) => e?.name === val.name)));                                
+                
+                if (found) {
+                  sessionStorage.setItem("albumStatus","user");
+
+                  if (val.id !== found?.album_id) {
+                    found?.album_id;
+                  }                  
+                } else {
+                  sessionStorage.setItem("albumStatus","notuser");
+                }
+                
+                sessionStorage.setItem("image", val.img.url);
+
+                sessionStorage.setItem("artist", JSON.stringify(val.artists.map((t: any) => t.name)));
+
+                sessionStorage.setItem(
+                  "artist_id", 
+                  JSON.stringify(
+                    val.artists.map((t: any) => t.uri.split(':').pop())
+                  ),
+                );
+
+                navigate(`/app/album/${val.id}`);
+              }}>                
+                <img key={i} src={val.img.url} style={{width: '43px', height: '43px', borderRadius: '5px'}}/>           
+              </a>          
+            </div>
+          )}
+        </div>
+      );
+    }
+    else{
+      return (
+        <>
+        </>
+      );
+    }
+  };
+
   return(
     <>
-      {isSuccess &&      
-        <div className='mainLogo'>
+      {isSuccess &&     
+        <>
+        {listRecent()} 
+
+        <div className='mainLogo'>          
           <h2 
             className='userName' 
             style={{cursor: 'pointer'}} 
@@ -347,6 +404,7 @@ export default function Logo () {
             </Modal>
           </div>
         </div>
+        </>
       }
     </>
   );
