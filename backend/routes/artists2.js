@@ -1,10 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 router.get('/:id', async (req, res) => {
   const headers = {
-    Authorization: 'Bearer ' + req.session.access_token,        
-    }
+  Authorization: 'Bearer ' + req.session.access_token,        
+  };
+
   try{    
   
     // let temp = []
@@ -34,12 +35,16 @@ router.get('/:id', async (req, res) => {
     // getStuff()
     
     let pages = 0;
+
     while(true) {
       //const url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?include_groups=single,album,appears_on,compilation&offset=${pages}&limit=35`;
       const url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?include_groups=single,album,compilation&offset=${pages}&limit=35`;
+
       let musicObj = {music: []};        
+
       let resp = await fetch(url, {headers});
       let data = await resp.json();        
+
       musicObj.music.push(
         ...data.items.map(item => {
           const {available_markets, ...rest} = item;
@@ -52,17 +57,17 @@ router.get('/:id', async (req, res) => {
       
       pages += 35;
   
-      if(data.next == null) {
+      if(!data.next) {
         break;
       }
-    }  
+    };  
 
     res.end();
   }
   catch(e){
     console.error(e);
-  }   
-})
+  };   
+});
 
 router.get('/albums/:id', async (req, res) => {
   let arr = req.params.id;

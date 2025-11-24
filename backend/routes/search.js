@@ -1,104 +1,55 @@
-var express = require('express');
-var router = express.Router();
-const { con } = require('../sql.js')
-
-// router.get('/:id', async (req, res) => {
-//     // console.log(req.params.id)
-//     const headers = {
-//       Authorization: 'Bearer ' + req.session.access_token
-//     }
-//     var pages = 0
-//     try{
-//     while (pages < 25){
-
-    
-//       url = `https://api.spotify.com/v1/search?q=${req.params.id}&offset=${pages}&limit=5&type=track,album,artist,playlist`
-//       var resp = await fetch(url, {headers})
-//       var data = await resp.json()
-//       let temp = {}
-//       let temp2 = []
-//       data.albums.items.map(a => a ? temp2.push({name: a.name, id: a.id, images: a.images, artists: a.artists, url: a.url}) : null)
-//       temp.albums = temp2
-//       temp2 = []
-    
-//       data.tracks.items.map(a => a ? temp2.push({name: a.name, album_name: a.album.name, artists: a.artists, images: a.album.images, url: a.album.uri, track_number: a.track_number, duration_ms: a.duration_ms}) : null)      
-//       temp.tracks = temp2
-//       temp2 = []
-      
-//       data.artists.items.map(a => a ?temp2.push({name: a.name, id: a.id, images: a.images}) : null)
-//       temp.artists = temp2
-//       temp2 = []
-      
-//       data.playlists.items.map(a => a ? temp2.push({name: a.name, id: a.id, images: a.images}) : null)
-//       temp.playlists = temp2
-//       temp2 = []
-      
-      
-//       res.write(JSON.stringify(temp))
-//       pages += 5
-//     }
-//     res.end()
-//   }
-//   catch(e){
-//     console.error(e)
-//   }
-  
-// })
+const express = require('express');
+const router = express.Router();
 
 router.get('/:id', async (req, res) => {
-  let arr = req.params.id
-  arr = arr.split(',')
-  // console.log(req.params.id)
+  let arr = req.params.id;
+
+  arr = arr.split(',');
+  
   const headers = {
     Authorization: 'Bearer ' + req.session.access_token
+  };
+  
+  try{  
+    const url = `https://api.spotify.com/v1/search?q=${arr[0]}&offset=${arr[1]}&limit=10&type=track,album,artist,playlist`;
+    var resp = await fetch(url, {headers});
+    var data = await resp.json();
+
+    let items = {};
+    let tempArray = [];
+
+    data.albums?.items?.map(a => a && tempArray.push({name: a.name, id: a.id, images: a.images, artists: a.artists, url: a.url}));
+    items.albums = tempArray
+    tempArray = [];
+  
+    data.tracks?.items?.map(a => a && tempArray.push({name: a.name, album_name: a.album.name, artists: a.artists, images: a.album.images, url: a.album.uri, track_number: a.track_number, duration_ms: a.duration_ms}));      
+    items.tracks = tempArray;
+    tempArray = [];
+    
+    data.artists?.items?.map(a => a && tempArray.push({name: a.name, id: a.id, images: a.images}));
+    items.artists = tempArray;
+    tempArray = [];
+    
+    data.playlists?.items?.map(a => a && tempArray.push({name: a.name, id: a.id, images: a.images}));
+    items.playlists = tempArray;
+    tempArray = [];    
+    
+    res.send(items);    
   }
-  var pages = 0
-  try{
-  
+  catch(e) {
+    console.error(e);
+  };
+});
 
-  
-    url = `https://api.spotify.com/v1/search?q=${arr[0]}&offset=${arr[1]}&limit=10&type=track,album,artist,playlist`
-    var resp = await fetch(url, {headers})
-    var data = await resp.json()
-    let temp = {}
-    let temp2 = []
-    data.albums?.items?.map(a => a ? temp2.push({name: a.name, id: a.id, images: a.images, artists: a.artists, url: a.url}) : null)
-    temp.albums = temp2
-    temp2 = []
-  
-    data.tracks?.items?.map(a => a ? temp2.push({name: a.name, album_name: a.album.name, artists: a.artists, images: a.album.images, url: a.album.uri, track_number: a.track_number, duration_ms: a.duration_ms}) : null)      
-    temp.tracks = temp2
-    temp2 = []
-    
-    data.artists?.items?.map(a => a ? temp2.push({name: a.name, id: a.id, images: a.images}) : null)
-    temp.artists = temp2
-    temp2 = []
-    
-    data.playlists?.items?.map(a => a ? temp2.push({name: a.name, id: a.id, images: a.images}) : null)
-    temp.playlists = temp2
-    temp2 = []
-    
-    
-    res.send(temp)
-  
-  
-}
-catch(e){
-  console.error(e)
-}
-
-})
-
-function generatePassword() {
-  var length = 22,
-      charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-      retVal = "";
-  for (var i = 0, n = charset.length; i < length; ++i) {
-      retVal += charset.charAt(Math.floor(Math.random() * n));
-  }
-  return retVal;
-}
-
+//function generatePassword() {
+//  var length = 22,
+//      charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+//      retVal = "";
+//  for (var i = 0, n = charset.length; i < length; ++i) {
+//      retVal += charset.charAt(Math.floor(Math.random() * n));
+//  }
+//  return retVal;
+//};
 
 // router.get('/cplaylist', async (req,res) => {
 //   console.log('hello')
@@ -135,14 +86,14 @@ function generatePassword() {
 //               var data = await resp.json()
 //               let values = []
 //               let temp = {}
-//               let temp2 = []
+//               let tempArray = []
 //               let pID = generatePassword()
 //               let index = Math.floor(Math.random() * 8)
              
             
-//               // data.tracks.items.map(a => a ? temp2.push({name: a.name, album_name: a.album.name, artists: a.artists, images: a.album.images, uri: a.album.uri, track_number: a.track_number, duration_ms: a.duration_ms}) : null)
-//               data.tracks.items.map(a => a && temp2.push(a))      
-//               temp.items = temp2
+//               // data.tracks.items.map(a => a ? tempArray.push({name: a.name, album_name: a.album.name, artists: a.artists, images: a.album.images, uri: a.album.uri, track_number: a.track_number, duration_ms: a.duration_ms}) : null)
+//               data.tracks.items.map(a => a && tempArray.push(a))      
+//               temp.items = tempArray
 
 //               values.push([pID, JSON.stringify([images[index]]), `Playlist${pName}`, true, 'spotify:playlist:' + pID, JSON.stringify(temp)])           
 //               sql = `INSERT INTO ${vars[i].replace(' ','')} (playlist_id, images, name, public, uri, tracks) VALUES ?`

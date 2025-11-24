@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/albums', async (req, res) => {
     
     function getAlbums(){                
-        sql = `SELECT album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name from ${req.session.username}albums`
+        sql = `SELECT album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name, date_added from ${req.session.username}albums`
         con.query(sql, function (err, result) {
             if (err) throw err;
             var items = []
@@ -21,7 +21,8 @@ router.get('/albums', async (req, res) => {
                 temp.artists = JSON.parse(result[i].artists)
                 temp.tracks = JSON.parse(result[i].tracks)
                 temp.copyrights = JSON.parse(result[i].copyrights)
-                temp.label_name = result[i].label_name                
+                temp.label_name = result[i].label_name      
+                temp.date_added = result[i].date_added          
                 items.push(temp)
             }
             res.send(items)
@@ -49,8 +50,8 @@ router.get('/playlists', async (req, res) => {
                 var temp2 = result[i].tracks                
                 
                 var temp3 = []
-                temp2 === null ? null : temp2.items?.map(a => {
-                    temp3.push({album_id: a.album?.id, images: a.album?.images ? a.album?.images : (a.images ?  a.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
+                temp2 && temp2.items?.map(a => {
+                    temp3.push({album_id: a.album?.id, images: a.album?.images ? a.album?.images : (a.images ?  a.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists, date_added: a.date_added})
                 }) 
                 temp.tracks = temp3
                 items.push(temp)                
@@ -69,7 +70,7 @@ router.get('/playlists/:id', async (req, res) => {
             console.log(result[0].name)
             if (err) throw err
             // var items = []
-            var temp ={}
+            var temp = {}
                 temp.playlist_id = result[0].playlist_id
                 temp.images = JSON.parse(result[0].images)
                 temp.name = result[0].name
@@ -79,7 +80,7 @@ router.get('/playlists/:id', async (req, res) => {
                 
                 var temp3 = []
                 temp2.items?.map(a => {
-                    temp3.push({images:( a.album?.images ? a.album?.images : null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists})
+                    temp3.push({images:( a.album?.images ?? null), uri: a.uri, name: a.name, track_number: a.track_number, duration_ms: a.duration_ms, artists: a.artists, date_added: a.date_added})
                 })
                 temp.tracks = temp3
                 // items.push(temp)
@@ -93,20 +94,22 @@ router.get('/playlists/:id', async (req, res) => {
 router.get('/liked', async (req, res) => {
     
     function getLiked(){        
-        var sql = `select album_id, images, duration, track_id, name, artists from ${req.session.username}liked`
+        var sql = `select album_id, images, duration, track_id, name, artists, date_added from ${req.session.username}liked`
         con.query(sql, function (err, result) {
             if (err) throw err
 
             var items = []
             for (let i = 0; i < result.length; i++){
-                var temp ={}
+                if (!i) console.log(result[i])
+                var temp = {}
                 var tracks = {}
                 temp.album_id = result[i].album_id
                 temp.images = JSON.parse(result[i].images)
                 temp.duration_ms = result[i].duration
                 temp.uri = result[i].track_id
                 temp.name = result[i].name
-                temp.artists = JSON.parse(result[i].artists)
+                temp.artists = JSON.parse(result[i].artists),
+                temp.date_added = result[i].date_added;
                 
                 items.push(temp)
             }

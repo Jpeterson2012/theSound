@@ -169,7 +169,8 @@ export default function Home({setIsLoading2}: any) {
   const [psorted, setPSorted] = useState(+sessionStorage.getItem('psortVal')!)
   const [filter_val, setFilter_val] = useState<string>('')        
     
-  const {data: albums = [],isSuccess: albumSuccess} = useGetAlbumsQuery()    
+  const {data: albums = [],isSuccess: albumSuccess} = useGetAlbumsQuery()  
+  console.log(albums)  
   const {data: podcasts, isSuccess: podSuccess} = useGetPodcastsQuery()
   const {data: audiobooks, isSuccess: audSuccess} = useGetAudiobooksQuery()    
 
