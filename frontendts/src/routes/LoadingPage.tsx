@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
 import { useNavigate } from "react-router-dom"
 import Loading from '../components/Loading/Loading';
-import { spotifyRequest } from '../utils';
+import { spotifyRequest } from '../utils/utils';
 
 export default function LoadingPage() {
     const navigate = useNavigate();

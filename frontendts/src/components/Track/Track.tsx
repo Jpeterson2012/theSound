@@ -1,28 +1,23 @@
 //session storage variable name set hereimport musicBar from "../musicBar/musicBar.tsx"
 import './Track.css';
+import { useEffect, useState } from "react";
 import SavedSong from '../SavedSong/SavedSong';
 import musicBar from '../musicBar/musicBar.tsx';
-import { spotifyRequest } from '../../utils.ts';
-
-function timeCalc (ms: number) {
-    const temp = Math.round(ms / 1000);
-    let mins = Math.floor(temp / 60);
-    let secs = temp - mins * 60;
-    secs > 59 && (mins += 1, secs -= 60);
-    (secs.toString().length === 1 && secs > 5) && (mins += 1, secs -= 6);
-
-    if (secs.toString().length == 1) return `${mins}:${secs}0`;
-    else return `${mins}:${secs}`;
-};
+import { spotifyRequest, timeCalc, getRandomInt } from '../../utils/utils.ts';
 
 export default function Track ( {uri, name, number, duration, album_name, artist, t_uri, show, customWidth, paused}: any) {
+    const [plays, setPlays] = useState<string>("1,000,000");
+
+    useEffect(() => {
+        setPlays(getRandomInt(1000000, 10000000));
+    }, []);
+
     return (
-        <div className='trackContainer' style={customWidth ? {width: `${customWidth}%`} : {width: '100%'}}>
+        <div className='trackContainer' style={{...(customWidth ? {width: `${customWidth}%`} : {width: '100%'}), ...(show === undefined && {borderBottom: '1px solid rgba(90, 210, 216, 0.3)'})}}>
             <a 
                 onClick={() => {                
                     // console.log(sessionStorage.get
-                    // console.log(sessionStorage.getItem("uri"))
-                    // console.log(sessionStorage.getItem("token"))
+                    // console.log(sessionStorage.getItem("uri"))                    
                     album_name && sessionStorage.setItem("albumname", album_name);
                     
                     // sessionStorage.setItem("name", sessionStorage.getItem("albumname"))
@@ -45,6 +40,9 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                 
                 <br></br>            
             </a>
+
+            {(show === undefined && !customWidth) && <span style={{position: 'absolute', color: 'rgb(90, 210, 216)', top: '25%', left: '60%', fontWeight: 'bold'}} >{plays}</span>}
+
             {show === undefined && <div style={{display: 'flex'}}><SavedSong track={t_uri} /><span className="songLength">{timeCalc(duration)}</span></div>}
       </div>
     );

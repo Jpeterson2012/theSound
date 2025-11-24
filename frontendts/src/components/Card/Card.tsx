@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetAlbumsQuery } from '../../App/ApiSlice.ts';
 import Loading3 from '../Loading3/Loading3.tsx'
 
-export default function Card( {id, image, name, artist, a_id,paused}: any ) {
+export default function Card( {id, image, name, artist, a_id, paused}: any ) {
     const navigate = useNavigate()
     let key: number = 0
     //This is for displaying multiple artists with their own spotify ids

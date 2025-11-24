@@ -1,6 +1,9 @@
 import {useState, useEffect} from 'react';
 import { throttle } from './useThrottle';
-import useAuth from './useAuth';
+///import useAuth from './useAuth';
+import { useAppSelector, useAppDispatch } from '../App/hooks.ts';
+import { setPlaying } from '../App/defaultSlice.ts';
+import { setLogoutCallback, resetInactivityTimer } from '../utils/authTimer.ts';
 
 
 const track: any = {
@@ -26,7 +29,8 @@ const intialPlayerState = {
 };
 
 function stateUpdates(state: any, setPlayerState: any){
-    console.log('hi')      
+    //console.log('hi');
+
     setPlayerState({current_track: state?.track_window.current_track, is_paused: state?.paused, duration: state?.duration, pos: state?.position})
     
     sessionStorage.setItem("paused", state?.paused)
@@ -62,12 +66,18 @@ export const usePlayer = () => {
     const [playerState, setPlayerState] = useState(intialPlayerState)                   
     const [is_active, setActive] = useState(false);                    
 
-    const access_token = useAuth();    
+    //const access_token = useAuth();    
+    const access_token = useAppSelector(state => state.defaultState.authToken); 
+    const playing = useAppSelector(state => state.defaultState.playing);
+    const dispatch = useAppDispatch();      
 
     const resetPlayer = async () => {    
         await player?.disconnect();
+
         setPlayer(null);
+
         setPlayerState(intialPlayerState);
+
         setActive(false);  
     };
 
@@ -113,14 +123,25 @@ export const usePlayer = () => {
             player.addListener('player_state_changed', ( (state: any) => {
                 if (!state) {                                        
                     return;
-                }
+                }                                
+                
+                dispatch(setPlaying(!state.paused));
 
-                if(!sessionStorage.getItem("current")) setActive(true)
+                if(!sessionStorage.getItem("current")) setActive(true);
+                
                 debUpdate(state, setPlayerState);                                                                
             }))
                                                     
             player.connect();                                    
-        };    
+        };  
+
+        setLogoutCallback(() => {
+            resetPlayer();
+
+            window.location.href = "/";
+        });
+        
+        resetInactivityTimer();
     }, [access_token]);
     
     return {player, playerState, setPlayerState, is_active, resetPlayer};

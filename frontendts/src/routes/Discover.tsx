@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Spin3 } from "../components/Spin/Spin";
 import Card from "../components/Card/Card";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll";
-import { spotifyRequest } from '../utils.ts';
+import { spotifyRequest } from '../utils/utils.ts';
 
 function customRender(name: any, item: any){
     return (
@@ -71,9 +71,9 @@ export default function Discover() {
                 }
             }
             const assignDiscover = async () => {
-                const tempDiscover = await fetchDiscover();
-                setReleases(tempDiscover.releases);                                    
-                sessionStorage.setItem("releases", JSON.stringify(tempDiscover.releases));                        
+                const tempDiscover = await fetchDiscover();                
+                setReleases(tempDiscover);                                    
+                sessionStorage.setItem("releases", JSON.stringify(tempDiscover));                        
             }
             assignDiscover();
         }
@@ -116,17 +116,20 @@ export default function Discover() {
         
     )
 
-    const listReleases = releases.albums?.items.map((a: any) => 
-        <Card
-          key={a.id}
-          id={a.id}
-          uri={a.uri}
-          image={a.images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}
-          name={a.name}
-          artist={a.artists.map((t: any) => t.name)}
-          a_id={a.artists.map((t: any) => t.id)}
-          paused={playerState.is_paused}
-        />
+    const listReleases = releases?.map((a: any, index: number) => 
+        <div key={index}>
+            <h5>{a.release_date}</h5>
+
+            <Card            
+                id={a.id}
+                uri={a.uri}
+                image={a.images.filter((t: any)=>t.height == 300).map((s: any) => s.url)}
+                name={a.name}
+                artist={a.artists.map((t: any) => t.name)}
+                a_id={a.artists.map((t: any) => t.id)}
+                paused={playerState.is_paused}
+            />
+        </div>
     )
     function displayWrap(){
         if (releases.albums) {
@@ -142,7 +145,9 @@ export default function Discover() {
                     {chunkedArray.map((row, rowIndex) => (
                         <div key={rowIndex} className="row">
                             {row.map((item: any, itemIndex: any) => (
-                                <div key={itemIndex} className="item">                                                            
+                                <div key={itemIndex} className="item">
+                                    <h5>{item.release_date}</h5>
+
                                     <Card
                                         // key={a.id}
                                         id={item.id}

@@ -2,7 +2,7 @@
 import { useInterval } from "../hooks/useInterval.ts";
 import { useContext } from "react";
 import UsePlayerContext from "../hooks/PlayerContext.tsx";
-import { spotifyRequest } from "../utils.ts";
+import { spotifyRequest } from "../utils/utils.ts";
 
 export default function PollPlayer({setCurrentDev,currentDev}: any){
   const {playerState, setPlayerState} = useContext(UsePlayerContext);

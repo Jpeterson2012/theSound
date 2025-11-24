@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
       }
     let main = {}
     let index = Math.floor(Math.random() * 76)
-    let url = `https://api.spotify.com/v1/search?q=tag:hipster&type=album&offset=${index}&limit=20`
+    let url = `https://api.spotify.com/v1/search?q=tag:hipster&type=album&offset=${index}&limit=20`;
 
     var resp = await fetch(url, {headers})
     var data = await resp.json()

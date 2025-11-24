@@ -1,30 +1,25 @@
-import {useState, useEffect, useRef} from 'react';
-import { spotifyRequest } from '../utils';
+import {useEffect, useRef} from 'react';
+import { store } from '../App/store.ts';
+import { setAuthToken, setRefreshToken } from '../App/defaultSlice.ts';
+import { spotifyRequest } from '../utils/utils';
 
 export default function useAuth(){
-    const [auth, setAuth] = useState({
-        access_token: null,
-        refresh_token: null,
-    });
-    const timeoutRef = useRef<any>(null);    
+    const timeoutRef = useRef<any>(null);        
 
     const tokenManager = async () => {
         try{                
             const response = await spotifyRequest("/token");
-            const data = await response.json();
+            const data = await response.json();                                                                                           
+
+            store.dispatch(setAuthToken(data.access_token));            
             
-            setAuth({
-                access_token: data.access_token,
-                refresh_token: data.refresh_token
-            });                                   
-            
-            sessionStorage.setItem("token", data.access_token);                
+            store.dispatch(setRefreshToken(data.refresh_token));
 
             scheduleRefresh(data.expires_in, data.refresh_token);
         }
         catch(e){
             console.error(`Error requesting access token: ${e}`);
-            //window.location.href = '/';
+            
             clearTimeout(timeoutRef.current);
 
             timeoutRef.current = setTimeout(tokenManager, 5000);
@@ -39,20 +34,14 @@ export default function useAuth(){
         timeoutRef.current = setTimeout(() => refreshAccessToken(refresh), refreshTime);
     };
 
-    const refreshAccessToken = async (refresh: any) => {
-        console.log(refresh)
+    const refreshAccessToken = async (refresh: any) => {        
         try{
             await spotifyRequest("/token/refresh_token", "POST", {
                 body: JSON.stringify({refresh_token: refresh})
             })
             .then(data => data.json())
             .then(item => {                                
-                sessionStorage.setItem("token", item.token);
-
-                setAuth({                        
-                    access_token: item.access_token,        
-                    refresh_token: refresh,
-                });     
+                store.dispatch(setAuthToken(item.access_token));     
                 
                 scheduleRefresh(item.expires_in, refresh);
             });
@@ -71,5 +60,5 @@ export default function useAuth(){
         return () => clearTimeout(timeoutRef.current);
     }, []);    
 
-    return auth.access_token;
+    return;    
 };

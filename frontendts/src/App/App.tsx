@@ -11,7 +11,7 @@ declare global {
     onSpotifyWebPlaybackSDKReady: any;
     Spotify: any;
   }
-}
+};
 
 export default function App() {         
 

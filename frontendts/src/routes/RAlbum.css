@@ -1,19 +1,9 @@
-.topDiv{
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
 .albumImage{
     height: 359px;
     position: absolute;
     right: 440px;
     top: 18px;
     z-index: 1;
-}
-.topDiv h2{
-    margin-left: auto;
-    margin-right: auto;
 }
 .artistName{
     font-weight: bolder;
@@ -108,9 +98,6 @@
 @media(min-height: 1000px){
     .fade-in-image2{
         margin-left: 19.2vw;
-    }
-    .topDiv{
-        margin-top: 0px;
     }
     .albumImage{
         height: 459px;

@@ -17,7 +17,7 @@ import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
 import device from '../../images/device.png'
 import escape from '../../images/escape.jpg'
-import { spotifyRequest } from '../../utils.ts';
+import { spotifyRequest } from '../../utils/utils.ts';
 
 function playbackState(uri: string, playerState?: any, setPlayerState?: any, currentDev?: any){
     //Playback controls when current device isnt this application    

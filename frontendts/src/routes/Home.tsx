@@ -14,7 +14,7 @@ import dots from '../images/dots.png'
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 import Loading from '../components/Loading/Loading.tsx';
 import Loading3 from '../components/Loading3/Loading3.tsx'
-import { spotifyRequest } from '../utils.ts';
+import { spotifyRequest } from '../utils/utils.ts';
 
 function generatePassword() {
   const length = 22;
@@ -180,6 +180,12 @@ export default function Home({setIsLoading2}: any) {
 
   const[opensnack, setOpensnack] = useState(false)
   const {playerState} = useContext(UsePlayerContext);
+
+  const buttonNames = ["Albums", "Playlists", "Podcasts", "AudioBooks"];
+
+  const sessionButtonMapping: any = {"album": "Albums", "playlist": "Playlists", "podcast": "Podcasts", "audiobook": "AudioBooks"}
+
+  const [activeButton, setActiveButton] = useState<string>(sessionButtonMapping[sessionStorage.getItem('home') ?? "album"]);
 
   const onOpenModal = () => {setOpen(true)}
   const onCloseModal = () => {
@@ -513,16 +519,19 @@ export default function Home({setIsLoading2}: any) {
                 className='filterTrack' 
                 id='filterTrack' 
                 placeholder='Looking for something?' 
-                style={{borderRadius: '13px',width: '170px', height: '40px', marginLeft: '100px', backgroundColor: 'rgb(90, 210, 216)', color: 'black', fontWeight: 'bolder'}}  
+                style={{borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px',width: '400px', height: '40px', backgroundColor: 'rgb(90, 210, 216)', color: 'black', fontWeight: 'bolder'}}  
                 onChange={(e) => {
                   let temp = e.target.value;
 
-                  setFilter_val(temp)
+                  setFilter_val(temp);
                 }} 
               />
 
               <button 
-                style={{backgroundColor: '#7a19e9', color: 'rgb(90, 210, 216)', width: '60px', height: '40px', padding: '0px 5px'}} 
+                style={{
+                  backgroundColor: '#7a19e9', color: 'rgb(90, 210, 216)', width: '60px', height: '44px', padding: '0px 5px', 
+                  borderTopRightRadius: '10px', borderBottomRightRadius: '10px', borderTopLeftRadius: '0px', borderBottomLeftRadius: '0px'
+                }} 
                 onClick={() => {
                   setFilter_val('');          
 
@@ -533,15 +542,42 @@ export default function Home({setIsLoading2}: any) {
               </button>                                    
             </div>
 
-            <div className="buttonContainer">                        
-              <button className="homeButtons" onClick={() => {setHtml(Albums(listRecent(),window.innerWidth < 500 ? listItems2() : listItems )),sessionStorage.setItem('home','album')}}>Albums</button>
+            <div className="buttonContainer">      
+              {buttonNames.map((button: string, index: number) =>
+                <button 
+                  key={index}
+                  style={{
+                    ...(activeButton === button ? {background: 'rgb(90, 210, 216)'} : {background: '#7a19e9'}),
+                    ...(button === "Albums" ? {borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px'} : {})
+                  }} 
+                  className="homeButtons" 
+                  onClick={() => {
+                    setActiveButton(button);
 
-              <button className="homeButtons" onClick={() => {setHtml(Playlists(navigate, listPlaylists)), sessionStorage.setItem('home','playlist')}}>Playlists</button>
+                    switch (button) {
+                      case "Albums":
+                        setHtml(Albums(listRecent(),window.innerWidth < 500 ? listItems2() : listItems ));                        
+                        break;
+                      case "Playlists":
+                        setHtml(Playlists(navigate, listPlaylists));                        
+                        break;
+                      case "Podcasts":
+                        setHtml(Podcasts(podcasts));                        
+                        break;
+                      case "AudioBooks":
+                        setHtml(Audiobooks(audiobooks));                        
+                        break;
+                      default:
+                        return;
+                    };
 
-              <button className="homeButtons" onClick={() => {setHtml(Podcasts(podcasts)), sessionStorage.setItem('home', 'podcast') }}>Podcasts</button>
+                    sessionStorage.setItem('home', Object.keys(sessionButtonMapping).find(key => sessionButtonMapping[key] === button) ?? 'album');
+                  }}
+                >
+                  {button}
+                </button>
+              )}
 
-              <button className="homeButtons" onClick={() => {setHtml(Audiobooks(audiobooks)), sessionStorage.setItem('home', 'audiobook')}}>AudioBooks</button>
-                        
               <p 
                 style={sessionStorage.getItem('home') === "playlist" ? {display: "inline"} : {display: "none"}} 
                 className="addPlaylist" 

@@ -33,15 +33,17 @@ h4{
   overflow: hidden;
 }
 .songLength{
-
   font-weight: bold;
   color: rgb(90, 210, 216);
 }
   
 .trackContainer{
+  position: relative;
   display: flex;
   justify-content: space-between;  
+  align-items: center;
   margin-bottom: 20px;
+  /* border-bottom: 1px solid rgba(90, 210, 216, 0.3); */
 }
 @media only screen and (max-width: 768px){
   .innerMain, h2, .songLength{

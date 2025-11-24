@@ -10,11 +10,11 @@
 .homeButtons{
   animation: fadeIn 0.5s;
   position: relative;
-  border-radius: 10px;
+  border-radius: 0px;
   color: black;
   font-weight: bolder;
   padding: 10px 13px;
-  background: #7a19e9;
+  /* background: #7a19e9; */
   outline: 0 !important;
 }
 @keyframes pulse {
@@ -55,6 +55,11 @@
   position: relative;
   /* left: 200px; */
   animation: fadeIn 0.5s;
+  border-radius: 0px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding-top: 11.7px;
+  padding-bottom: 11.7px;
   
 }
 .theme{
@@ -226,7 +231,8 @@ form{
 }
 .homeContainer{
   position: absolute;
-  top: 8vw; right: 40vw;
+  top: 8vw; 
+  right: 35vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -272,7 +278,8 @@ form{
 
 @media(min-height: 1000px){
   .homeContainer{
-    margin-top: 0px;
+    margin-top: -30px;
+    right: 40vw;
   }
   .removePlay{
     /* left: 24vw; */
@@ -327,7 +334,7 @@ form{
     /* margin-right: 100px;     */
   }
   .buttonContainer{
-    width: 90vw;
+    
     /* overflow-x: auto; */
     white-space: nowrap;
     top: 20vh;

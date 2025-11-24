@@ -28,8 +28,8 @@
 a {
   cursor: pointer;
 }
-a:hover{
-  color: black
+.cardArtistContainer a:hover{
+  color: black !important;
 }
 
 
@@ -69,14 +69,12 @@ p {
 .mainArtistContainer2{
   display: none;
 }
-.mainArtistContainer{  
-  
-  display: flex;      
+.mainArtistContainer{      
   overflow-x: auto;
-
 }
 
 .cardArtistContainer{
+  display: inline;
   margin: auto;
 }
 @media only screen and (max-width: 768px),

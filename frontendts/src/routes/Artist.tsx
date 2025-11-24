@@ -6,7 +6,7 @@ import Card from "../components/Card/Card";
 import { Spin3 } from "../components/Spin/Spin.tsx";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 import { useParams } from "react-router-dom";
-import { spotifyRequest } from '../utils.ts';
+import { spotifyRequest } from '../utils/utils.ts';
 
 export default function Artist() {
   var parts = window.location.href.split('/');
@@ -99,7 +99,7 @@ export default function Artist() {
   }, [id]);
   
   const listTTracks = artists.tracks?.tracks.map((t: any, index:any) =>    
-    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',width: '100%'}} key={index}>
+    <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginLeft: '2vw'}} key={index}>
           
       <p className="topTrackNum" style={{marginLeft: '16px',overflow: 'visible'}}>{(index + 1) < 10 ? '0' + (index + 1) : (index + 1)}</p> 
       <img src={t.album?.images.filter((t: any) => t.height == 64).map((s: any) => s.url)} style={{marginLeft: '20px',borderRadius: '10px'}} />
@@ -111,7 +111,7 @@ export default function Artist() {
         album_name={t.album?.name}
         artist={t.artists}
         t_uri={t.uri}   
-        customWidth={80}   
+        customWidth={85}   
         paused={playerState.is_paused}
       />      
     </div>
@@ -192,13 +192,13 @@ export default function Artist() {
           
           <img className="artistImage" src={!artist?.images.length 
             ? 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg' 
-            : artist?.images[1]?.url} alt={artist?.name} style={{height: '320px', width: '320px',borderRadius: '10px'}} />
+            : artist?.images[1]?.url} alt={artist?.name} style={{height: '320px', width: '320px', borderRadius: '10px'}} />
 
           <p style={{margin: '20px auto'}} >{artist?.followers.total.toLocaleString()} followers</p>
 
-          <div style={{display: 'flex', justifyContent: 'space-evenly', alignItems: 'center'}}>
-            <p className="headers2">Genre(s):</p>
-            {artist?.genres.length ? artist?.genres.map((s: any, i: any) => <p key={i}>{s}</p>) : <p>Music I guess. Idk</p>}
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <p className="headers2">Genre(s):&nbsp;</p>
+            {artist?.genres.length ? artist?.genres.map((s: any, i: any, row: any) => <p key={i}>{row.length - 1 !== i ? s + "," : s}&nbsp;</p>) : <p>Music I guess. Idk</p>}
           </div>
             
           <p className="headers">Top Tracks</p>

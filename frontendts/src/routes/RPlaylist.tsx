@@ -9,7 +9,9 @@ import MySnackbar from '../components/MySnackBar.tsx';
 import ButtonScroll from '../components/ButtonScroll/ButtonScroll.tsx';
 import { useGetPlaylistsQuery,useDeletePlaylistMutation } from '../App/ApiSlice.ts';
 import { filterTracks } from "../components/filterTracks.tsx";
-import { spotifyRequest } from '../utils.ts';
+import { spotifyRequest, msToReadable } from '../utils/utils.ts';
+
+import { AddToLibrary } from '../helpers/AddToLibrary.tsx';
 
 function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setmodal:any,settrack:any,rplay:any,filter_val:any){
   let temp2 = document.getElementById('dropdown-content2')!;
@@ -192,12 +194,19 @@ export default function RPlaylist({lastSegment}: any){
                 <div className="desc2" style={{display: 'flex', marginRight: '10px', alignItems: 'center'}}>
                   <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
 
-                  <h5 style={{color: 'rgb(90, 210, 216)'}}>{ptracks?.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length} Song(s)</h5>
+                  <h5 style={{color: 'rgb(90, 210, 216)'}}>
+                    {ptracks?.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length 
+                    + " Song(s) • "
+                    +  msToReadable(ptracks?.reduce((acc: number, item: any) => {
+                        acc += Number(item.duration_ms);
+
+                        return acc;
+                      }, 0)
+                    )}
+                  </h5>
 
                   {/* {(sessionStorage.getItem("cplaylist") === undefined && !sessionStorage.getItem("cplaylist")) &&  */}
-                    <p 
-                      id="addAlbum" 
-                      style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} 
+                    <AddToLibrary 
                       onClick={(e) => {
                         const el = e.target as HTMLElement;
                         setSnack(true);                        
@@ -233,7 +242,7 @@ export default function RPlaylist({lastSegment}: any){
                       }}
                     >
                       {found ? "✓" : "+"}
-                    </p>
+                    </AddToLibrary>
                   {/* } */}
 
                   <div className="dropdown" id="dropdown">                                                        

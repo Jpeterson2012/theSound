@@ -65,16 +65,26 @@ router.get('/:id', async (req, res) => {
 })
 
 router.get('/albums/:id', async (req, res) => {
+  let arr = req.params.id;
+
+  arr = arr.split(',');
+
   const headers = {
     Authorization: 'Bearer ' + req.session.access_token,        
   }
 
-  const url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?limit=20`;
+  let items = {};
 
-  let resp = await fetch(url, {headers});
-  let data = await resp.json();
+  for (let i = 0; i < arr.length; i++) {
+    const url = `https://api.spotify.com/v1/artists/${arr[i]}/albums?limit=15`;
 
-  res.send(data.items);
+    let resp = await fetch(url, {headers});
+    let data = await resp.json();
+
+    items[arr[i]] = data.items;
+  }  
+
+  res.send(items);
 });
 
 module.exports = router;

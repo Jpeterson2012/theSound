@@ -15,6 +15,7 @@ import Categories from '../../routes/Categories.tsx';
 import BottomBar from '../BottomBar/BottomBar.tsx';
 import PollPlayer from '../PollPlayer.tsx';
 import UsePlayerContext from '../../hooks/PlayerContext.tsx';
+import useAuth from '../../hooks/useAuth.ts';
 
 export default function WebPlayback() {
   //Used to keep track of current device. used in Track and Ptrack Component
@@ -23,10 +24,13 @@ export default function WebPlayback() {
   const [isLoading2, setIsLoading2] = useState(true);
   const navigate = useNavigate();        
       
+  useAuth();
+
   const player = usePlayer();    
 
   useEffect(() => {            
-    if (!player.player) return;      
+    if (!player.player) return;
+       
     //localStorage.clear()        
     // document.addEventListener('beforeunload', () => {
     //     sessionStorage.clear()

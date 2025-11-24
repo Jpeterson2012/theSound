@@ -1,9 +1,3 @@
-.topDiv{
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
 .albumImage{
     height: 359px;
     position: absolute;
@@ -11,16 +5,13 @@
     top: 18px;
     z-index: 0;
 }
-.topDiv h2{
-    margin-left: auto;
-    margin-right: auto;
-}
 .artistName{
     font-weight: bolder;
 }
 .albumDescription{
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-self: flex-start;
     margin-bottom: 20px;
     color: rgb(90, 210, 216);
 }
@@ -105,9 +96,6 @@
 @media(min-height: 1000px){
     .fade-in-image2{
         margin-left: 19.2vw;
-    }    
-    .topDiv{
-        margin-top: 0px;        
     }
     .albumImage{
         height: 459px;
@@ -125,6 +113,8 @@
   }
   .tdContainer{
     width: 90vw;
+
+    position: relative;
   }
   .removeImg2{
     padding-top: 10px;
@@ -162,12 +152,5 @@
     .tdContainer{        
         width: 90%;
         margin-left: 4vw;
-    }
-    .topDiv{
-        max-height: 105vh;        
-    }
-    .topDiv h2{
-        width: 90%;
-        overflow: hidden;
     }    
   }  

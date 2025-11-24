@@ -6,7 +6,7 @@ import { UsePlayerContext } from '../hooks/PlayerContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import { Spin } from "../components/Spin/Spin.tsx";
 import Loading2 from "../components/Loading2/Loading2.tsx";
-import { spotifyRequest } from '../utils.ts';
+import { spotifyRequest } from '../utils/utils.ts';
 
 function randColor(){
     return "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")

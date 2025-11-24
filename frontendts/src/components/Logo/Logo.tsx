@@ -10,7 +10,7 @@ import search from '../../images/search.png';
 import space from '../../images/music.gif';
 import logo from '../../images/logo.png';
 import UsePlayerContext from '../.././hooks/PlayerContext.tsx';
-import { spotifyRequest } from '../../utils.ts';
+import { spotifyRequest } from '../../utils/utils.ts';
 
 function getTracks(ptracks: any) {
   let key = 0;
@@ -152,6 +152,11 @@ export default function Logo () {
   
   const {resetPlayer} = useContext(UsePlayerContext);
 
+  const buttonNames = ["tracks", "albums", "artists", "playlists"];
+  const [activeButton, setActiveButton] = useState<string>(sessionStorage.getItem('searchHome') ?? "tracks");
+
+  const capitalize = (str: any) => {return str.charAt(0).toUpperCase() + str.slice(1)};
+
   const fetchSearch = async () => {        
     try {      
       const temp = spotifyRequest(`/search/${(document.getElementById("searchTerm") as HTMLInputElement).value},${counter}`)
@@ -218,7 +223,7 @@ export default function Logo () {
     if (temp2 && window.innerWidth > 500) {          
       Object.keys(temp2).forEach((val:any) => temp.push( {"id": temp2[val].id,"name": temp2[val].name,"artists": temp2[val].artists,"img": temp2[val].images.filter((t: any) => t.height == 640)[0]} ));    
       return (
-        <div style={{display: 'flex', flexDirection: 'column', position: 'fixed', right: '0', top: '0', zIndex: '3', maxHeight: '100%', overflowY: 'auto', padding: '3px', background: 'linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%)'}}>
+        <div style={{display: 'flex', flexDirection: 'column', position: 'fixed', right: '0', top: '0', maxHeight: '92%', overflowY: 'auto', padding: '3px', background: 'linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%)'}}>
           {temp.map((val:any,i: number) => 
             <div key={i}>        
               <a onClick={() => {
@@ -379,13 +384,40 @@ export default function Logo () {
               <img src={space} style={{zIndex: '0', width: '100%', height: '180px', position: 'fixed', top: '0', opacity: '0.3', objectFit: 'cover', objectPosition: '20% 50%'}}/>
 
               <div id='modalbuttons' style={{display: 'none', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '8vw'}}>
-                <button onClick={() => {setHtml(getTracks(tracks)), sessionStorage.setItem('searchHome', 'tracks')}}>Tracks</button>
+                {buttonNames.map((name: string, index: number) =>
+                  <button 
+                    key={index}
+                    style={{
+                      color: 'black', fontWeight: 'bolder',
+                      ...(activeButton === name ? {background: 'rgb(90, 210, 216)'} : {background: '#7a19e9'}),
+                      ...(name === "Albums" ? {borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px'} : {})
+                    }}
+                    onClick={() => {
+                      setActiveButton(name);
 
-                <button onClick={() => {setHtml(getAlbums(albumss,albums, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'albums')}}>Albums</button>
+                      switch (name) {
+                        case "tracks":
+                          setHtml(getTracks(tracks));
+                          break;
+                        case "albums":
+                          setHtml(getAlbums(albumss,albums, navigate, onCloseModal));
+                          break;
+                        case "artists":
+                          setHtml(getArtists(artist, navigate, onCloseModal));
+                          break;
+                        case "playlists":
+                          setHtml(getPlaylists(playlists,plist, navigate, onCloseModal));
+                          break;
+                        default:
+                          return;
+                      };                      
 
-                <button onClick={() => {setHtml(getArtists(artist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'artists')}}>Artists</button>
-
-                <button onClick={() => {setHtml(getPlaylists(playlists,plist, navigate, onCloseModal)), sessionStorage.setItem('searchHome', 'playlists')}}>Playlists</button>
+                      sessionStorage.setItem('searchHome', name.toLowerCase());
+                    }}
+                  >
+                    {capitalize(name)}
+                  </button>
+                )}                
               </div>
 
               <div className='logoModal' style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginTop: '40px'}}>{html ? html : getTracks(tracks)}</div>

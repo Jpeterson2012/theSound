@@ -2,23 +2,7 @@
 import './PTrack.css'
 import SavedSong from "../SavedSong/SavedSong.tsx"
 import musicBar from '../musicBar/musicBar.tsx';
-import { spotifyRequest } from '../../utils.ts';
-
-function timeCalc (ms: number) {
-    const temp = Math.round(ms / 1000);
-
-    let mins = Math.floor(temp / 60);
-
-    let secs = temp - mins * 60;
-
-    secs > 59 && (mins += 1, secs -= 60);
-
-    (secs.toString().length === 1 && secs > 5) && (mins += 1, secs -= 6);
-
-    if (secs.toString().length == 1) return `${mins}:${secs}0`;
-
-    else return `${mins}:${secs}`;
-}
+import { spotifyRequest, timeCalc } from '../../utils/utils.ts';
 
 export default function PTrack ( {uri, name, number, duration, liked, artist, t_uri, rplay,paused}: any ) {        
     return (

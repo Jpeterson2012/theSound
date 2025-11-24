@@ -14,7 +14,9 @@ import EditPlaylist from "../components/EditPlaylist/EditPlaylist.tsx";
 import MySnackbar from "../components/MySnackBar.tsx";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 import { filterTracks } from "../components/filterTracks.tsx";
-import { spotifyRequest } from '../utils.ts';
+import { spotifyRequest, msToReadable } from '../utils/utils.ts';
+
+import { AddToLibrary } from '../helpers/AddToLibrary.tsx';
 
 function customImage(ptracks: any){
   return(
@@ -213,12 +215,19 @@ export default function UPlaylist({lastSegment}: any){
                 <div className="desc2" style={{display: 'flex', marginRight: '10px', alignItems: 'center'}}>
                   <h5 style={{marginRight: '5px',color: 'rgb(90, 210, 216)'}}>playlist &#8226;</h5>
 
-                  <h5 style={{color: 'rgb(90, 210, 216)'}}>{tplaylist!.tracks.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length} Song(s)</h5>
+                  <h5 style={{color: 'rgb(90, 210, 216)'}}>
+                    {tplaylist!.tracks.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length
+                      + " Song(s) • "
+                      + msToReadable(tplaylist!.tracks.reduce((acc: number, item: any) => {
+                          acc += Number(item.duration_ms);
+                          
+                          return acc;
+                        }, 0)
+                      )}
+                  </h5>
 
                   {lastSegment !== 'likedsongs' && 
-                    <p 
-                      id="addAlbum" 
-                      style={{height: '35px', width: '35px',fontSize: '20px', marginLeft: '15px', cursor: 'pointer', border: '1px solid #7a19e9', color: 'rgb(90, 210, 216)'}} 
+                    <AddToLibrary 
                       onClick={(e) => {
                         const el = e.target as HTMLElement;
 
@@ -250,7 +259,7 @@ export default function UPlaylist({lastSegment}: any){
                       }}
                     >
                       {!singlePlist!.length ? "+" : "✓"}
-                    </p>}
+                    </AddToLibrary>}
 
                   <div className="dropdown" id="dropdown">
                     <button 

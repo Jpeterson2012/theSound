@@ -6,7 +6,7 @@ export const UsePlayerContext = createContext<any>({
     playerState: {},
     setPlayerState: () => {},
     is_active: false,
-    resetState: () => {}
+    resetPlayer: () => {},
 });
 
 export default UsePlayerContext

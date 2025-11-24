@@ -5,6 +5,8 @@ import 'react-responsive-modal/styles.css';
 import MySnackbar from '../MySnackBar';
 import EditPlaylist from '../EditPlaylist/EditPlaylist';
 
+import { AddToLibrary } from '../../helpers/AddToLibrary.tsx';
+
 export default function AddLiked({active,trackUri: currentTrack,duration}: any){
     const {data: liked} = useGetLikedQuery()    
         
@@ -19,33 +21,37 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
         <>
             {!active ? null : (
                 <>                                    
-                    <p id='addSong' onClick={function handleClick(){
-                                    
-                        const handleSubmit = async () => {
-                            var parts = currentTrack?.album.uri.split(':');
-                            var lastSegment = parts.pop() || parts.pop();
+                    <AddToLibrary 
+                        id='addSong'
+                        includeStyle={false} 
+                        onClick={() => {                                    
+                            const handleSubmit = async () => {
+                                var parts = currentTrack?.album.uri.split(':');
+                                var lastSegment = parts.pop() || parts.pop();
 
-                            try{
-                                await addNewsong({ album_id: lastSegment, images: currentTrack?.album.images, artists: currentTrack?.artists, duration_ms: duration.toString(), uri: `spotify:track:${currentTrack?.id}`, name: currentTrack?.name }).unwrap()
+                                try{
+                                    await addNewsong({ album_id: lastSegment, images: currentTrack?.album.images, artists: currentTrack?.artists, duration_ms: duration.toString(), uri: `spotify:track:${currentTrack?.id}`, name: currentTrack?.name }).unwrap()
+                                }
+                                catch(err){
+                                    console.error('Failed to save the post: ', err)
+                                }
                             }
-                            catch(err){
-                                console.error('Failed to save the post: ', err)
+                            if (found === undefined && found2 === undefined){
+                                setSnack(true)
+                                handleSubmit()
+                                let temp = document.getElementById('addSong')!
+                                temp.style.animation = 'pulse3 linear 1s'
+                                setTimeout(()=>{
+                                    temp.style.removeProperty('animation')
+                                }, 1000)                            
                             }
-                        }
-                        if (found === undefined && found2 === undefined){
-                            setSnack(true)
-                            handleSubmit()
-                            let temp = document.getElementById('addSong')!
-                            temp.style.animation = 'pulse3 linear 1s'
-                            setTimeout(()=>{
-                                temp.style.removeProperty('animation')
-                            }, 1000)                            
-                        }
-                        else{
-                            setModal(true)
-                        }
-                        
-                    }}>{found === undefined && found2 === undefined ? "+" : "✓"}</p>
+                            else{
+                                setModal(true)
+                            }                        
+                    }}
+                    >
+                        {found === undefined && found2 === undefined ? "+" : "✓"}
+                    </AddToLibrary>
                 </>
             )}
             {modal ? <EditPlaylist track={currentTrack} boolVal={modal} setbool={setModal} setsnack={setSnack} /> : null}

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { BASE_URL } from '../utils'
+import { BASE_URL } from '../utils/utils'
 // import { createSelector } from '@reduxjs/toolkit'
 // import { RootState } from './store'
 
@@ -287,7 +287,7 @@ export const apiSlice = createApi({
             })
         }),
     })
-})
+});
 
 // type getPlaylistfromResultArg = TypedUseQueryStateResult<Playlists[],any,any>
 

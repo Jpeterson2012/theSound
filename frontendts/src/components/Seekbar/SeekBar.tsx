@@ -1,7 +1,7 @@
 import { useState } from "react";
 import './SeekBar.css';
 import { useInterval } from "../../hooks/useInterval.ts";
-import { spotifyRequest } from "../../utils.ts";
+import { spotifyRequest } from "../../utils/utils.ts";
 
 export default function SeekBar({duration, player, paused}: any) {
   
