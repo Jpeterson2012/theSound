@@ -31,10 +31,11 @@ const fetchPlaylists = async (uname, headers) => {
       const resp2 = await fetch(a.tracks.href, {headers});
       const data2 = await resp2.json();
 
-      data2.items.map(a => {a.track && trackInfo.push({...a.track, date_added: new Date(Date.now())})});
+      data2.items.map(a => {a.track && trackInfo.push({...a.track, date_added: new Date(a.added_at ?? Date.now())})});
       trackJSON.items = trackInfo;
       
-      values.push([a.id, JSON.stringify(a.images), a.name.replace(/\W/g,' '), a.public, a.uri, JSON.stringify(trackJSON)])
+      //values.push([a.id, JSON.stringify(a.images), a.name.replace(/\W/g,' '), a.public, a.uri, JSON.stringify(trackJSON)])
+      values.push([a.id, JSON.stringify(a.images), a.name.replace(/&/g, 'n').replace(/[^\w]/g, ' '), a.public, a.uri, JSON.stringify(trackJSON)])
       
       sql = `INSERT INTO ${uname}playlists (playlist_id, images, name, public, uri, tracks) VALUES ?`;
 
@@ -101,7 +102,7 @@ const fetchLikedSongs = async (uname, headers) => {
     data.items.map(a => 
       values.push([
         a.track.album.id, JSON.stringify(a.track.album.images), JSON.stringify(a.track.album.artists), 
-        a.track.duration_ms, `spotify:track:${a.track.id}`, a.track.name, new Date(Date.now()),
+        a.track.duration_ms, `spotify:track:${a.track.id}`, a.track.name, new Date(a.added_at ?? Date.now()),
       ])
     );
     
@@ -159,20 +160,20 @@ router.get('/', async (req, res) => {
     req.session.username = data2.display_name.replace(/\W/g,'');      
           
     let sql = `albums (id INT AUTO_INCREMENT PRIMARY KEY, album_type VARCHAR(30), total_tracks SMALLINT(2), 
-    album_id VARCHAR(30), images MEDIUMTEXT, name VARCHAR(75), release_date VARCHAR(10), 
-    uri VARCHAR(40), artists MEDIUMTEXT, tracks MEDIUMTEXT, copyrights MEDIUMTEXT, label_name VARCHAR(75), date_added DATETIME)`;
+    album_id VARCHAR(30), images JSON, name VARCHAR(75), release_date VARCHAR(10), 
+    uri VARCHAR(40), artists JSON, tracks JSON, copyrights JSON, label_name VARCHAR(75), date_added DATETIME)`;
 
     sqlQuery(sql, req.session.username);
     
-    sql = `playlists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(70), images LONGTEXT, name VARCHAR(100), public BOOL, uri varCHAR(40), tracks JSON)`;
+    sql = `playlists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(70), images JSON, name VARCHAR(100), public BOOL, uri varCHAR(40), tracks JSON)`;
 
     sqlQuery(sql, req.session.username);
     
-    sql = `liked (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images MEDIUMTEXT, artists MEDIUMTEXT, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(200), date_added DATE)`;
+    sql = `liked (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images JSON, artists JSON, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(200), date_added DATETIME)`;
 
     sqlQuery(sql, req.session.username);
     
-    sql = `categories (id INT AUTO_INCREMENT PRIMARY KEY, href VARCHAR(100), icons MEDIUMTEXT, c_id VARCHAR(30), name VARCHAR(40))`;
+    sql = `categories (id INT AUTO_INCREMENT PRIMARY KEY, href VARCHAR(100), icons JSON, c_id VARCHAR(30), name VARCHAR(40))`;
 
     sqlQuery(sql);
     

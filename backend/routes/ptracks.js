@@ -1,10 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const { con } = require('../sql.js')
 
 router.get('/:id', async (req, res) => {
-  //const url = `https://api.spotify.com/v1/playlists/${req.params.id}/tracks`;
-  
   const headers = {
     Authorization: 'Bearer ' + req.session.access_token
   };
@@ -19,7 +17,7 @@ router.get('/:id', async (req, res) => {
     const resp = await fetch(url, {headers});
     const data = await resp.json();
         
-    var album = {images: [{height: 64, url: 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg', width: 64}]};
+    const album = {images: [{height: 64, url: 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg', width: 64}]};
 
     const arr = data.items?.map(item => {
       sqlObj.items.push({
@@ -28,7 +26,8 @@ router.get('/:id', async (req, res) => {
         duration_ms: item.track?.duration_ms,
         artists: item.track?.artists, 
         uri: item.track?.uri, 
-        track_number: item.track?.track_number
+        track_number: item.track?.track_number,
+        date_added: new Date(item.added_at ?? Date.now())
       });
 
       return {
@@ -37,15 +36,18 @@ router.get('/:id', async (req, res) => {
         name: item.track?.name, 
         duration_ms: item.track?.duration_ms, 
         artists: item.track?.artists, 
-        uri: item.track?.uri
+        uri: item.track?.uri,
+        date_added: new Date(item.added_at ?? Date.now())
       };
     });
 
+    console.log(sqlObj.items[0])
+
     res.write(JSON.stringify({items: arr, total: data.total}) + "\n");
     
-    pages += 35
+    pages += 35;
 
-    if(data.next == null) {
+    if(!data.next) {
       break;
     }
   }    
@@ -54,16 +56,23 @@ router.get('/:id', async (req, res) => {
   res.end();
 
   try{            
-    let sql = `select playlist_id from ${req.session.username}playlists where name = "temp_playlist"`
-    con.query(sql, function(err,result) {
+    let sql = `select playlist_id from ${req.session.username}playlists where name = "temp_playlist"`;
+
+    con.query(sql, (err,result) => {
       if (err) throw err;
             
-      if (!result.length){        
-        sql = `INSERT INTO ${req.session.username}playlists (playlist_id, images, name, public, uri, tracks) VALUES ('${req.params.id}', ${null}, 'temp_playlist', true, 'spotify:playlist:${req.params.id}', ${con.escape(JSON.stringify(sqlObj))} )`
-        con.query(sql, (err) => {
+      if (!result.length) {        
+        sql = `INSERT INTO ${req.session.username}playlists (playlist_id, images, name, public, uri, tracks) VALUES ?`;
+
+        const values = [[
+          req.params.id, null, 'temp_playlist', "true", 'spotify:playlist:${req.params.id}', JSON.stringify(sqlObj)
+        ]];
+
+        con.query(sql, [values], (err) => {
           if (err) throw err;
+
           console.log('Temp Playlist Added')
-        })
+        });
       }
       else {
         if (result[0].playlist_id === req.params.id){

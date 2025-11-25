@@ -23,7 +23,8 @@ interface Albums {
         total: number
     }
     copyrights: any[]
-    label_name: string
+    label_name: string,
+    date_added: string
 }
 interface Playlists {
     playlist_id: string
@@ -39,7 +40,8 @@ interface pTrack {
     name: string
     track_number: number
     duration_ms: string
-    artists: []
+    artists: [],
+    date_added: string
 }
 interface Liked {
     tracks: any[]
@@ -50,7 +52,8 @@ interface likedSong{
     artists: []
     duration_ms: string
     uri: string
-    name: string    
+    name: string,
+    date_added: string
 }
 interface User {
     items: string
@@ -99,9 +102,11 @@ export const apiSlice = createApi({
                     })
                 )
                 try {
+                    console.log("success")
                     await lifecycleApi.queryFulfilled
                 }
                 catch{
+                    console.log("fail")
                     getAlbumPatchResult.undo()
                 }
             }

@@ -47,7 +47,7 @@ function Albums(listRecent:any,listItems: any){
 function albumSort(setSorted: any){
   let temp = document.getElementById('dropdown-content')!;
 
-  const buttonText = ["A-Z", "Z-A", "Artist A-Z", "Artist Z-A"];
+  const buttonText = ["A-Z", "Z-A", "Artist A-Z", "Artist Z-A", "Oldest", "Newest"];
 
   return(
     <>
@@ -170,7 +170,7 @@ export default function Home({setIsLoading2}: any) {
   const [filter_val, setFilter_val] = useState<string>('')        
     
   const {data: albums = [],isSuccess: albumSuccess} = useGetAlbumsQuery()  
-  console.log(albums)  
+  
   const {data: podcasts, isSuccess: podSuccess} = useGetPodcastsQuery()
   const {data: audiobooks, isSuccess: audSuccess} = useGetAudiobooksQuery()    
 
@@ -236,6 +236,14 @@ export default function Home({setIsLoading2}: any) {
         return sortedAlbums;
       case 4:
         sortedAlbums.sort((a,b) => b.artists[0].name.localeCompare(a.artists[0].name));
+
+        return sortedAlbums;
+      case 5:
+        sortedAlbums.sort((a,b) => new Date(a.date_added).getTime() - new Date(b.date_added).getTime());
+
+        return sortedAlbums;
+      case 6:
+        sortedAlbums.sort((a,b) => new Date(b.date_added).getTime() - new Date(a.date_added).getTime());
 
         return sortedAlbums;
       default:

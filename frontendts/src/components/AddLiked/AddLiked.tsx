@@ -30,7 +30,9 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                                 var lastSegment = parts.pop() || parts.pop();
 
                                 try{
-                                    await addNewsong({ album_id: lastSegment, images: currentTrack?.album.images, artists: currentTrack?.artists, duration_ms: duration.toString(), uri: `spotify:track:${currentTrack?.id}`, name: currentTrack?.name }).unwrap()
+                                    await addNewsong({ album_id: lastSegment, images: currentTrack?.album.images, 
+                                        artists: currentTrack?.artists, duration_ms: duration.toString(), uri: `spotify:track:${currentTrack?.id}`, 
+                                        name: currentTrack?.name, date_added: new Date().toISOString() }).unwrap()
                                 }
                                 catch(err){
                                     console.error('Failed to save the post: ', err)

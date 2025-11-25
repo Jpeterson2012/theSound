@@ -34,6 +34,7 @@ export default function RAlbum() {
   const [filter_val, setFilter_val] = useState<string>('')
   //Check if album is already in library or not
   let found = albums?.find((e: any) => e?.album_id === lastSegment)  
+  console.log(found)
 
   const {is_active, playerState} = useContext(UsePlayerContext);
   const [discog, setDiscog] = useState<any>({});
@@ -224,7 +225,7 @@ export default function RAlbum() {
                         setTimeout(() => {
                           addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, 
                             name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, 
-                            copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label}) 
+                            copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label, date_added: new Date().toISOString()}) 
                         },1100);                 
                       }          
                     }}

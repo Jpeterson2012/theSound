@@ -116,41 +116,34 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
 function playlistSort(tplaylist: any, setTPlaylist: any) {  
   let temp: any;
 
+  const buttonData: any = {
+    "A-Z": (a:any,b:any) => a.name.localeCompare(b.name),
+    "Z-A": (a:any,b:any) => b.name.localeCompare(a.name),
+    "Artist A-Z": (a:any,b:any) => a.artists[0].name.localeCompare(b.artists[0].name),
+    "Artist Z-A": (a:any,b:any) => b.artists[0].name.localeCompare(a.artists[0].name),
+    "Oldest": (a:any,b:any) => new Date(a.date_added).getTime() - new Date(b.date_added).getTime(),
+    "Newest": (a:any,b:any) => new Date(b.date_added).getTime() - new Date(a.date_added).getTime(),
+  };
+
   return(
     <>
-    <button className="theme" onClick={() => {                  
-      temp = tplaylist.tracks.slice();
+      {Object.keys(buttonData).map((key, index) =>
+        <button 
+          key={index}
+          className="theme" 
+          onClick={() => {                  
+            temp = tplaylist.tracks.slice();
 
-      temp.sort((a:any,b:any) => a.name.localeCompare(b.name))      ;
+            temp.sort(buttonData[key]);      ;
 
-      setTPlaylist({...tplaylist, tracks: temp})      
-    }}>A-Z</button>
-
-    <button className="theme" onClick={() => { 
-      temp = tplaylist.tracks.slice();
-
-      temp.sort((a:any,b:any) => b.name.localeCompare(a.name));
-
-      setTPlaylist({...tplaylist, tracks: temp})
-    }}>Z-A</button>
-
-    <button className="theme" onClick={() => {  
-      temp = tplaylist.tracks.slice();
-
-      temp.sort((a:any,b:any) => a.artists[0].name.localeCompare(b.artists[0].name));
-
-      setTPlaylist({...tplaylist, tracks: temp})
-    }}>Artist A-Z</button>
-
-    <button className="theme" onClick={() => {   
-      temp = tplaylist.tracks.slice();
-
-      temp.sort((a:any,b:any) => b.artists[0].name.localeCompare(a.artists[0].name));
-
-      setTPlaylist({...tplaylist, tracks: temp})
-    }}>Artist Z-A</button>
+            setTPlaylist({...tplaylist, tracks: temp});      
+          }}
+        >
+          {key}
+        </button>
+      )}
     </>
-  )
+  );
 }
 
 export default function UPlaylist({lastSegment}: any){

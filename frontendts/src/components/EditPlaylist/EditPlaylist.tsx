@@ -53,7 +53,8 @@ export default function EditPlaylist({track,boolVal,setbool,setsnack}: any) {
                     artists: track.artists, 
                     duration_ms: track.duration_ms, 
                     uri: track.uri, 
-                    name: track.name, 
+                    name: track.name,
+                    date_added: new Date().toISOString() 
                 });                            ;
         }          
 
@@ -71,7 +72,9 @@ export default function EditPlaylist({track,boolVal,setbool,setsnack}: any) {
                     if (submit1[i + 1]) {                        
                         removePTrack({pID: p_id, name: track.name});
                     } else {
-                        let ptrackData = {images: track?.album?.images?.length === undefined ? track.images : track.album.images, uri: track.uri, name: track.name, track_number: 0, duration_ms: track.duration_ms, artists: track.artists}
+                        const ptrackData = {images: track?.album?.images?.length === undefined ? track.images : track.album.images, 
+                            uri: track.uri, name: track.name, track_number: 0, duration_ms: track.duration_ms, artists: track.artists, date_added: new Date().toISOString()};
+
                         addpTrack({pID: p_id, initialP: ptrackData});
                     }
                 }, [null, "null"].includes(sessionStorage.getItem("currentContext")) ? 500 : 250);                                

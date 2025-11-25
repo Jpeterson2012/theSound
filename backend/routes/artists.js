@@ -16,7 +16,7 @@ router.get('/:id', async (req, res) => {
     info.artists = data;
 
     url = `https://api.spotify.com/v1/artists/${req.params.id}/top-tracks`;
-    const resp22 = await fetch(url, {headers});
+    const resp2 = await fetch(url, {headers});
     const data2 = await resp2.json();
     info.tracks = data2;
 

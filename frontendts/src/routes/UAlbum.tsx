@@ -247,7 +247,8 @@ export default function UAlbum() {
                 if (!singleAlbum!.length){                    
                   setTimeout (() => {
                     addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, 
-                      release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name}) 
+                      release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, 
+                      copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name, date_added: new Date().toISOString()}) 
                   },1100);                    
                 } else {                                        
                   setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100);                                        

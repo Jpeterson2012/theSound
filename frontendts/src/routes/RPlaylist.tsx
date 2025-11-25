@@ -58,31 +58,32 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setm
 function playlistSort(tplaylist: any, setTPlaylist: any){
   let temp: any
 
+  const buttonData: any = {
+    "A-Z": (a:any,b:any) => a.name.localeCompare(b.name),
+    "Z-A": (a:any,b:any) => b.name.localeCompare(a.name),
+    "Artist A-Z": (a:any,b:any) => a.artists[0].name.localeCompare(b.artists[0].name),
+    "Artist Z-A": (a:any,b:any) => b.artists[0].name.localeCompare(a.artists[0].name),
+    "Oldest": (a:any,b:any) => new Date(a.date_added).getTime() - new Date(b.date_added).getTime(),
+    "Newest": (a:any,b:any) => new Date(b.date_added).getTime() - new Date(a.date_added).getTime(),
+  };
+
   return(
     <>
-      <button className="theme" onClick={() => {      
-        temp = tplaylist                        
-        temp.sort((a:any,b:any) => a.name.localeCompare(b.name))      
-        setTPlaylist([...temp])
-      }}>A-Z</button>
+      {Object.keys(buttonData).map((key, index) =>
+        <button 
+          key={index}
+          className="theme" 
+          onClick={() => {                  
+            temp = tplaylist;            
 
-      <button className="theme" onClick={() => { 
-        temp = tplaylist     
-        temp.sort((a:any,b:any) => b.name.localeCompare(a.name))
-        setTPlaylist([...temp])
-      }}>Z-A</button>
+            temp.sort(buttonData[key]);      ;
 
-      <button className="theme" onClick={() => {  
-        temp = tplaylist  
-        temp.sort((a:any,b:any) => a.artists[0].name.localeCompare(b.artists[0].name))
-        setTPlaylist([...temp])
-      }}>Artist A-Z</button>
-
-      <button className="theme" onClick={() => {   
-        temp = tplaylist   
-        temp.sort((a:any,b:any) => b.artists[0].name.localeCompare(a.artists[0].name))
-        setTPlaylist([...temp])
-      }}>Artist Z-A</button>
+            setTPlaylist([...temp])      
+          }}
+        >
+          {key}
+        </button>
+      )}
     </>
   );
 };

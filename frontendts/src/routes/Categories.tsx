@@ -82,7 +82,8 @@ export default function Categories() {
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
                         paddingTop: '15px',
-                        paddingBottom: '175px'
+                        paddingBottom: '120px',
+                        width: "90vw"
                     }}>
                         {listPlaylists}
                     </div>
