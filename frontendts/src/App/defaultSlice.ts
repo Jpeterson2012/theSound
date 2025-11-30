@@ -6,6 +6,7 @@ const defaultSlice = createSlice({
     authToken: null,
     refreshToken: null,
     playing: false,
+    exitingSong: null,
   },
   reducers: {
     setAuthToken: (state, action) => {
@@ -17,8 +18,11 @@ const defaultSlice = createSlice({
     setPlaying: (state, action) => {
       state.playing = action.payload;
     },
+    setExitingSong: (state, action) => {
+      state.exitingSong = action.payload;
+    },
   },
 });
 
-export const { setAuthToken, setRefreshToken, setPlaying } = defaultSlice.actions;
+export const { setAuthToken, setRefreshToken, setPlaying, setExitingSong } = defaultSlice.actions;
 export default defaultSlice.reducer;

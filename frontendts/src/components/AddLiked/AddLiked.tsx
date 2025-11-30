@@ -42,10 +42,10 @@ export default function AddLiked({active,trackUri: currentTrack,duration}: any){
                                 setSnack(true)
                                 handleSubmit()
                                 let temp = document.getElementById('addSong')!
-                                temp.style.animation = 'pulse3 linear 1s'
-                                setTimeout(()=>{
-                                    temp.style.removeProperty('animation')
-                                }, 1000)                            
+                                // temp.style.animation = 'pulse3 linear 1s'
+                                // setTimeout(()=>{
+                                    // temp.style.removeProperty('animation')
+                                // }, 1000)                            
                             }
                             else{
                                 setModal(true)

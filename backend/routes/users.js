@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { con } = require('../sql.js')
+const con = require('../sql.js');
+const {verifyToken} = require('../jwt.js');
 
 function generatePassword() {
   const length = 22;
@@ -121,8 +122,10 @@ async function makePlaylists() {
 
 /* GET users listing. */
 router.get('/', async (req, res) => {  
+  const {id, name} = verifyToken(req.cookies.jwt);
   
-  let temp = {items: req.session.username};
+  //let temp = {items: req.session.username};
+  let temp = {id, name};
   // console.log(temp)
   res.send(temp);     
 
@@ -131,6 +134,10 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/:playlist', async (req,res) => {    
+  const {id} = verifyToken(req.cookies.jwt);
+
+  console.log(id);
+
   let name = req.body.name;
 
   name = name.replace(/\W/g,' ');
@@ -139,31 +146,31 @@ router.post('/:playlist', async (req,res) => {
 
   try{
     if(req.body.public === undefined) {
-      let sql = `select playlist_id, name from ${req.session.username}playlists where playlist_id="${req.body.id}" and name = "temp_playlist"`;
+      let sql = `select playlist_id, name from user_playlists where playlist_id = "${req.body.id}" and name = "temp_playlist" and user_id = ${id}`;
 
-      con.query(sql, (err,result) => { 
-        if (err) throw err;
+      const [result] = await con.query(sql);
 
-        console.log(result);
+      console.log(result);
 
-        if (result.length === 1) {            
-          sql = `insert into ${req.session.username}playlists (playlist_id, images, name, public, uri, tracks) select '${req.body.id}','${JSON.stringify(req.body.images)}', '${name}', public, 'spotify:playlist:${req.body.id}',tracks from ${req.session.username}playlists where name = "temp_playlist"`;
+      if (result.length === 1) {            
+        sql = `insert into user_playlists (user_id, playlist_id, images, name, public, uri, tracks) select user_id, playlist_id, ?, ?, public, uri, tracks from user_playlists where name = "temp_playlist" and user_id = ?`;
 
-          con.query(sql, (err) => {
-            if (err) throw err;
+        await con.query(
+          sql,
+          [JSON.stringify(req.body.images), name, id]
+        );
 
-            console.log('New Playlist Added')
-          });
-        }             
-      });
+        console.log('New Playlist Added');
+      }
     } else {
-        sql = `INSERT INTO ${req.session.username}playlists (playlist_id, name, public, uri) VALUES ('${req.body.id}', '${req.body.name}', ${req.body.public}, 'spotify:playlist:${req.body.id}')`;
+        sql = `INSERT INTO user_playlists (user_id, playlist_id, name, public, uri) VALUES (?, ?, ?, ?, ?)`;
 
-        con.query(sql, (err) => {
-          if (err) throw err;
+        await con.query(
+          sql,
+          [id, req.body.id, req.body.name, req.body.public, `spotify:playlist:${req.body.id}`, id]
+        );
 
-          console.log('New Playlist Added')
-        });
+        console.log('New Playlist Added')
       }
       
       res.send("204");

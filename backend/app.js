@@ -4,16 +4,25 @@ const cors = require('cors');
 require('dotenv').config();
 const PORT = process.env.PORT || 8888;
 
+const https = require('https');
+const fs = require('fs');
+const options = {
+  key: fs.readFileSync('/home/jpeterson93/127.0.0.1+1-key.pem'),
+  cert: fs.readFileSync('/home/jpeterson93/127.0.0.1+1.pem')
+};
 var express = require('express');
 var app = express();
 
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var session = require('express-session')
+//var session = require('express-session')
 var logger = require('morgan');
 
-app.use(session({secret: 'secretkey', saveUninitialized: true, resave: false, cookie: {secure: false, sameSite: 'lax'}}))
+//app.set('trust proxy', 1);
 
+//app.use(session({secret: 'secretkey', saveUninitialized: false, resave: false, cookie: {secure: false, sameSite: 'lax'}}));
+
+app.use(cookieParser());
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -42,7 +51,6 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({origin: process.env.FRONTEND_URL, credentials: true}));
 
@@ -71,6 +79,14 @@ app.use('/auth/player', playerRouter);
 //   console.log('Server started on port ${PORT}');
 // });
 
+//app.listen(PORT, "127.0.0.1", () => {
+//  console.log(`server running at http://127.0.0.1:${PORT}`);
+//});
+
+https.createServer(options, app).listen(PORT, "127.0.0.1", () => {
+  console.log(`HTTPS server running on https://localhost:${PORT}`);
+}); 
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -87,5 +103,12 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+//process.on('SIGINT', () => {
+//  server.close(() => {
+//    console.log('Server closed');
+//    process.exit(0);
+//  });
+//});
 
 module.exports = app;

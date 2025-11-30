@@ -16,8 +16,8 @@ import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
 import device from '../../images/device.png'
-import escape from '../../images/escape.jpg'
 import { spotifyRequest } from '../../utils/utils.ts';
+import { closeIcon } from '../../helpers/CloseIcon.tsx';
 
 function playbackState(uri: string, playerState?: any, setPlayerState?: any, currentDev?: any){
     //Playback controls when current device isnt this application    
@@ -54,9 +54,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
     const [open, setOpen] = useState(false);
     const onOpenModal = () => {setOpen(true)}
     const onCloseModal = () => {setOpen(false)}
-    const closeIcon = (
-        <img src={escape} style={{height: '44px', width: '44px'}}/>
-    )
+    
     const {data: devices = [], isSuccess: isFetching, refetch} = useGetDevicesQuery()        
     const {data: albums = []} = useGetAlbumsQuery()
     
@@ -395,7 +393,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                         }} 
                     />
 
-                    <Modal modalId='modal1' open={open} onClose={onCloseModal} closeIcon={closeIcon}>
+                    <Modal modalId='modal1' open={open} onClose={onCloseModal} closeIcon={closeIcon()}>
                         <div style={{marginTop: '60px'}}>
                             <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Current Device</p>
 

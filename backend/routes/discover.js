@@ -1,15 +1,17 @@
 const express = require('express');
-const { con } = require('../sql');
+const con = require('../sql');
 const router = express.Router();
 
 router.get('/', async (req, res) => {  
+  const token = await con.getAccessToken(req.cookies.jwt);
+
   const info = [];
 
   let index = Math.floor(Math.random() * 51)
   //const url = `https://api.spotify.com/v1/browse/new-releases?offset=${index}&limit=50`;  
 
   const headers = {
-    Authorization: 'Bearer ' + req.session.access_token
+    Authorization: 'Bearer ' + token
   };
 
   try{

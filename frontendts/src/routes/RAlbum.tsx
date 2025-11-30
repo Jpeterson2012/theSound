@@ -76,7 +76,7 @@ export default function RAlbum() {
         const resp = await spotifyRequest(`/artists2/albums/${zip.map((z: any) => z[1]).join()}`);
         const data = await resp.json();
   
-        console.log(data);
+        //console.log(data);
         setDiscog(data);
         sessionStorage.setItem("discog", JSON.stringify(data));
       };
@@ -217,16 +217,20 @@ export default function RAlbum() {
                         el.style.animation = "";
 
                         el.style.transform = "";
-                      }, 1100);                    
+                      }, 1000);                    
 
-                      if (found){                    
-                        setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100);                                 
-                      } else {                                        
-                        setTimeout(() => {
-                          addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, 
-                            name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, 
-                            copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label, date_added: new Date().toISOString()}) 
-                        },1100);                 
+                      if (found){          
+                        deleteAlbum({aID: lastSegment!});          
+                        //setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100);                                 
+                      } else {       
+                        addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, 
+                          name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, 
+                          copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label, date_added: new Date().toISOString()});                                 
+                        // setTimeout(() => {
+                        //   addAlbum({album_type: tracks?.albums?.album_type, total_tracks: tracks?.albums?.total_tracks, album_id: lastSegment!, images: tracks?.albums?.images, 
+                        //     name: tracks?.albums?.name, release_date: tracks?.albums?.release_date, uri: tracks?.albums?.uri, artists: tracks?.albums?.artists, tracks: tracks?.albums?.tracks, 
+                        //     copyrights: tracks?.albums?.copyrights, label_name: tracks?.albums?.label, date_added: new Date().toISOString()}) 
+                        // },1100);                 
                       }          
                     }}
                   >

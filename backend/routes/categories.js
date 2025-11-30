@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { con } = require('../sql.js');
+const con = require('../sql.js');
 
-router.get('/', async (req, res) => {        
+router.get('/', async (req, res) => {      
+  const token = await con.getAccessToken(req.cookies.jwt);
+
   const headers = {
-    Authorization: 'Bearer ' + req.session.access_token
+    Authorization: 'Bearer ' + token
   };
 
   try {
@@ -24,73 +26,64 @@ router.get('/', async (req, res) => {
 
     let sql = 'select exists (select 1 from categories) AS Output';
 
-    con.query(sql, (err, result) => {
-      if (err) throw err;
+    let [result] = await con.query(sql);
 
-      const empty = result[0].Output
-      if (empty) {
+    if (result[0].Output) {
+      sql = 'SELECT icons, c_id, name from categories';
+
+      let [result2] = await con.query(sql);
+
+      const items = [];
+
+      for (let i = 0; i < result2.length; i++) {
+        var temp = {};
+        temp.icons = JSON.parse(result2[i].icons);
+        temp.id = result2[i].c_id;
+        temp.name = result2[i].name;
+        items.push(temp);
+      }
+
+      main.categories = items;
+
+      res.send(main);
+    } else {
+      url = 'https://api.spotify.com/v1/browse/categories?limit=50';
+
+      const getCategories = async () => {
+        const resp = await fetch(url, {headers});
+        const data = await resp.json();        
+
+        const values = [];
+
+        data.categories.items.map(a => 
+          values.push([a.href, JSON.stringify(a.icons), a.id, a.name])
+        );
+
+        sql = "INSERT INTO categories (href, icons, c_id, name) VALUES ?";
+
+        const [result] = await con.query(sql);
+
+        console.log("Number of categories inserted: " + result.affectedRows);
+
         sql = 'SELECT icons, c_id, name from categories';
 
-        con.query(sql, (err, result) => {
-          if (err) throw err;
-          
-          const items = [];
+        const [result2] = await con.query(sql);
 
-          for (let i = 0; i < result.length; i++) {
-            var temp = {};
-            temp.icons = JSON.parse(result[i].icons);
-            temp.id = result[i].c_id;
-            temp.name = result[i].name;
-            items.push(temp);
-          }
+        const items = [];
 
-          main.categories = items;
+        for (let i = 0; i < result2.length; i++) {
+          var temp = {};
+          temp.icons = JSON.parse(result2[i].icons);
+          temp.id = result2[i].c_id;
+          temp.name = result2[i].name;
+          items.push(temp);
+        }
 
-          res.send(main);
-        });
-      } else {
-        url = 'https://api.spotify.com/v1/browse/categories?limit=50';
+        res.send(items);
+      };
 
-        const getCategories = async () => {
-          const resp = await fetch(url, {headers});
-          const data = await resp.json();        
-
-          const values = [];
-
-          data.categories.items.map(a => 
-            values.push([a.href, JSON.stringify(a.icons), a.id, a.name])
-          );
-
-          sql = "INSERT INTO categories (href, icons, c_id, name) VALUES ?";
-
-          con.query(sql, [values], (err, result) => {
-            if (err) throw err;
-
-            console.log("Number of categories inserted: " + result.affectedRows);
-          });
-
-          sql = 'SELECT icons, c_id, name from categories';
-
-          con.query(sql, (err, result) => {
-            if (err) throw err;
-            
-            const items = [];
-
-            for (let i = 0; i < result.length; i++) {
-              var temp = {};
-              temp.icons = JSON.parse(result[i].icons);
-              temp.id = result[i].c_id;
-              temp.name = result[i].name;
-              items.push(temp);
-            }
-
-            res.send(items);
-          });
-        };
-
-        getCategories();
-      }
-    });
+      getCategories();
+    }
   } catch (e) {
     console.error(e);
   }

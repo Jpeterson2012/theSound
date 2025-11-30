@@ -10,7 +10,7 @@ export default function Login() {
     }, 500);
   }, []);
 
-  const URL = window.location.hostname === "localhost" 
+  const URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
       ? import.meta.env.VITE_URL 
       : import.meta.env.VITE_PROD_URL;
   

@@ -12,6 +12,15 @@ div .fade-in-imageP{
     }
 }
 
+@keyframes fadeOut {
+    0%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+    }
+}
+
 #deleteSong{
     position: absolute;
     left: 180px;

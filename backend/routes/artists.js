@@ -1,14 +1,17 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const con = require('../sql.js');
 
-router.get('/:id', async (req, res) => {    
+router.get('/:id', async (req, res) => {
+  const token = await con.getAccessToken(req.cookies.jwt);
+
   try{
     const info = {};
 
     let url = `https://api.spotify.com/v1/artists/${req.params.id}`;
 
     const headers = {
-      Authorization: 'Bearer ' + req.session.access_token
+      Authorization: 'Bearer ' + token
     };
 
     const resp = await fetch(url, {headers});

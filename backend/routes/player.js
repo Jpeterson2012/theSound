@@ -1,11 +1,14 @@
 var express = require('express');
 var router = express.Router();
+const con = require('../sql.js');
 
 router.get('/devices', async (req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     url = 'https://api.spotify.com/v1/me/player/devices'
     try{
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token
+            Authorization: 'Bearer ' + token
           }
     
         var resp = await fetch(url, {headers})
@@ -18,33 +21,37 @@ router.get('/devices', async (req,res) => {
 })
 
 router.get('/', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     url = 'https://api.spotify.com/v1/me/player'
     try{
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token
+            Authorization: 'Bearer ' + token
           }
     
         var resp = await fetch(url, {headers})   
         if (resp.status === 204 || resp.status === 202) {
-            console.log('No active playback');
+            //console.log('No active playback');
             return;
         }     
         var data = await resp.json()
-        console.log('Active playback')
+        //console.log('Active playback')
         res.send({device: data.device, progress_ms: data.progress_ms, is_playing: data.is_playing, item: data.item})
     
         
     }
     catch (e){
-        console.log(e)
+        console.log(e);
     }
 })
 
 router.post('/:id', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     url = 'https://api.spotify.com/v1/me/player'
     try{
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token            
+            Authorization: 'Bearer ' + token            
           }
     
         await fetch(url, {
@@ -61,10 +68,12 @@ router.post('/:id', async(req,res) => {
 })
 
 router.post('/pause/:id', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     url = 'https://api.spotify.com/v1/me/player/pause'
     try{
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token            
+            Authorization: 'Bearer ' + token            
           }
     
         await fetch(url, {
@@ -81,10 +90,12 @@ router.post('/pause/:id', async(req,res) => {
 })
 
 router.post('/play/:id', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     url = 'https://api.spotify.com/v1/me/player/play'
     try{
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token            
+            Authorization: 'Bearer ' + token            
           }
     
         await fetch(url, {
@@ -101,10 +112,12 @@ router.post('/play/:id', async(req,res) => {
 })
 
 router.post('/previous/:id', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     url = 'https://api.spotify.com/v1/me/player/previous'
     try{
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token            
+            Authorization: 'Bearer ' + token            
           }
     
         await fetch(url, {
@@ -121,10 +134,12 @@ router.post('/previous/:id', async(req,res) => {
 })
 
 router.post('/next/:id', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     url = 'https://api.spotify.com/v1/me/player/next'
     try{
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token            
+            Authorization: 'Bearer ' + token            
           }
     
         await fetch(url, {
@@ -141,10 +156,12 @@ router.post('/next/:id', async(req,res) => {
 })
 
 router.get('/currently-playing', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     url = 'https://api.spotify.com/v1/me/player/currently-playing'    
     try{
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token
+            Authorization: 'Bearer ' + token
           }
     
         var resp = await fetch(url, {headers})
@@ -158,6 +175,8 @@ router.get('/currently-playing', async(req,res) => {
 })
 
 router.post('/volume/:id', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     let arr = req.params.id    
     arr = arr.split(',')
     console.log(arr[0])
@@ -165,7 +184,7 @@ router.post('/volume/:id', async(req,res) => {
     url = `https://api.spotify.com/v1/me/player/volume?volume_percent=${+arr[1]}&device_id=${arr[0]}`    
     try{        
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token
+            Authorization: 'Bearer ' + token
           }
     
           await fetch(url, {
@@ -179,13 +198,15 @@ router.post('/volume/:id', async(req,res) => {
 })
 
 router.post('/seek/:id', async(req,res) => {
+    const token = await con.getAccessToken(req.cookies.jwt);
+
     let arr = req.params.id    
     arr = arr.split(',')    
     
     url = `https://api.spotify.com/v1/me/player/seek?position_ms=${+arr[1]}&device_id=${arr[0]}`    
     try{        
         const headers = {
-            Authorization: 'Bearer ' + req.session.access_token
+            Authorization: 'Bearer ' + token
           }
     
           await fetch(url, {

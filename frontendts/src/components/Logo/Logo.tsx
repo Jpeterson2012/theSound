@@ -5,12 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from 'react-responsive-modal';
 import { useState, useEffect, useContext } from 'react';
 import Track from '../Track/Track';
-import escape from '../../images/escape.jpg';
+import close from '../../images/close.png';
 import search from '../../images/search.png';
 import space from '../../images/music.gif';
 import logo from '../../images/logo.png';
 import UsePlayerContext from '../.././hooks/PlayerContext.tsx';
 import { spotifyRequest } from '../../utils/utils.ts';
+import { closeIcon } from '../../helpers/CloseIcon.tsx';
 
 function getTracks(ptracks: any) {
   let key = 0;
@@ -184,14 +185,10 @@ export default function Logo () {
     }               
   };
 
-  const closeIcon = (
-    <img src={escape} style={{height: '44px', width: '44px'}}/>
-  );
-
   const {data: user,isSuccess} = useGetUserQuery()    
   
   useEffect(() => {         
-    isSuccess && sessionStorage.setItem("username", user.items);
+    isSuccess && sessionStorage.setItem("username", user.name);
 
     switch(sessionStorage.getItem('searchHome')) {
       case 'tracks':
@@ -286,7 +283,7 @@ export default function Logo () {
               navigate('/', {replace: true});              
             }}
           >
-            {isSuccess ? user!.items : 'hi'}
+            {isSuccess ? user!.name : 'hi'}
           </h2>
 
           <div className='u2Container' style={{backgroundColor: 'rgb(90, 210, 216)', width: '32px', height: '32px', borderRadius: '50%'}}>
@@ -299,7 +296,7 @@ export default function Logo () {
                 navigate('/', {replace: true});              
               }}
             >
-              {isSuccess ? user!.items[0] : 'hi'}
+              {isSuccess ? user!.name[0] : 'hi'}
             </h2>
           </div>          
 
@@ -338,7 +335,7 @@ export default function Logo () {
           </a>
 
           <div>          
-            <Modal modalId='modal3' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>            
+            <Modal modalId='modal3' open={open} onClose={onCloseModal} center closeIcon={closeIcon()}>            
               <div className="wrap">
                 <div className="search">
                   <input 

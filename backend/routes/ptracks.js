@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { con } = require('../sql.js')
+const con = require('../sql.js');
+const {verifyToken} = require('../jwt.js');
 
 router.get('/:id', async (req, res) => {
+  const {id} = verifyToken(req.cookies.jwt);
+  const token = await con.getAccessToken(req.cookies.jwt);
+
   const headers = {
-    Authorization: 'Bearer ' + req.session.access_token
+    Authorization: 'Bearer ' + token
   };
 
   var pages = 0;  
@@ -56,40 +60,34 @@ router.get('/:id', async (req, res) => {
   res.end();
 
   try{            
-    let sql = `select playlist_id from ${req.session.username}playlists where name = "temp_playlist"`;
+    let sql = `select playlist_id from user_playlists where name = "temp_playlist" AND user_id = ${id}`;
 
-    con.query(sql, (err,result) => {
-      if (err) throw err;
-            
-      if (!result.length) {        
-        sql = `INSERT INTO ${req.session.username}playlists (playlist_id, images, name, public, uri, tracks) VALUES ?`;
+    const [result] = await con.query(sql);    
 
-        const values = [[
-          req.params.id, null, 'temp_playlist', "true", 'spotify:playlist:${req.params.id}', JSON.stringify(sqlObj)
-        ]];
+    if (!result.length) {        
+      sql = `INSERT INTO user_playlists (user_id, playlist_id, images, name, public, uri, tracks) VALUES ?`;
 
-        con.query(sql, [values], (err) => {
-          if (err) throw err;
+      const values = [[
+        id, req.params.id, null, 'temp_playlist', true, `spotify:playlist:${req.params.id}`, JSON.stringify(sqlObj)
+      ]];
 
-          console.log('Temp Playlist Added')
-        });
-      }
-      else {
-        if (result[0].playlist_id === req.params.id){
-          console.log('playlist already exists');
-        }
-        else{        
-          sql = `UPDATE ${req.session.username}playlists SET playlist_id='${req.params.id}',uri='spotify:playlist:${req.params.id}',tracks=${con.escape(JSON.stringify(sqlObj))}  WHERE name = "temp_playlist"`;
-          con.query(sql, (err) => {
-            if (err) throw err;
+      await con.query(sql, [values]);
 
-            console.log('Temp Playlist Updated');
-          });
-        }   
-      }
-    });     
-  }
-  catch(e){
+      console.log('Temp Playlist Added');
+    } else {
+      if (result[0].playlist_id === req.params.id){
+        console.log('playlist already exists');
+      } else {        
+        sql = 'UPDATE user_playlists SET playlist_id = ?, uri = ?, tracks = ? WHERE name = "temp_playlist" AND user_id = ?';
+
+        await con.query(
+          sql, 
+          [req.params.id, `spotify:playlist:${req.params.id}`, JSON.stringify(sqlObj), id]);
+
+        console.log('Temp Playlist Updated');
+      }   
+    }     
+  } catch(e) {
     console.log(e);
   }    
 });

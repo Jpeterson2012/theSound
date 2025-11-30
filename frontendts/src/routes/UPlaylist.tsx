@@ -5,7 +5,7 @@ import './UPlaylist.css'
 import { useState, useEffect, useContext } from "react";
 import { UsePlayerContext } from '../hooks/PlayerContext.tsx';
 import PTrack from "../components/PTrack/PTrack.tsx";
-import { useGetPlaylistsQuery, useGetLikedQuery, Playlists, useDeleteNewLikedMutation, useDeletePTrackMutation, useDeletePlaylistMutation } from "../App/ApiSlice.ts";
+import { useGetPlaylistsQuery, useGetLikedQuery, Playlists, useDeleteNewLikedMutation, useDeletePlaylistMutation } from "../App/ApiSlice.ts";
 import { createSelector } from '@reduxjs/toolkit'
 import type { TypedUseQueryStateResult} from '@reduxjs/toolkit/query/react'
 import { Spin } from "../components/Spin/Spin.tsx";
@@ -17,6 +17,8 @@ import { filterTracks } from "../components/filterTracks.tsx";
 import { spotifyRequest, msToReadable } from '../utils/utils.ts';
 
 import { AddToLibrary } from '../helpers/AddToLibrary.tsx';
+
+import { useAppSelector } from '../App/hooks.ts';
 
 function customImage(ptracks: any){
   return(
@@ -40,15 +42,20 @@ function returnUrl(ptracks: any){
 }
 {/* Old method of playling playlist using playlist uri. doesnt work with sorting */}
 {/* {last == 'likedsongs' ? liked_urls.push(t.uri) : liked_urls = null } */}
-function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, removePTrack: any, lastSegment: any, setmodal:any, settrack: any, setsnack:any, filter_val:any) {  
+function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: any, lastSegment: any, setmodal:any, settrack: any, setsnack:any, filter_val:any, exitingSong: any) {  
   let temp2 = document.getElementById('dropdown-content2')!;
 
   if(temp2) temp2.style.display = 'none'           
   
   return (
     userLists?.tracks?.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any, index: number) =>
-
-      <div key={t.uri.split(':').pop()} style={{display: 'flex', alignItems: 'center'}}>
+      <div 
+        key={t.uri.split(':').pop()} 
+        style={{
+          display: 'flex', alignItems: 'center',
+          ...(t.uri === exitingSong ? {animation: 'fadeOut 0.25s ease-in-out'} : {animation: 'fadeIn 0.25s ease-in-out'}),
+        }}
+      >
         <p hidden>{liked_urls.push(t.uri)}</p>
 
         <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>                      
@@ -75,8 +82,8 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
                       setsnack(true)
                     
                       setTimeout(() => {
-                        lastSegment === 'likedsongs' ? removeSong({name: t.name}) : removePTrack({pID: userLists.playlist_id, name: t.name}); 
-                      }, lastSegment === 'likedsongs' ? 300 : 500);
+                        removeSong({name: t.name}); 
+                      }, 300);
                     }}
                   >
                     Remove From Liked Songs
@@ -91,7 +98,7 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
 
                   setmodal(true);                  
                 }} 
-               />      
+              />      
             </div>
           </a>
 
@@ -152,8 +159,7 @@ export default function UPlaylist({lastSegment}: any){
   const stockImage = "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg";
 
   const {data: liked, isSuccess: lsuccess} = useGetLikedQuery()
-  const [removeSong] = useDeleteNewLikedMutation()
-  const [removePTrack] = useDeletePTrackMutation()
+  const [removeSong] = useDeleteNewLikedMutation()  
   const [modal, setModal] = useState(false)
   const [trackData, setTrackData] = useState(null)
   const [snack, setSnack] = useState(false)
@@ -181,6 +187,8 @@ export default function UPlaylist({lastSegment}: any){
   })
 
   let truth: boolean = lsuccess && psuccess;
+
+  const exitingSong = useAppSelector(state => state.defaultState.exitingSong);  
 
   useEffect(() => {               
     if(truth) setLoading(false)     
@@ -287,7 +295,7 @@ export default function UPlaylist({lastSegment}: any){
                     <span className="lolP">Duration</span>
                   </div>
 
-                  {userPlaylists(tplaylist!, liked_uris, playerState.is_paused,removeSong, removePTrack, lastSegment,setModal,setTrackData,setSnack,filter_val) }
+                  {userPlaylists(tplaylist!, liked_uris, playerState.is_paused,removeSong, lastSegment,setModal,setTrackData,setSnack,filter_val, exitingSong) }
                 </div>
                     
               </div>

@@ -10,8 +10,8 @@ export async function spotifyRequest(path: string, method?: string, options?: ob
     if (path !== "/player" || playing) {        
         resetInactivityTimer();
     }    
-
-    const BASE_URL = window.location.hostname === "localhost" 
+    
+    const BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
         ? import.meta.env.VITE_URL 
         : import.meta.env.VITE_PROD_URL;
 
@@ -32,7 +32,7 @@ export async function spotifyRequest(path: string, method?: string, options?: ob
     });
 };
 
-export const BASE_URL = window.location.hostname === "localhost" 
+export const BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
     ? import.meta.env.VITE_URL 
     : import.meta.env.VITE_PROD_URL;
 

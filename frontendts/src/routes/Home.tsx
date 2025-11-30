@@ -8,13 +8,13 @@ import { Modal } from 'react-responsive-modal';
 import { imageRender } from "../components/ImageRender/ImageRender.tsx";
 import { useGetAlbumsQuery, useGetPlaylistsQuery, useGetAudiobooksQuery, useGetPodcastsQuery, useDeleteAlbumMutation,useDeletePlaylistMutation } from "../App/ApiSlice.ts";
 import Card from "../components/Card/Card.tsx";
-import escape from '../images/escape.jpg'
 import MySnackbar from "../components/MySnackBar.tsx";
 import dots from '../images/dots.png'
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 import Loading from '../components/Loading/Loading.tsx';
 import Loading3 from '../components/Loading3/Loading3.tsx'
 import { spotifyRequest } from '../utils/utils.ts';
+import { closeIcon } from '../helpers/CloseIcon.tsx';
 
 function generatePassword() {
   const length = 22;
@@ -211,10 +211,6 @@ export default function Home({setIsLoading2}: any) {
       }
     });
   };
-
-  const closeIcon = (
-    <img src={escape} style={{height: '44px', width: '44px'}}/>
-  );
   
   const sortedAlbums = (() => {
     const sortedAlbums = albums.slice();
@@ -231,7 +227,7 @@ export default function Home({setIsLoading2}: any) {
 
         return sortedAlbums;
       case 3:
-        sortedAlbums.sort((a,b) => a.artists[0].name.localeCompare(b.artists[0].name));
+        sortedAlbums.sort((a: any,b: any) => a.artists[0].name.localeCompare(b.artists[0].name));
 
         return sortedAlbums;
       case 4:
@@ -598,7 +594,7 @@ export default function Home({setIsLoading2}: any) {
               </p>
 
               <div className="dropdown" id="dropdown">              
-                <Modal modalId='modal4' open={open} onClose={onCloseModal} center closeIcon={closeIcon}>
+                <Modal modalId='modal4' open={open} onClose={onCloseModal} center closeIcon={closeIcon()}>
                   <div style={{color: 'white', marginLeft: '35%',fontWeight: 'bolder',fontSize: '20px'}} >New Playlist</div>
 
                   <form action=""  id="formPlaylist">

@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const con = require('../sql.js');
 
 router.get('/:id', async (req, res) => {
+  const token = await con.getAccessToken(req.cookies.jwt);
+
   const headers = {
-  Authorization: 'Bearer ' + req.session.access_token,        
+    Authorization: 'Bearer ' + token,        
   };
 
   try{    
@@ -70,12 +73,14 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/albums/:id', async (req, res) => {
+  const token = await con.getAccessToken(req.cookies.jwt);
+
   let arr = req.params.id;
 
   arr = arr.split(',');
 
   const headers = {
-    Authorization: 'Bearer ' + req.session.access_token,        
+    Authorization: 'Bearer ' + token,        
   }
 
   let items = {};

@@ -1,28 +1,21 @@
-var express = require('express');
-var router = express.Router();
-var mystuff = require("./AuthRoutes.js");
+const express = require('express');
+const router = express.Router();
+const mystuff = require("./AuthRoutes.js");
+const con = require('../sql.js');
 
+router.get('/', async (req, res) => {
+    try{        
+        const token = await con.getLogin(req.cookies.jwt);
 
-router.get('/', function(req, res) {
-    // x.registerListener(function() {
-    //     console.log('')
-    //     console.log(req.session.access_token)
-    //     console.log('')
-    //     var token = {items: req.session.access_token}
-    //     res.send(token)
-    // })
-    try{
-        var items = {access_token: req.session.access_token, refresh_token: req.session.refresh_token, expires_in: req.session.expires_in}
-        res.send(items)
-    }
-    catch(e){
-        console.error(e)
+        res.send(token);
+    } catch(e) {
+        console.error(e);
     }
 })
 //Handle refresh token
-router.post('/refresh_token', async function(req, res) {    
+router.post('/refresh_token', async (req, res) => {   
+    const url = 'https://accounts.spotify.com/api/token';
 
-    url = 'https://accounts.spotify.com/api/token'
     try{
         const headers = {
             'content-type': 'application/x-www-form-urlencoded',
@@ -52,9 +45,6 @@ router.post('/refresh_token', async function(req, res) {
     catch(e){
         console.log(e)
     }
-    
-
-
 });
 
 module.exports = router;

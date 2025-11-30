@@ -56,7 +56,8 @@ interface likedSong{
     date_added: string
 }
 interface User {
-    items: string
+    id: number;
+    name: string;
 }
 interface Devices {
     id: string
@@ -166,6 +167,36 @@ export const apiSlice = createApi({
                 }
                 catch{
                     getPPatchResult.undo()
+                }
+            }
+        }),
+        bulkEditPTracks: builder.mutation<Playlists, {pUpdates: any}>({
+            query: ({pUpdates}) => ({
+                url: '/update/playlist/bulk',
+                method: 'POST',
+                credentials: "include",
+                body: {pUpdates}
+            }),
+            async onQueryStarted({pUpdates}, lifecycleApi) {
+                const getPBulkPatchResult = lifecycleApi.dispatch(
+                    apiSlice.util.updateQueryData('getPlaylists', undefined, draft => {                        
+                        pUpdates.updates.map((up: any) => {
+                            const temp = draft.find(p => p.playlist_id === up.pID);
+
+                            if (temp) {
+                                if (up.status.includes("add")) {
+                                    temp.tracks.push(up.initialP);
+                                } else {
+                                    temp.tracks = temp.tracks.filter(a => a.uri !== pUpdates.trackUri);
+                                }
+                            }
+                        });
+                    })
+                );
+                try {
+                    await lifecycleApi.queryFulfilled;
+                } catch {
+                    getPBulkPatchResult.undo();
                 }
             }
         }),
@@ -326,7 +357,8 @@ export const {
     useAddAlbumMutation,
     useDeleteAlbumMutation,
     useAddNewLikedMutation,
-    useAddPTrackMutation, 
+    useAddPTrackMutation,
+    useBulkEditPTracksMutation, 
     useDeleteNewLikedMutation,
     useDeletePTrackMutation,
     useGetDevicesQuery,
