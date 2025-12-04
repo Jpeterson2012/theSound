@@ -33,10 +33,11 @@ input[type=range]{
     width: 1rem;
   }
 #seeker{
-  position: absolute;
+  width: 100%;
+  /* position: absolute;
   left: 280px;
   bottom: 12px;
-  width: 33vw;
+  width: 33vw; */
 }
 
 @media only screen and (max-width: 768px),

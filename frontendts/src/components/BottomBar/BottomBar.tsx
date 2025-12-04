@@ -72,259 +72,232 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
     },[playerState.current_track?.name])
 
     return(
-        <>
-            <div className='wrapper'>            
-                <div className="main-wrapper">
-                    <div className="now-playing__side2" id='now-playing__side2' style={boolVal ? {alignItems: 'start'} : {alignItems: 'center'}}>                        
-                        <div className="now-playing__name2" id='now-playing__name2' style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}>
-                            <p style={{margin: '0px', padding: '0px', gap: '1rem', color: 'black'}}>
-                                {playerState.current_track?.name}
-                            </p>                                                                                    
-                        </div>
+        <div style={{position: 'fixed', height: '60px', bottom: '0', left: '0', width: '100vw', zIndex: '3', display: 'grid', alignItems: 'center', gridTemplateColumns: "1.5fr 0.25fr 1fr 1fr 0fr 2.5fr 0.25fr", background: 'black', gap: '7px'}}>            
+            <div style={{minWidth: '100%', width: '100%', display: 'flex', gap: '95px'}}>
+                <a onClick={() => {
+                    const parts = playerState.current_track.album.uri.split(':');
+                    let lastSegment = parts.pop() || parts.pop();
+                    
+                    const found = (albums?.find((e: any) => e?.album_id === lastSegment) || (albums?.find((e: any) => e?.name === playerState.current_track.album.name)));
 
-                        <div className="now-playing__artist2" id='now-playing__artist2' data-direction="right" style={{display: 'flex', flexDirection: 'row',whiteSpace: 'nowrap', alignItems: 'center'}}>
-                            {playerState.current_track?.artists.map((s:any,i:number,row:any) => 
-                                <p key={i} style={{color: 'black'}}>
-                                    {row.length - 1 !== i ? s.name + ", " : s.name}
-                                </p>
-                            )}                                                    
-                        </div>                                                        
-                    </div>
+                    if (found){
+                        sessionStorage.setItem("albumStatus","user");
 
-                    <a onClick={() => {
-                        const parts = playerState.current_track.album.uri.split(':');
-                        let lastSegment = parts.pop() || parts.pop();
-                        
-                        const found = (albums?.find((e: any) => e?.album_id === lastSegment) || (albums?.find((e: any) => e?.name === playerState.current_track.album.name)));
+                        if (lastSegment !== found?.album_id ) lastSegment = found?.album_id;                        
+                    } else {
+                        sessionStorage.setItem("albumStatus", "notuser");
+                    }                        
 
-                        if (found){
-                            sessionStorage.setItem("albumStatus","user");
+                    const artistss: any[] = []
+                    const artist_idss: any[] = []
+                    playerState.current_track.artists.map((s: any) => { 
+                        artistss.push(s.name),
+                        artist_idss.push(s.uri.split(':').pop())
+                    })
 
-                            if (lastSegment !== found?.album_id ) lastSegment = found?.album_id;                        
-                        } else {
-                            sessionStorage.setItem("albumStatus", "notuser");
-                        }                        
+                    sessionStorage.setItem("uri", playerState.current_track.album.uri);
+                    sessionStorage.setItem("artist", JSON.stringify(artistss));
+                    sessionStorage.setItem("artist_id", JSON.stringify(artist_idss));
+                    sessionStorage.setItem("image", playerState.current_track.album.images?.filter((s:any) => s.height == 640).map((s:any) => s.url));
+                    // sessionStorage.setItem("name", playerState.current_track.album.name)
+                    sessionStorage.setItem("albumname", playerState.current_track.album.name);
+                    // console.log(sessionStorage.getItem("name")!.length)
 
-                        const artistss: any[] = []
-                        const artist_idss: any[] = []
-                        playerState.current_track.artists.map((s: any) => { 
-                            artistss.push(s.name),
-                            artist_idss.push(s.uri.split(':').pop())
-                        })
-
-                        sessionStorage.setItem("uri", playerState.current_track.album.uri);
-                        sessionStorage.setItem("artist", JSON.stringify(artistss));
-                        sessionStorage.setItem("artist_id", JSON.stringify(artist_idss));
-                        sessionStorage.setItem("image", playerState.current_track.album.images?.filter((s:any) => s.height == 640).map((s:any) => s.url));
-                        // sessionStorage.setItem("name", playerState.current_track.album.name)
-                        sessionStorage.setItem("albumname", playerState.current_track.album.name);
-                        // console.log(sessionStorage.getItem("name")!.length)
-
-                        playerState.current_track.type !== 'episode' && navigate(`/app/album/${lastSegment}`)
-                    }}>
-                        <span>
-                            <img 
-                                src={playerState.current_track?.album?.images[0]?.url} 
-                                className="now-playing__cover" alt="" style={{left: '-3px', bottom: '0', zIndex: '1',position: 'absolute'}} 
-                            />
-                            
-                            <div>{is_active && Spin2(is_active,playerState.is_paused)}</div>
-                        </span>
-                    </a>
-
-                    <div className="now-playing__side">
-                        <div className='scrollbar1'>
-                            <div className="now-playing__name" style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}>
-                                <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>
-                                    {playerState.current_track?.name}
-                                </p>
-
-                                <p className='temp' style={{margin: '0px', padding: '0px'}}>{playerState.current_track?.name}</p>
-
-                                {playerState.current_track?.name && <HScroll name={"scrollbar1"}/>}
-                            </div>
-                        </div>
-                            
-                        <div className='scrollbar2'>
-                            <div className="now-playing__artist" data-direction="right">
-                                <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>
-                                    {playerState.current_track?.artists.map((s:any,i:number,row:any) => 
-                                        <a 
-                                            key={i} 
-                                            style={{color: 'rgb(90, 210, 216)'}}
-                                            onClick={() => { 
-                                                playerState.current_track?.type !== 'episode' && navigate(`/app/artist/${s.uri.split(':').pop()}`);
-                                            }} 
-                                        >
-                                            {row.length - 1 !== i ? s.name + ", " : s.name}
-                                        </a>
-                                    )}
-                                </p>
-
-                                {playerState.current_track?.name && <HScroll name={'scrollbar2'}/>}
-                            </div>
-                        </div>                                
-                    </div>                                                                                                            
-                </div>
-        
-                <div className='buttonWrapper'>                    
-                    <div className='volAddContainer'>
-                        {/* Replaced old modal method for adding to playlists here */}
-                        <AddLiked active={is_active} trackUri={playerState.current_track} duration={playerState.duration}/>
-
-                        <img id="volumeIcon" src={volume} 
-                            onMouseEnter={(e) => {
-                                const el = e.target as HTMLElement;
-
-                                el.style.opacity = '1';
-                            }} 
-                            onMouseLeave={(e) => {
-                                const el = e.target as HTMLElement;
-
-                                player.getVolume().then((vol: any) => el.style.opacity = !vol  ? '0' : pVol);
-                            }} 
-                            onClick={(e) => {
-                                let temp: HTMLInputElement = e.currentTarget.parentElement?.querySelector('#volumeBar')!;
-
-                                const found = [null, "null"].includes(sessionStorage.getItem("currentContext")) ?? false;
-                                
-                                if(temp.value === "0") {
-                                    player?.setVolume(+pVol);
-                                
-                                    //Checks if current device is The Sound. If not uses spotify api to change volume
-                                    if(found){
-                                        temp.value = pVol;
-                                    }
-                                    else{ 
-                                        temp.value = pVol;
-
-                                        spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${+pVol * 100}`, 'POST');
-                                    }
-                                
-                                    e.currentTarget.style.opacity = "1"
-                                } 
-                                else{ 
-                                    player?.setVolume(0);
-                                    pVol = temp.value;
-                                
-                                    //Checks if current device is The Sound. If not uses spotify api to change volume
-                                    if(found){  
-                                        temp.value = "0"
-                                    }
-                                    else{ 
-                                        temp.value = "0"
-
-                                        spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${0}`, 'POST');
-                                    }
-                                
-                                    e.currentTarget.style.opacity = "0"
-                                }
-                            }}
-                        />
-
-                        <input 
-                            id='volumeBar' 
-                            type='range' 
-                            min={0} 
-                            max={1} 
-                            step={0.05} 
-                            onChange={(e) => {
-                                let temp2 = document.getElementById("volumeIcon")!;   
-
-                                const found = [null, "null"].includes(sessionStorage.getItem("currentContext")) ?? false;
-
-                                e.target.value === "0" ? temp2.style.opacity = '0' : temp2.style.opacity = e.target.value;
-
-                                pVol = e.target.value;
-
-                                //Checks if current device is The Sound. If not uses spotify api to change volume
-                                if(found) player?.setVolume(e.target.value); 
-                                else{
-                                    //Waits for user to release handle so api isn't getting polled multiple times a second                                
-                                    setTimeout(() => { 
-                                        spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${+e.target.value * 100}`, 'POST');
-                                    },150);                                
-                                }
-                            }}
-                        />
-                    </div>
-
-                    <div className='fiveButtonContainer'>
+                    playerState.current_track.type !== 'episode' && navigate(`/app/album/${lastSegment}`)
+                }}>
+                    <span>
                         <img 
-                            id='toggle1' 
-                            src={repeated < 2 ? repeat : repeat1} 
-                            style={{opacity: !repeated ? '0.5' : 1}} 
-                            onClick={() => {   
-                                let temp = document.getElementById('toggle1')!;
-                                temp.style.animation = 'hithere 1s ease';  
-                            
-                                if (!repeated) setRepeated(1);
-                                else if (repeated === 1) setRepeated(2);
-                                else if (repeated === 2) setRepeated(0);         
-
-                                spotifyRequest(
-                                    '/shuffle', 
-                                    'POST', 
-                                    {
-                                        body: JSON.stringify({state: !repeated ? 'context' : (repeated === 1 ? 'track' : 'off')})
-                                    }
-                                );                        
-                                setTimeout(()=>{
-                                    temp.style.removeProperty('animation');
-                                }, 750);                        
-                            }}
+                            src={playerState.current_track?.album?.images[0]?.url} 
+                            alt="" style={{left: '-3px', bottom: '0', zIndex: '1',position: 'absolute', height: '50px'}} 
                         />
+                        
+                        <div>{is_active && Spin2(is_active,playerState.is_paused)}</div>
+                    </span>
+                </a>
 
-                        {is_active && (!playerState.is_paused && (
-                            <div className="now_playing" id="music">
-                                <span className="bar n1">A</span>
-                                <span className="bar n2">B</span>
-                                <span className="bar n3">c</span>
-                                <span className="bar n4">D</span>
-                                <span className="bar n5">E</span>
-                                <span className="bar n6">F</span>
-                                <span className="bar n7">G</span>
-                                <span className="bar n8">H</span>
-                            </div>
-                        ))}
-                        
-                        <button 
-                            className="btn-spotify" 
-                            style={{width: '70px'}} 
-                            onClick={() => { 
-                                currentDev.name === "TheSound" 
-                                    ? (playerState.pos > 3000 ? player!.seek(0) : player!.previousTrack()) 
-                                    : playbackState('previous', null, null, currentDev); 
-                            }}
-                        >
-                            &lt;&lt;
-                        </button>
-                        
-                        <button 
-                            className="btn-spotify" 
-                            style={{width: '80px', padding: ' 8px 0px'}}  
-                            onClick={() => { 
-                                currentDev.name === "TheSound" 
-                                    ? player!.togglePlay() 
-                                    : playbackState(playerState.is_paused ? 'play' : 'pause', playerState, setPlayerState, currentDev);
-                            }} 
-                        >
-                            { playerState.is_paused ? "PLAY" : "PAUSE" }
-                        </button>
-                        
-                        <button 
-                            className="btn-spotify" 
-                            style={{width: '70px'}} 
-                            onClick={() => { 
-                                currentDev.name === "TheSound" 
-                                    ? player!.nextTrack() 
-                                    : playbackState('next', null, null, currentDev); 
-                            }}
-                        >
-                            &gt;&gt;
-                        </button>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>                    
+                    <div style={{fontWeight: 'bold',margin: '0px', padding: '0px', color: 'rgb(90, 210, 216)'}}>
+                        {playerState.current_track?.name}
+                    </div>                    
+                                            
+                    <div style={{color: 'rgb(90, 210, 216)', margin: '0px', padding: '0px', gap: '1rem'}}>                        
+                        {playerState.current_track?.artists.map((s:any,i:number,row:any) => 
+                            <a 
+                                key={i} 
+                                style={{color: 'rgb(90, 210, 216)'}}
+                                onClick={() => { 
+                                    playerState.current_track?.type !== 'episode' && navigate(`/app/artist/${s.uri.split(':').pop()}`);
+                                }} 
+                            >
+                                {row.length - 1 !== i ? s.name + ", " : s.name}
+                            </a>
+                        )}
+                    </div>                                                    
+                </div>                                                                                                            
+            </div>
+    
+            <AddLiked active={is_active} trackUri={playerState.current_track} duration={playerState.duration}/>
 
-                        <div className='spotifyButtonContainer'>                        
+            <div style={{display: 'flex', alignItems: 'center', width: '95%'}}>
+                {/* Replaced old modal method for adding to playlists here */}                    
+
+                <img style={{height: '30px', cursor: 'pointer'}} src={volume} 
+                    onMouseEnter={(e) => {
+                        const el = e.target as HTMLElement;
+
+                        el.style.opacity = '1';
+                    }} 
+                    onMouseLeave={(e) => {
+                        const el = e.target as HTMLElement;
+
+                        player.getVolume().then((vol: any) => el.style.opacity = !vol  ? '0' : pVol);
+                    }} 
+                    onClick={(e) => {
+                        let temp: HTMLInputElement = e.currentTarget.parentElement?.querySelector('#volumeBar')!;
+
+                        const found = [null, "null"].includes(sessionStorage.getItem("currentContext")) ?? false;
+                        
+                        if(temp.value === "0") {
+                            player?.setVolume(+pVol);
+                        
+                            //Checks if current device is The Sound. If not uses spotify api to change volume
+                            if(found){
+                                temp.value = pVol;
+                            }
+                            else{ 
+                                temp.value = pVol;
+
+                                spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${+pVol * 100}`, 'POST');
+                            }
+                        
+                            e.currentTarget.style.opacity = "1"
+                        } 
+                        else{ 
+                            player?.setVolume(0);
+                            pVol = temp.value;
+                        
+                            //Checks if current device is The Sound. If not uses spotify api to change volume
+                            if(found){  
+                                temp.value = "0"
+                            }
+                            else{ 
+                                temp.value = "0"
+
+                                spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${0}`, 'POST');
+                            }
+                        
+                            e.currentTarget.style.opacity = "0"
+                        }
+                    }}
+                />
+
+                <input 
+                    //id='volumeBar' 
+                    style={{width: '100%'}}
+                    type='range' 
+                    min={0} 
+                    max={1} 
+                    step={0.05} 
+                    onChange={(e) => {
+                        let temp2 = document.getElementById("volumeIcon")!;   
+
+                        const found = [null, "null"].includes(sessionStorage.getItem("currentContext")) ?? false;
+
+                        e.target.value === "0" ? temp2.style.opacity = '0' : temp2.style.opacity = e.target.value;
+
+                        pVol = e.target.value;
+
+                        //Checks if current device is The Sound. If not uses spotify api to change volume
+                        if(found) player?.setVolume(e.target.value); 
+                        else{
+                            //Waits for user to release handle so api isn't getting polled multiple times a second                                
+                            setTimeout(() => { 
+                                spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${+e.target.value * 100}`, 'POST');
+                            },150);                                
+                        }
+                    }}
+                />
+            </div>            
+
+            <div style={{display: 'flex', justifyContent: 'space-around', gap: '30px', alignItems: 'center'}}>
+                <img 
+                    id='toggle1' 
+                    src={repeated < 2 ? repeat : repeat1} 
+                    style={{opacity: !repeated ? '0.5' : 1}} 
+                    onClick={() => {   
+                        let temp = document.getElementById('toggle1')!;
+                        temp.style.animation = 'hithere 1s ease';  
+                    
+                        if (!repeated) setRepeated(1);
+                        else if (repeated === 1) setRepeated(2);
+                        else if (repeated === 2) setRepeated(0);         
+
+                        spotifyRequest(
+                            '/shuffle', 
+                            'POST', 
+                            {
+                                body: JSON.stringify({state: !repeated ? 'context' : (repeated === 1 ? 'track' : 'off')})
+                            }
+                        );                        
+                        setTimeout(()=>{
+                            temp.style.removeProperty('animation');
+                        }, 750);                        
+                    }}
+                />                
+
+                <div style={{display: 'flex', flexDirection: 'column'}}>
+                    {is_active && (!playerState.is_paused && (
+                        <div className="now_playing" id="music">
+                            <span className="bar n1">A</span>
+                            <span className="bar n2">B</span>
+                            <span className="bar n3">c</span>
+                            <span className="bar n4">D</span>
+                            <span className="bar n5">E</span>
+                            <span className="bar n6">F</span>
+                            <span className="bar n7">G</span>
+                            <span className="bar n8">H</span>
+                        </div>
+                    ))}
+
+                    {window.innerWidth > 500
+                        ? <div style={{display: 'flex'}}>
+                            <button 
+                                className="btn-spotify" 
+                                style={{width: '70px'}} 
+                                onClick={() => { 
+                                    currentDev.name === "TheSound" 
+                                        ? (playerState.pos > 3000 ? player!.seek(0) : player!.previousTrack()) 
+                                        : playbackState('previous', null, null, currentDev); 
+                                }}
+                            >
+                                &lt;&lt;
+                            </button>
+                            
+                            <button 
+                                className="btn-spotify" 
+                                style={{width: '80px', padding: ' 8px 0px'}}  
+                                onClick={() => { 
+                                    currentDev.name === "TheSound" 
+                                        ? player!.togglePlay() 
+                                        : playbackState(playerState.is_paused ? 'play' : 'pause', playerState, setPlayerState, currentDev);
+                                }} 
+                            >
+                                { playerState.is_paused ? "PLAY" : "PAUSE" }
+                            </button>
+                            
+                            <button 
+                                className="btn-spotify" 
+                                style={{width: '70px'}} 
+                                onClick={() => { 
+                                    currentDev.name === "TheSound" 
+                                        ? player!.nextTrack() 
+                                        : playbackState('next', null, null, currentDev); 
+                                }}
+                            >
+                                &gt;&gt;
+                            </button>
+                        </div>
+                        : <div style={{display: 'flex'}}>
                             <p 
                                 className="spotifyButtons1" 
                                 onClick={() => { 
@@ -357,84 +330,486 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                                 &gt;&gt;
                             </p>
                         </div>
-                        
-                        <img 
-                            id='toggle2' 
-                            src={shuffle} 
-                            style={{opacity: shuffled ? '0.5' : '1'}} 
-                            onClick={() => {                             
-                                let temp = document.getElementById('toggle2')!
-                                temp.style.animation = 'hithere 1s ease'
-                            
-                                if (shuffled) setisShuffled(false);
-                                else setisShuffled(true);          
-                                
-                                spotifyRequest('/shuffle', 'POST', {body: JSON.stringify({state: shuffled})});
+                    }
+                </div>                                
 
-                                setTimeout(() => {
-                                    temp.style.removeProperty('animation');
-                                }, 750); 
-                            }} 
-                        />     
-                    </div>                           
-
-                    {/* Replaced old music seek bar method here */}
-                    <SeekBar duration={playerState.duration} player={player} paused={playerState.is_paused} />
-                
-                    <img 
-                        className='deviceImg' 
-                        src={device} 
-                        onClick={() => {      
-                            refetch();
-
-                            onOpenModal();                      
-
-                            !isFetching && console.log(devices);                                                
+                <div className='spotifyButtonContainer'>                        
+                    <p 
+                        className="spotifyButtons1" 
+                        onClick={() => { 
+                            currentDev.name === "TheSound" 
+                                ? (playerState.pos > 3000 ? player!.seek(0) : player!.previousTrack()) 
+                                : playbackState('previous', null, null, currentDev); 
                         }} 
+                    >
+                        &lt;&lt;
+                    </p>
+                    
+                    <a 
+                        onClick={() => { 
+                            currentDev.name === "TheSound" 
+                                ? player!.togglePlay() 
+                                : playbackState(playerState.is_paused ? 'play' : 'pause', playerState, setPlayerState, currentDev);
+                            }}
+                        >
+                        <p className="spotifyButtons2">
+                            { playerState.is_paused ? "PLAY" : "PAUSE" }
+                        </p>
+                    </a>                        
+                    
+                    <p 
+                        className="spotifyButtons3"
+                        onClick={() => { 
+                            currentDev.name === "TheSound" ? player!.nextTrack() : playbackState('next', null, null, currentDev) ;
+                        }} 
+                    >
+                        &gt;&gt;
+                    </p>
+                </div>
+                
+                <img 
+                    id='toggle2' 
+                    src={shuffle} 
+                    style={{opacity: shuffled ? '0.5' : '1'}} 
+                    onClick={() => {                             
+                        let temp = document.getElementById('toggle2')!
+                        temp.style.animation = 'hithere 1s ease'
+                    
+                        if (shuffled) setisShuffled(false);
+                        else setisShuffled(true);          
+                        
+                        spotifyRequest('/shuffle', 'POST', {body: JSON.stringify({state: shuffled})});
+
+                        setTimeout(() => {
+                            temp.style.removeProperty('animation');
+                        }, 750); 
+                    }} 
+                />     
+            </div>
+
+            <div></div>
+
+            <SeekBar duration={playerState.duration} player={player} paused={playerState.is_paused} />
+
+            <div style={{justifySelf: 'flex-end'}}>
+                <img 
+                    style={{height: '42px', cursor: 'pointer'}} 
+                    src={device} 
+                    onClick={() => {      
+                        refetch();
+
+                        onOpenModal();                      
+
+                        !isFetching && console.log(devices);                                                
+                    }} 
+                />
+
+                <Modal modalId='modal1' open={open} onClose={onCloseModal} closeIcon={closeIcon()}>
+                    <div style={{marginTop: '60px'}}>
+                        <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Current Device</p>
+
+                        {/* <p>{mainDevice!.name}</p> */}
+                        <p>{currentDev.name}</p>
+
+                        <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Select Another Device</p>
+
+                        <a 
+                            onClick={() => {
+                                setCurrentDev({name: "TheSound", id: sessionStorage.getItem("device_id")});
+
+                                sessionStorage.setItem("currentContext", "null");
+
+                                spotifyRequest(`/player/${sessionStorage.getItem("device_id")}`, 'POST');
+                            }}
+                        >
+                            <p>TheSound</p> 
+                        </a>
+
+                        {devices.map((device:any,i:any) =>
+                            device.name === "TheSound"
+                                && <a 
+                                    key={i} 
+                                    onClick={() => {
+                                        // console.log(a);
+
+                                        setCurrentDev({name: device.name, id: device.id});
+
+                                        sessionStorage.setItem("currentContext", device.id);
+
+                                        spotifyRequest(`/player/${device.id}`, 'POST');
+                                    }}
+                                >
+                                    <p>{device.name}</p> 
+                                </a> 
+                        )}
+                    </div>
+                </Modal>
+            </div>                
+        </div>        
+    );
+
+    return(
+        <div className='wrapper'>            
+            <div className="main-wrapper">
+                <div className="now-playing__side2" id='now-playing__side2' style={boolVal ? {alignItems: 'start'} : {alignItems: 'center'}}>                        
+                    <div className="now-playing__name2" id='now-playing__name2' style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}>
+                        <p style={{margin: '0px', padding: '0px', gap: '1rem', color: 'black'}}>
+                            {playerState.current_track?.name}
+                        </p>                                                                                    
+                    </div>
+
+                    <div className="now-playing__artist2" id='now-playing__artist2' data-direction="right" style={{display: 'flex', flexDirection: 'row',whiteSpace: 'nowrap', alignItems: 'center'}}>
+                        {playerState.current_track?.artists.map((s:any,i:number,row:any) => 
+                            <p key={i} style={{color: 'black'}}>
+                                {row.length - 1 !== i ? s.name + ", " : s.name}
+                            </p>
+                        )}                                                    
+                    </div>                                                        
+                </div>
+
+                <a onClick={() => {
+                    const parts = playerState.current_track.album.uri.split(':');
+                    let lastSegment = parts.pop() || parts.pop();
+                    
+                    const found = (albums?.find((e: any) => e?.album_id === lastSegment) || (albums?.find((e: any) => e?.name === playerState.current_track.album.name)));
+
+                    if (found){
+                        sessionStorage.setItem("albumStatus","user");
+
+                        if (lastSegment !== found?.album_id ) lastSegment = found?.album_id;                        
+                    } else {
+                        sessionStorage.setItem("albumStatus", "notuser");
+                    }                        
+
+                    const artistss: any[] = []
+                    const artist_idss: any[] = []
+                    playerState.current_track.artists.map((s: any) => { 
+                        artistss.push(s.name),
+                        artist_idss.push(s.uri.split(':').pop())
+                    })
+
+                    sessionStorage.setItem("uri", playerState.current_track.album.uri);
+                    sessionStorage.setItem("artist", JSON.stringify(artistss));
+                    sessionStorage.setItem("artist_id", JSON.stringify(artist_idss));
+                    sessionStorage.setItem("image", playerState.current_track.album.images?.filter((s:any) => s.height == 640).map((s:any) => s.url));
+                    // sessionStorage.setItem("name", playerState.current_track.album.name)
+                    sessionStorage.setItem("albumname", playerState.current_track.album.name);
+                    // console.log(sessionStorage.getItem("name")!.length)
+
+                    playerState.current_track.type !== 'episode' && navigate(`/app/album/${lastSegment}`)
+                }}>
+                    <span>
+                        <img 
+                            src={playerState.current_track?.album?.images[0]?.url} 
+                            className="now-playing__cover" alt="" style={{left: '-3px', bottom: '0', zIndex: '1',position: 'absolute'}} 
+                        />
+                        
+                        <div>{is_active && Spin2(is_active,playerState.is_paused)}</div>
+                    </span>
+                </a>
+
+                <div className="now-playing__side">
+                    <div className='scrollbar1'>
+                        <div className="now-playing__name" style={{fontWeight: 'bold',margin: '0px', padding: '0px'}}>
+                            <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>
+                                {playerState.current_track?.name}
+                            </p>
+
+                            <p className='temp' style={{margin: '0px', padding: '0px'}}>{playerState.current_track?.name}</p>
+
+                            {playerState.current_track?.name && <HScroll name={"scrollbar1"}/>}
+                        </div>
+                    </div>
+                        
+                    <div className='scrollbar2'>
+                        <div className="now-playing__artist" data-direction="right">
+                            <p style={{margin: '0px', padding: '0px', gap: '1rem'}}>
+                                {playerState.current_track?.artists.map((s:any,i:number,row:any) => 
+                                    <a 
+                                        key={i} 
+                                        style={{color: 'rgb(90, 210, 216)'}}
+                                        onClick={() => { 
+                                            playerState.current_track?.type !== 'episode' && navigate(`/app/artist/${s.uri.split(':').pop()}`);
+                                        }} 
+                                    >
+                                        {row.length - 1 !== i ? s.name + ", " : s.name}
+                                    </a>
+                                )}
+                            </p>
+
+                            {playerState.current_track?.name && <HScroll name={'scrollbar2'}/>}
+                        </div>
+                    </div>                                
+                </div>                                                                                                            
+            </div>
+    
+            <div className='buttonWrapper'>                    
+                <div className='volAddContainer'>
+                    {/* Replaced old modal method for adding to playlists here */}
+                    <AddLiked active={is_active} trackUri={playerState.current_track} duration={playerState.duration}/>
+
+                    <img id="volumeIcon" src={volume} 
+                        onMouseEnter={(e) => {
+                            const el = e.target as HTMLElement;
+
+                            el.style.opacity = '1';
+                        }} 
+                        onMouseLeave={(e) => {
+                            const el = e.target as HTMLElement;
+
+                            player.getVolume().then((vol: any) => el.style.opacity = !vol  ? '0' : pVol);
+                        }} 
+                        onClick={(e) => {
+                            let temp: HTMLInputElement = e.currentTarget.parentElement?.querySelector('#volumeBar')!;
+
+                            const found = [null, "null"].includes(sessionStorage.getItem("currentContext")) ?? false;
+                            
+                            if(temp.value === "0") {
+                                player?.setVolume(+pVol);
+                            
+                                //Checks if current device is The Sound. If not uses spotify api to change volume
+                                if(found){
+                                    temp.value = pVol;
+                                }
+                                else{ 
+                                    temp.value = pVol;
+
+                                    spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${+pVol * 100}`, 'POST');
+                                }
+                            
+                                e.currentTarget.style.opacity = "1"
+                            } 
+                            else{ 
+                                player?.setVolume(0);
+                                pVol = temp.value;
+                            
+                                //Checks if current device is The Sound. If not uses spotify api to change volume
+                                if(found){  
+                                    temp.value = "0"
+                                }
+                                else{ 
+                                    temp.value = "0"
+
+                                    spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${0}`, 'POST');
+                                }
+                            
+                                e.currentTarget.style.opacity = "0"
+                            }
+                        }}
                     />
 
-                    <Modal modalId='modal1' open={open} onClose={onCloseModal} closeIcon={closeIcon()}>
-                        <div style={{marginTop: '60px'}}>
-                            <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Current Device</p>
+                    <input 
+                        id='volumeBar' 
+                        type='range' 
+                        min={0} 
+                        max={1} 
+                        step={0.05} 
+                        onChange={(e) => {
+                            let temp2 = document.getElementById("volumeIcon")!;   
 
-                            {/* <p>{mainDevice!.name}</p> */}
-                            <p>{currentDev.name}</p>
+                            const found = [null, "null"].includes(sessionStorage.getItem("currentContext")) ?? false;
 
-                            <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Select Another Device</p>
+                            e.target.value === "0" ? temp2.style.opacity = '0' : temp2.style.opacity = e.target.value;
 
-                            <a 
-                                onClick={() => {
-                                    setCurrentDev({name: "TheSound", id: sessionStorage.getItem("device_id")});
+                            pVol = e.target.value;
 
-                                    sessionStorage.setItem("currentContext", "null");
+                            //Checks if current device is The Sound. If not uses spotify api to change volume
+                            if(found) player?.setVolume(e.target.value); 
+                            else{
+                                //Waits for user to release handle so api isn't getting polled multiple times a second                                
+                                setTimeout(() => { 
+                                    spotifyRequest(`/player/volume/${sessionStorage.getItem("currentContext")},${+e.target.value * 100}`, 'POST');
+                                },150);                                
+                            }
+                        }}
+                    />
+                </div>
 
-                                    spotifyRequest(`/player/${sessionStorage.getItem("device_id")}`, 'POST');
+                <div className='fiveButtonContainer'>
+                    <img 
+                        id='toggle1' 
+                        src={repeated < 2 ? repeat : repeat1} 
+                        style={{opacity: !repeated ? '0.5' : 1}} 
+                        onClick={() => {   
+                            let temp = document.getElementById('toggle1')!;
+                            temp.style.animation = 'hithere 1s ease';  
+                        
+                            if (!repeated) setRepeated(1);
+                            else if (repeated === 1) setRepeated(2);
+                            else if (repeated === 2) setRepeated(0);         
+
+                            spotifyRequest(
+                                '/shuffle', 
+                                'POST', 
+                                {
+                                    body: JSON.stringify({state: !repeated ? 'context' : (repeated === 1 ? 'track' : 'off')})
+                                }
+                            );                        
+                            setTimeout(()=>{
+                                temp.style.removeProperty('animation');
+                            }, 750);                        
+                        }}
+                    />
+
+                    {is_active && (!playerState.is_paused && (
+                        <div className="now_playing" id="music">
+                            <span className="bar n1">A</span>
+                            <span className="bar n2">B</span>
+                            <span className="bar n3">c</span>
+                            <span className="bar n4">D</span>
+                            <span className="bar n5">E</span>
+                            <span className="bar n6">F</span>
+                            <span className="bar n7">G</span>
+                            <span className="bar n8">H</span>
+                        </div>
+                    ))}
+                    
+                    <button 
+                        className="btn-spotify" 
+                        style={{width: '70px'}} 
+                        onClick={() => { 
+                            currentDev.name === "TheSound" 
+                                ? (playerState.pos > 3000 ? player!.seek(0) : player!.previousTrack()) 
+                                : playbackState('previous', null, null, currentDev); 
+                        }}
+                    >
+                        &lt;&lt;
+                    </button>
+                    
+                    <button 
+                        className="btn-spotify" 
+                        style={{width: '80px', padding: ' 8px 0px'}}  
+                        onClick={() => { 
+                            currentDev.name === "TheSound" 
+                                ? player!.togglePlay() 
+                                : playbackState(playerState.is_paused ? 'play' : 'pause', playerState, setPlayerState, currentDev);
+                        }} 
+                    >
+                        { playerState.is_paused ? "PLAY" : "PAUSE" }
+                    </button>
+                    
+                    <button 
+                        className="btn-spotify" 
+                        style={{width: '70px'}} 
+                        onClick={() => { 
+                            currentDev.name === "TheSound" 
+                                ? player!.nextTrack() 
+                                : playbackState('next', null, null, currentDev); 
+                        }}
+                    >
+                        &gt;&gt;
+                    </button>
+
+                    <div className='spotifyButtonContainer'>                        
+                        <p 
+                            className="spotifyButtons1" 
+                            onClick={() => { 
+                                currentDev.name === "TheSound" 
+                                    ? (playerState.pos > 3000 ? player!.seek(0) : player!.previousTrack()) 
+                                    : playbackState('previous', null, null, currentDev); 
+                            }} 
+                        >
+                            &lt;&lt;
+                        </p>
+                        
+                        <a 
+                            onClick={() => { 
+                                currentDev.name === "TheSound" 
+                                    ? player!.togglePlay() 
+                                    : playbackState(playerState.is_paused ? 'play' : 'pause', playerState, setPlayerState, currentDev);
                                 }}
                             >
-                                <p>TheSound</p> 
-                            </a>
+                            <p className="spotifyButtons2">
+                                { playerState.is_paused ? "PLAY" : "PAUSE" }
+                            </p>
+                        </a>                        
+                        
+                        <p 
+                            className="spotifyButtons3"
+                            onClick={() => { 
+                                currentDev.name === "TheSound" ? player!.nextTrack() : playbackState('next', null, null, currentDev) ;
+                            }} 
+                        >
+                            &gt;&gt;
+                        </p>
+                    </div>
+                    
+                    <img 
+                        id='toggle2' 
+                        src={shuffle} 
+                        style={{opacity: shuffled ? '0.5' : '1'}} 
+                        onClick={() => {                             
+                            let temp = document.getElementById('toggle2')!
+                            temp.style.animation = 'hithere 1s ease'
+                        
+                            if (shuffled) setisShuffled(false);
+                            else setisShuffled(true);          
+                            
+                            spotifyRequest('/shuffle', 'POST', {body: JSON.stringify({state: shuffled})});
 
-                            {devices.map((device:any,i:any) =>
-                                device.name === "TheSound"
-                                    && <a 
-                                        key={i} 
-                                        onClick={() => {
-                                            // console.log(a);
+                            setTimeout(() => {
+                                temp.style.removeProperty('animation');
+                            }, 750); 
+                        }} 
+                    />     
+                </div>                           
 
-                                            setCurrentDev({name: device.name, id: device.id});
+                {/* Replaced old music seek bar method here */}
+                <SeekBar duration={playerState.duration} player={player} paused={playerState.is_paused} />
+            
+                <img 
+                    className='deviceImg' 
+                    src={device} 
+                    onClick={() => {      
+                        refetch();
 
-                                            sessionStorage.setItem("currentContext", device.id);
+                        onOpenModal();                      
 
-                                            spotifyRequest(`/player/${device.id}`, 'POST');
-                                        }}
-                                    >
-                                        <p>{device.name}</p> 
-                                    </a> 
-                            )}
-                        </div>
-                    </Modal>                                
-                </div>                
-            </div>
-        </>
-    )
+                        !isFetching && console.log(devices);                                                
+                    }} 
+                />
+
+                <Modal modalId='modal1' open={open} onClose={onCloseModal} closeIcon={closeIcon()}>
+                    <div style={{marginTop: '60px'}}>
+                        <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Current Device</p>
+
+                        {/* <p>{mainDevice!.name}</p> */}
+                        <p>{currentDev.name}</p>
+
+                        <p style={{color: 'black', fontWeight: 'bold', fontSize: '20px'}}>Select Another Device</p>
+
+                        <a 
+                            onClick={() => {
+                                setCurrentDev({name: "TheSound", id: sessionStorage.getItem("device_id")});
+
+                                sessionStorage.setItem("currentContext", "null");
+
+                                spotifyRequest(`/player/${sessionStorage.getItem("device_id")}`, 'POST');
+                            }}
+                        >
+                            <p>TheSound</p> 
+                        </a>
+
+                        {devices.map((device:any,i:any) =>
+                            device.name === "TheSound"
+                                && <a 
+                                    key={i} 
+                                    onClick={() => {
+                                        // console.log(a);
+
+                                        setCurrentDev({name: device.name, id: device.id});
+
+                                        sessionStorage.setItem("currentContext", device.id);
+
+                                        spotifyRequest(`/player/${device.id}`, 'POST');
+                                    }}
+                                >
+                                    <p>{device.name}</p> 
+                                </a> 
+                        )}
+                    </div>
+                </Modal>                                
+            </div>                
+        </div>        
+    );
 }

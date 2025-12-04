@@ -16,11 +16,11 @@
 }
 
 #addSong{
-  position: absolute;
+  /* position: absolute; */
   height: 35px; 
   width: 35px;
-  right: 31vw;
-  bottom: 0;
+  /* right: 31vw;
+  bottom: 0; */
   font-size: 20px; 
   /* margin-left: 23vw; 
   margin-bottom: 25px;  */
@@ -32,7 +32,7 @@
 
 @media(min-height: 1000px){
   #addSong{
-    margin-left: 34vw;     
+    /* margin-left: 34vw;      */
   }
 }
 @media only screen and (max-width: 768px),

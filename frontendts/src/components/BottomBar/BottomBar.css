@@ -235,16 +235,16 @@ input[type=range]{
     display: none;
   }
   #toggle1{
-    position: absolute;
+    /* position: absolute;
     right: 240px;
-    bottom: 12px;
+    bottom: 12px; */
     height: 20px;
     cursor: pointer;
   }
   #toggle2{
-    position: absolute;
+    /* position: absolute;
     left: 240px;
-    bottom: 12px;
+    bottom: 12px; */
     height: 19px;
     cursor: pointer;
 
