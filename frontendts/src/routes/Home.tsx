@@ -634,16 +634,27 @@ export default function Home({setIsLoading2}: any) {
                   </form>
                 </Modal>
 
-                <button className="dropbtn" onClick={() => {
-                  let temp = document.getElementById('dropdown-content')!;
-                  // console.log(temp.style.display)
-                  if (temp.style.display === 'flex') temp.style.display = 'none';
-                  else {
-                    temp.style.display = 'flex';
+                <button className="dropbtn" 
+                  onBlur={() => {
+                    let temp = document.getElementById('dropdown-content')!;
 
-                    temp.style.flexDirection = 'column';
-                  }
-                }}>Sort</button>
+                    setTimeout(() => {
+                      temp.style.display = 'none';
+                    }, 250);                  
+                  }}
+                  onClick={() => {
+                    let temp = document.getElementById('dropdown-content')!;
+                    // console.log(temp.style.display)
+                    if (temp.style.display === 'flex') temp.style.display = 'none';
+                    else {
+                      temp.style.display = 'flex';
+
+                      temp.style.flexDirection = 'column';
+                    }
+                  }}
+                >
+                  Sort
+                </button>
                 <div className="dropdown-content" id="dropdown-content">
                   {(!sessionStorage.getItem('home') || sessionStorage.getItem('home') === 'album') && albumSort(setSorted)}
 

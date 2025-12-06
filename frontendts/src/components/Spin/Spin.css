@@ -35,8 +35,8 @@
   #svg2{
     z-index: 0;
     position: absolute;
-    left: 22px;
-    bottom: 0;
+    left: 18px;
+    bottom: -2px;
     width: 70px;
     height: 60px;
     border: 1px solid 0066ff;

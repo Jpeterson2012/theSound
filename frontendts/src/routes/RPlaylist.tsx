@@ -247,16 +247,29 @@ export default function RPlaylist({lastSegment}: any){
                   {/* } */}
 
                   <div className="dropdown" id="dropdown">                                                        
-                    <button className="dropbtn" style={{marginLeft: '100%'}} onClick={() => {
-                      let temp = document.getElementById('dropdown-content2')!;
-                      
-                      if (temp.style.display === 'flex') temp.style.display = 'none';
-                      else {
-                        temp.style.display = 'flex';
+                    <button 
+                      className="dropbtn" 
+                      style={{marginLeft: '100%'}}
+                      onBlur={() => {
+                        let temp = document.getElementById('dropdown-content2')!;
 
-                        temp.style.flexDirection = 'column';
-                      }
-                    }}>Sort</button>
+                        setTimeout(() => {
+                          temp.style.display = 'none';
+                        }, 250);                  
+                      }} 
+                      onClick={() => {
+                        let temp = document.getElementById('dropdown-content2')!;
+                        
+                        if (temp.style.display === 'flex') temp.style.display = 'none';
+                        else {
+                          temp.style.display = 'flex';
+
+                          temp.style.flexDirection = 'column';
+                        }
+                      }}
+                    >
+                      Sort
+                    </button>
                       <div className="dropdown-content2" id='dropdown-content2'>
                         {playlistSort(ptracks, setpTracks)}
                       </div>

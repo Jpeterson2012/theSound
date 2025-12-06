@@ -20,8 +20,6 @@ var logger = require('morgan');
 
 //app.set('trust proxy', 1);
 
-//app.use(session({secret: 'secretkey', saveUninitialized: false, resave: false, cookie: {secure: false, sameSite: 'lax'}}));
-
 app.use(cookieParser());
 
 var indexRouter = require('./routes/index');

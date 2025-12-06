@@ -73,7 +73,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
 
     return(
         <div style={{position: 'fixed', height: '60px', bottom: '0', left: '0', width: '100vw', zIndex: '3', display: 'grid', alignItems: 'center', gridTemplateColumns: "1.5fr 0.25fr 1fr 1fr 0fr 2.5fr 0.25fr", background: 'black', gap: '7px'}}>            
-            <div style={{minWidth: '100%', width: '100%', display: 'flex', gap: '95px'}}>
+            <div style={{width: '100%', display: 'flex', gap: '95px'}}>
                 <a onClick={() => {
                     const parts = playerState.current_track.album.uri.split(':');
                     let lastSegment = parts.pop() || parts.pop();
@@ -108,7 +108,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                     <span>
                         <img 
                             src={playerState.current_track?.album?.images[0]?.url} 
-                            alt="" style={{left: '-3px', bottom: '0', zIndex: '1',position: 'absolute', height: '50px'}} 
+                            alt="" style={{left: '-3px', bottom: '0', zIndex: '1',position: 'absolute', height: '55px'}} 
                         />
                         
                         <div>{is_active && Spin2(is_active,playerState.is_paused)}</div>

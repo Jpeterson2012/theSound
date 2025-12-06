@@ -265,7 +265,14 @@ export default function UPlaylist({lastSegment}: any){
                   <div className="dropdown" id="dropdown">
                     <button 
                       className="dropbtn" 
-                      style={{marginLeft: '100%'}} 
+                      style={{marginLeft: '10px', borderRadius: '10px'}} 
+                      onBlur={() => {
+                        let temp = document.getElementById('dropdown-content2')!;
+
+                        setTimeout(() => {
+                          temp.style.display = 'none';
+                        }, 250);                  
+                      }}
                       onClick={() => {
                         let temp = document.getElementById('dropdown-content2')!;
 
@@ -295,7 +302,7 @@ export default function UPlaylist({lastSegment}: any){
                     <span className="lolP">Duration</span>
                   </div>
 
-                  {userPlaylists(tplaylist!, liked_uris, playerState.is_paused,removeSong, lastSegment,setModal,setTrackData,setSnack,filter_val, exitingSong) }
+                  {userPlaylists(tplaylist!, liked_uris, playerState.is_paused, removeSong, lastSegment,setModal,setTrackData,setSnack,filter_val, exitingSong) }
                 </div>
                     
               </div>

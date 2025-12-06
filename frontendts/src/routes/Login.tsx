@@ -21,10 +21,10 @@ export default function Login() {
       <div className='loginImage' style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <img className='introImg' src={logo} alt='Avatar'/>
 
-        <h1 className="intro">TheSound<sup>TM</sup></h1>
+        <h1 style={{fontSize: '3.2em', lineHeight: '1.1'}} className="intro">TheSound<sup>TM</sup></h1>
       </div>
 
-      <button className="home"onClick={() => {
+      <button style={{color: 'black', background: '#7a19e9', borderRadius: '10px', fontWeight: 'bolder'}} className="home"onClick={() => {
         location.href = URL + '/login';
 
         //sessionStorage.setItem("token", "something")
