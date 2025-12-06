@@ -55,7 +55,7 @@ function albumSort(setSorted: any){
         <button 
           key={index}
           className="theme" 
-            onClick={() => {
+            onClick={(e) => {
               temp.style.display = 'none';
 
               setSorted(index + 1);
@@ -103,7 +103,7 @@ function playlistSort(setPSorted: any){
         <button 
           key={index}
           className="theme" 
-          onClick={() => {      
+          onClick={(e) => {                  
             temp.style.display = 'none';
             setPSorted(index + 1)
             sessionStorage.setItem('psortVal','1')
@@ -547,7 +547,7 @@ export default function Home({setIsLoading2}: any) {
               </button>                                    
             </div>
 
-            <div className="buttonContainer">      
+            <div className="buttonContainer" style={{display: 'flex'}}>      
               {buttonNames.map((button: string, index: number) =>
                 <button 
                   key={index}
@@ -583,6 +583,42 @@ export default function Home({setIsLoading2}: any) {
                 </button>
               )}
 
+              <div 
+                className="dropbtn" 
+                tabIndex={0}
+                onBlur={(e) => {
+                  const parent = e.currentTarget;
+
+                  if (parent.contains(e.relatedTarget)) {
+                    return;
+                  }
+
+                  const child: HTMLInputElement = parent.querySelector("#dropdown-content")!;
+                  
+                  child.style.display = 'none';                                      
+                }}
+                onClick={(e) => {
+                  const child: HTMLInputElement = e.currentTarget.querySelector("#dropdown-content")!;                  
+                  
+                  if (child.style.display === 'flex') child.style.display = 'none';
+                  else {
+                    child.style.display = 'flex';
+
+                    child.style.flexDirection = 'column';
+
+                    child.style.alignItems = 'center';
+                  }
+                }}
+              >
+                <div className="dropbtn-inner">Sort</div>
+
+                <div className="dropdown-content" id="dropdown-content">
+                  {(!sessionStorage.getItem('home') || sessionStorage.getItem('home') === 'album') && albumSort(setSorted)}
+
+                  {sessionStorage.getItem('home') === 'playlist' && playlistSort(setPSorted)}
+                </div>
+              </div>
+
               <p 
                 style={sessionStorage.getItem('home') === "playlist" ? {display: "inline"} : {display: "none"}} 
                 className="addPlaylist" 
@@ -593,74 +629,45 @@ export default function Home({setIsLoading2}: any) {
                 +
               </p>
 
-              <div className="dropdown" id="dropdown">              
-                <Modal modalId='modal4' open={open} onClose={onCloseModal} center closeIcon={closeIcon()}>
-                  <div style={{color: 'white', marginLeft: '35%',fontWeight: 'bolder',fontSize: '20px'}} >New Playlist</div>
+              <Modal modalId='modal4' open={open} onClose={onCloseModal} center closeIcon={closeIcon()}>
+                <div style={{color: 'white', marginLeft: '35%',fontWeight: 'bolder',fontSize: '20px'}} >New Playlist</div>
 
-                  <form action=""  id="formPlaylist">
-                    <label htmlFor="first">
-                      Name:
-                    </label>
+                <form action=""  id="formPlaylist">
+                  <label htmlFor="first">
+                    Name:
+                  </label>
 
-                    <input type="text" id="first" name="first" placeholder="Enter your Playlist Name" required />
-                        
-                    <label htmlFor="second">
-                      Description:
-                    </label>
+                  <input type="text" id="first" name="first" placeholder="Enter your Playlist Name" required />
+                      
+                  <label htmlFor="second">
+                    Description:
+                  </label>
 
-                    <input type="text" id="second" name="second" placeholder="Optional"/>
-                    
-                    <div style={{color: 'white', fontWeight: 'bolder',fontSize: '20px'}} >Public</div>
+                  <input type="text" id="second" name="second" placeholder="Optional"/>
+                  
+                  <div style={{color: 'white', fontWeight: 'bolder',fontSize: '20px'}} >Public</div>
 
-                    <div style={{display: 'flex', gap: '10px'}}>
-                      <div>
-                        <label htmlFor="option1">True</label>
+                  <div style={{display: 'flex', gap: '10px'}}>
+                    <div>
+                      <label htmlFor="option1">True</label>
 
-                        <input type="radio" id="option1" name="third" value="True" defaultChecked style={{width: '18px',height: '18px'}} />
-                      </div>  
+                      <input type="radio" id="option1" name="third" value="True" defaultChecked style={{width: '18px',height: '18px'}} />
+                    </div>  
 
-                      <div>
-                        <label htmlFor="option2">False</label>
+                    <div>
+                      <label htmlFor="option2">False</label>
 
-                        <input type="radio" id="option2" name="third" value="False" style={{width: '18px',height: '18px'}} />
-                      </div>  
-                    </div>                   
+                      <input type="radio" id="option2" name="third" value="False" style={{width: '18px',height: '18px'}} />
+                    </div>  
+                  </div>                   
 
-                    <div className="wrap2">
-                      <button type="submit" onClick={(() => onCloseModal())}>
-                        Submit
-                      </button>
-                    </div>
-                  </form>
-                </Modal>
-
-                <button className="dropbtn" 
-                  onBlur={() => {
-                    let temp = document.getElementById('dropdown-content')!;
-
-                    setTimeout(() => {
-                      temp.style.display = 'none';
-                    }, 250);                  
-                  }}
-                  onClick={() => {
-                    let temp = document.getElementById('dropdown-content')!;
-                    // console.log(temp.style.display)
-                    if (temp.style.display === 'flex') temp.style.display = 'none';
-                    else {
-                      temp.style.display = 'flex';
-
-                      temp.style.flexDirection = 'column';
-                    }
-                  }}
-                >
-                  Sort
-                </button>
-                <div className="dropdown-content" id="dropdown-content">
-                  {(!sessionStorage.getItem('home') || sessionStorage.getItem('home') === 'album') && albumSort(setSorted)}
-
-                  {sessionStorage.getItem('home') === 'playlist' && playlistSort(setPSorted)}
-                </div>
-              </div>                
+                  <div className="wrap2">
+                    <button type="submit" onClick={(() => onCloseModal())}>
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </Modal>                                                                                                        
             </div>            
           </div>
             

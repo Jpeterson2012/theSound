@@ -34,15 +34,15 @@ button {
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;  
-  transition: transform 0.15s ease;
+  transition: transform 0.1s ease;
 }
 
 button:hover {
-  transform: scale(0.95);
+  transform: scale(1.07);
 }
 
 button:active {
-  transform: scale(0.91);
+  transform: scale(0.99);
 }
 
 .react-responsive-modal-modal{    

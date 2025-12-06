@@ -46,7 +46,10 @@
       opacity: 1;
   }
 }
-.dropbtn {
+.dropbtn {  
+  display: flex;
+  flex-direction: column;
+  width: 70px;
   background-color: rgb(90, 210, 216);
   color: black;
   /* padding: 16px; */
@@ -58,10 +61,18 @@
   border-radius: 0px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  cursor: pointer;    
+}
+
+.dropbtn-inner {
   padding-top: 11.7px;
   padding-bottom: 11.7px;
-  
+  width: 100%;  
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  transition: transform 0.1s ease;
 }
+
 .theme{
   height: 40px;
   width: 65px;
@@ -69,24 +80,22 @@
   font-size: 12px;
   background-color: rgb(90, 210, 216);
   color: black;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
+  border-radius: 10px;
 }
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
   display: none;
   position: absolute;
+  top: 100%;
+  left: 0;
   /* left: 200px; */
   background: linear-gradient(to bottom, #0066ff 0%, #cc33ff 100%);
   min-width: 10px;
   width: 80px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   border-radius: 16px;
-  z-index: 2;
+  z-index: 5;
 }
 
 .removeAlbum{
@@ -129,19 +138,22 @@
   display: block;
 } */
 
-/* Change color of dropdown links on hover */
-.dropdown-content, a:hover {background-color: #ddd;}
-
 /* Show the dropdown menu on hover */
 @media (hover:hover){
   .removePContainer:hover .removePlay {display: block;}
   .removeContainer:hover .removeAlbum {display: block;}
 }
-/* .dropdown:hover .dropdown-content {display: block;} */
 
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: #7a19e9;}
+.dropbtn-inner:hover:not(:active) {
+  background-color: #7a19e9;
+  transform: scale(1.07);
+}
+
+.dropbtn-inner:active {
+  transform: scale(0.97);
+}
 
 .homeContainer{
   /* margin-top: 40px; */
