@@ -20,8 +20,8 @@ function AddToLibrary({onClick, style, children, includeStyle = true, ...rest}: 
             //    ...style,
             //}}
             style={{
-                ...(includeStyle ? {height: '35px',fontSize: '20px', cursor: 'pointer', border: '1px solid #7a19e9',
-                borderRadius: '5px', color: 'rgb(90, 210, 216)'} : {}),
+                ...(includeStyle ? {height: '35px', fontSize: '20px', cursor: 'pointer', border: '1px solid #7a19e9',
+                borderRadius: '5px', color: 'rgb(90, 210, 216)', width: '30px', margin: '0px 15px'} : {}),
                 background: children === "✓" ? '#7a19e9' : 'transparent', transition: 'background 0.4s ease-in-out',
                 ...style,
             }}

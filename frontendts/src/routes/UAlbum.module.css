@@ -8,6 +8,9 @@
 .artistName{
     font-weight: bolder;
 }
+.tdContainer{        
+    width: 100% !important;    
+    }
 .albumDescription{
     display: flex;
     flex-direction: column;
@@ -78,15 +81,16 @@
 .removeAlbum3{
     display: none;
     position: absolute;
-    left: 100%;
+    left: 0 !important;
     /* left: 200px; */
     /* bottom: 15px; */
     padding: 5px;
     color: black;
+    border-radius: 10px;
     background: rgb(90, 210, 216);
     font-size: 13px;
-    width: 130px;
-    height: 60px;
+    width: 100px;
+    height: 50px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     /* border-radius: 16px; */
     z-index: 2;

@@ -8,6 +8,9 @@ import Card from "../components/Card/Card";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll";
 import { spotifyRequest } from '../utils/utils.ts';
 
+import { useAppDispatch } from '../App/hooks.ts';
+import { setCurrentAlbum } from '../App/defaultSlice.ts';
+
 function customRender(name: any, item: any){
     return (
         <>
@@ -26,12 +29,14 @@ function customRender(name: any, item: any){
 }
 
 export default function Discover() {
-    const navigate = useNavigate()
+    const dispatch = useAppDispatch();
 
-    const [releases, setReleases] = useState<any>([])
-    const [categories, setCategories] = useState([])    
-    const [albums, setAlbums] = useState([])
-    const [loading, setLoading] = useState(true)    
+    const navigate = useNavigate();
+
+    const [releases, setReleases] = useState<any>([]);
+    const [categories, setCategories] = useState([]);
+    const [albums, setAlbums] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const {playerState} = useContext(UsePlayerContext);
 
@@ -83,13 +88,13 @@ export default function Discover() {
     const listAlbums = albums?.map((album:any, index:any) =>
         <a key={index} onClick={function handleClick() {
             sessionStorage.setItem("albumStatus", "notuser")
-            sessionStorage.setItem("image", album.images.filter((t: any)=>t.height == 300).map((s: any) => s.url))
+            
+            dispatch(setCurrentAlbum({
+                image: album.images.filter((t: any)=>t.height == 300).map((s: any) => s.url),
+                artists: album.artists.map((a:any) => a.name),
+                artist_ids: album.artists.map((b:any) => b.id),
+            }));
 
-            let temp = album.artists.map((a:any) => a.name)
-            sessionStorage.setItem("artist", JSON.stringify(temp))
-
-            temp = album.artists.map((b:any) => b.id)
-            sessionStorage.setItem("artist_id", JSON.stringify(temp))
             navigate(`/app/album/${album.album_id}`)                    
         }}>
             <div className="categoryContainer" style={{width: '200px',height: '305px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>

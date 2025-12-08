@@ -2,11 +2,16 @@
 import './Card.css'
 import { useNavigate } from 'react-router-dom';
 import { useGetAlbumsQuery } from '../../App/ApiSlice.ts';
-import Loading3 from '../Loading3/Loading3.tsx'
+import Loading3 from '../Loading3/Loading3.tsx';
 
-export default function Card( {id, image, name, artist, a_id, paused}: any ) {
-    const navigate = useNavigate()
-    let key: number = 0
+import { useAppDispatch } from '../../App/hooks.ts';
+import { setCurrentAlbum } from '../../App/defaultSlice.ts';
+
+export default function Card( {id, image, name, artist, a_id, paused}: any ) {    
+    const dispatch = useAppDispatch();
+
+    const navigate = useNavigate();
+    let key: number = 0;
     //This is for displaying multiple artists with their own spotify ids
     let zip = artist.map((e: any, i: number) => {
         return [e, a_id[i]];
@@ -20,18 +25,16 @@ export default function Card( {id, image, name, artist, a_id, paused}: any ) {
         <div className="card">
             {(!paused && sessionStorage.getItem('name') === name) && <Loading3/>}
             <a onClick={() => {
-                // console.log(paused)
-                // console.log(sessionStorage.getItem("name"))
-                // console.log(name)
                 //Check if album is already in library or not
                 found ? sessionStorage.setItem("albumStatus","user") : sessionStorage.setItem("albumStatus", "notuser");
+                
+                //sessionStorage.setItem("albumname", name);
 
-                sessionStorage.setItem("id", id);
-                // sessionStorage.setItem("uri", uri)
-                sessionStorage.setItem("image", image);
-                sessionStorage.setItem("albumname", name);
-                sessionStorage.setItem("artist", JSON.stringify(artist));
-                sessionStorage.setItem("artist_id", JSON.stringify(a_id));
+                dispatch(setCurrentAlbum({
+                    image,
+                    artists: artist,
+                    artist_ids: a_id,
+                }));
                 
                 navigate(`/app/album/${id}`);
             }}> 

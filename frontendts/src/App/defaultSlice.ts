@@ -7,6 +7,13 @@ const defaultSlice = createSlice({
     refreshToken: null,
     playing: false,
     exitingSong: null,
+    currentAlbum: {
+      uri: "",
+      artists: [],
+      artist_ids: [],
+      image: "",
+      albumName: "",
+    },
   },
   reducers: {
     setAuthToken: (state, action) => {
@@ -21,8 +28,11 @@ const defaultSlice = createSlice({
     setExitingSong: (state, action) => {
       state.exitingSong = action.payload;
     },
+    setCurrentAlbum: (state, action) => {
+      state.currentAlbum = {...state.currentAlbum, ...action.payload};
+    },
   },
 });
 
-export const { setAuthToken, setRefreshToken, setPlaying, setExitingSong } = defaultSlice.actions;
+export const { setAuthToken, setRefreshToken, setPlaying, setExitingSong, setCurrentAlbum } = defaultSlice.actions;
 export default defaultSlice.reducer;

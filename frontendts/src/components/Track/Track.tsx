@@ -13,7 +13,13 @@ export default function Track ( {uri, name, number, duration, album_name, artist
     }, []);
 
     return (
-        <div className='trackContainer' style={{...(customWidth ? {width: `${customWidth}%`} : {width: '100%'}), ...(show === undefined && {borderBottom: '1px solid rgba(90, 210, 216, 0.3)'})}}>
+        <div 
+            className='trackContainer' 
+            style={{
+                ...(customWidth ? {width: `${customWidth}%`} : {width: '100%'}), 
+                ...(show === undefined && {borderBottom: '1px solid rgba(90, 210, 216, 0.3)'})
+            }}
+        >
             <a 
                 onClick={() => {                
                     // console.log(sessionStorage.get

@@ -75,3 +75,5 @@ export function timeCalc (ms: number) {
 
     else return `${mins}:${secs}`;
 };
+
+export const stockImage = "https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg";

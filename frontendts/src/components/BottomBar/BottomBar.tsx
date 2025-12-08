@@ -16,8 +16,11 @@ import SeekBar from '../Seekbar/SeekBar.tsx';
 import AddLiked from '../AddLiked/AddLiked.tsx';
 import volume from '../../images/volume.png'
 import device from '../../images/device.png'
-import { spotifyRequest } from '../../utils/utils.ts';
+import { spotifyRequest, stockImage } from '../../utils/utils.ts';
 import { closeIcon } from '../../helpers/CloseIcon.tsx';
+
+import { useAppDispatch } from '../../App/hooks.ts';
+import { setCurrentAlbum } from '../../App/defaultSlice.ts';
 
 function playbackState(uri: string, playerState?: any, setPlayerState?: any, currentDev?: any){
     //Playback controls when current device isnt this application    
@@ -67,48 +70,52 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
 
     const {player, playerState, setPlayerState, is_active} = useContext(UsePlayerContext);
 
+    const dispatch = useAppDispatch();
+
     useEffect(() => {
     
     },[playerState.current_track?.name])
 
     return(
-        <div style={{position: 'fixed', height: '60px', bottom: '0', left: '0', width: '100vw', zIndex: '3', display: 'grid', alignItems: 'center', gridTemplateColumns: "1.5fr 0.25fr 1fr 1fr 0fr 2.5fr 0.25fr", background: 'black', gap: '7px'}}>            
-            <div style={{width: '100%', display: 'flex', gap: '95px'}}>
-                <a onClick={() => {
-                    const parts = playerState.current_track.album.uri.split(':');
-                    let lastSegment = parts.pop() || parts.pop();
-                    
-                    const found = (albums?.find((e: any) => e?.album_id === lastSegment) || (albums?.find((e: any) => e?.name === playerState.current_track.album.name)));
+        <div style={{position: 'fixed', height: '60px', bottom: '0', left: '0', width: '100vw', zIndex: '3', display: 'grid', alignItems: 'center', gridTemplateColumns: "1.5fr 0.25fr 1fr 1fr 0fr 2.5fr 0.25fr", background: 'black', gap: '10px'}}>            
+            <div style={{minWidth: 0, display: 'flex', gap: '95px'}}>
+                <a                     
+                    onClick={() => {
+                        const parts = playerState.current_track.album.uri.split(':');
+                        let lastSegment = parts.pop() || parts.pop();
+                        
+                        const found = (albums?.find((e: any) => e?.album_id === lastSegment) || (albums?.find((e: any) => e?.name === playerState.current_track.album.name)));
 
-                    if (found){
-                        sessionStorage.setItem("albumStatus","user");
+                        if (found){
+                            sessionStorage.setItem("albumStatus","user");
 
-                        if (lastSegment !== found?.album_id ) lastSegment = found?.album_id;                        
-                    } else {
-                        sessionStorage.setItem("albumStatus", "notuser");
-                    }                        
+                            if (lastSegment !== found?.album_id ) lastSegment = found?.album_id;                        
+                        } else {
+                            sessionStorage.setItem("albumStatus", "notuser");
+                        }                        
 
-                    const artistss: any[] = []
-                    const artist_idss: any[] = []
-                    playerState.current_track.artists.map((s: any) => { 
-                        artistss.push(s.name),
-                        artist_idss.push(s.uri.split(':').pop())
-                    })
+                        const artistss: any[] = []
+                        const artist_idss: any[] = []
+                        playerState.current_track.artists.map((s: any) => { 
+                            artistss.push(s.name),
+                            artist_idss.push(s.uri.split(':').pop())
+                        });
 
-                    sessionStorage.setItem("uri", playerState.current_track.album.uri);
-                    sessionStorage.setItem("artist", JSON.stringify(artistss));
-                    sessionStorage.setItem("artist_id", JSON.stringify(artist_idss));
-                    sessionStorage.setItem("image", playerState.current_track.album.images?.filter((s:any) => s.height == 640).map((s:any) => s.url));
-                    // sessionStorage.setItem("name", playerState.current_track.album.name)
-                    sessionStorage.setItem("albumname", playerState.current_track.album.name);
-                    // console.log(sessionStorage.getItem("name")!.length)
+                        dispatch(setCurrentAlbum({
+                            uri: playerState.current_track.album.uri,
+                            artists: artistss,
+                            artist_ids: artist_idss,
+                            image: playerState.current_track.album.images?.filter((s:any) => s.height == 640).map((s:any) => s.url),
+                            albumName: playerState.current_track.album.name,
+                        }));
 
-                    playerState.current_track.type !== 'episode' && navigate(`/app/album/${lastSegment}`)
-                }}>
+                        playerState.current_track.type !== 'episode' && navigate(`/app/album/${lastSegment}`);
+                    }}
+                >
                     <span>
                         <img 
-                            src={playerState.current_track?.album?.images[0]?.url} 
-                            alt="" style={{left: '-3px', bottom: '0', zIndex: '1',position: 'absolute', height: '55px'}} 
+                            src={["", null, undefined].includes(playerState.current_track?.album?.images[0]?.url) ? stockImage : playerState.current_track?.album?.images[0]?.url} 
+                            alt="" style={{left: '-3px', bottom: '0', zIndex: '1',position: 'absolute', height: '55px', width: '55px'}} 
                         />
                         
                         <div>{is_active && Spin2(is_active,playerState.is_paused)}</div>
@@ -193,11 +200,11 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
 
                 <input 
                     //id='volumeBar' 
-                    style={{width: '100%'}}
+                    style={{minWidth: '85%'}}
                     type='range' 
                     min={0} 
                     max={1} 
-                    step={0.05} 
+                    step={0.05}                     
                     onChange={(e) => {
                         let temp2 = document.getElementById("volumeIcon")!;   
 

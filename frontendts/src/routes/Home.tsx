@@ -16,6 +16,9 @@ import Loading3 from '../components/Loading3/Loading3.tsx'
 import { spotifyRequest } from '../utils/utils.ts';
 import { closeIcon } from '../helpers/CloseIcon.tsx';
 
+import { useAppDispatch } from '../App/hooks.ts';
+import { setCurrentAlbum } from '../App/defaultSlice.ts';
+
 function generatePassword() {
   const length = 22;
 
@@ -162,9 +165,11 @@ function Audiobooks(audiobooks:any){
   );
 };
 
-export default function Home({setIsLoading2}: any) {
-  const navigate = useNavigate()
-  const [html, setHtml] = useState<any>(null)
+export default function Home({setIsLoading2}: any) {  
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+  const [html, setHtml] = useState<any>(null);
   const [sorted, setSorted] = useState(+sessionStorage.getItem('sortVal')!)
   const [psorted, setPSorted] = useState(+sessionStorage.getItem('psortVal')!)
   const [filter_val, setFilter_val] = useState<string>('')        
@@ -468,28 +473,19 @@ export default function Home({setIsLoading2}: any) {
               // console.log(val)
               // console.log(sessionStorage.getItem("name"))
 
-                let found = (albums?.find((e: any) => e?.album_id === val.id) || (albums?.find((e: any) => e?.name === val.name)))  
+                let found = (albums?.find((e: any) => e?.album_id === val.id) || (albums?.find((e: any) => e?.name === val.name)));                                
                 
-                if (found) {
-                  sessionStorage.setItem("albumStatus","user");
+                sessionStorage.setItem("albumStatus", found ? "user" : "notuser");
 
-                  if (val.id !== found?.album_id) {
-                    found?.album_id;
-                  }                  
-                } else {
-                  sessionStorage.setItem("albumStatus","notuser");
+                if (found && val.id !== found?.album_id) {
+                  val.id = found?.album_id;
                 }
                 
-                sessionStorage.setItem("image", val.img.url);
-
-                sessionStorage.setItem("artist", JSON.stringify(val.artists.map((t: any) => t.name)));
-
-                sessionStorage.setItem(
-                  "artist_id", 
-                  JSON.stringify(
-                    val.artists.map((t: any) => t.uri.split(':').pop())
-                  ),
-                );
+                dispatch(setCurrentAlbum({
+                  image:  val.img.url,
+                  artists: val.artists.map((t: any) => t.name),
+                  artist_ids: val.artists.map((t: any) => t.uri.split(':').pop()),
+                }));
 
                 navigate(`/app/album/${val.id}`);
               }}>

@@ -14,11 +14,11 @@
 }
 
 .userName:hover, .navIcon1:hover, .searchimg:hover, .navIcon2:hover, .logoIcon:hover {
-  transform: scale(0.96);
+  transform: scale(1.07);
 }
 
 .userName:active, .navIcon1:active, .searchimg,:active .navIcon2:active, .logoIcon:active {
-  transform: scale(0.92);
+  transform: scale(0.99);
 }
 
 .userName, .navIcon1, .navIcon2, .Discover {    

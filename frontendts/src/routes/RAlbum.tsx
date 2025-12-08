@@ -15,15 +15,22 @@ import { spotifyRequest, msToReadable } from '../utils/utils.ts';
 
 import { AddToLibrary } from '../helpers/AddToLibrary.tsx';
 
+import { useAppSelector, useAppDispatch } from '../App/hooks.ts';
+import { setCurrentAlbum } from '../App/defaultSlice.ts';
+
 export default function RAlbum() {
-  const navigate = useNavigate()
+  const currentAlbum = useAppSelector(state => state.defaultState.currentAlbum);
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
   var parts = window.location.href.split('/');
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash
   const [tracks, setTracks] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState(true)
-  var zip = JSON.parse(sessionStorage.getItem("artist")!).map((e: any,i: number) => {
-    return [e, JSON.parse(sessionStorage.getItem("artist_id")!)[i]]
-  })
+  const [isLoading, setIsLoading] = useState(true);
+
+  var zip = currentAlbum.artists.map((e: any,i: number) => {
+    return [e, currentAlbum.artist_ids[i]]
+  });
   
   const [addAlbum] = useAddAlbumMutation()
   const [deleteAlbum] = useDeleteAlbumMutation()
@@ -84,7 +91,7 @@ export default function RAlbum() {
       fetchDiscog();
     }
     //This fixes render bug where fetch doesn't activate when clicking on currently playing album
-  }, [sessionStorage.getItem("image")]);
+  }, [currentAlbum.image]);
   
   const listItems = tracks.albums?.tracks?.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any, index:any) =>
     <div className="listContainer" key={index}>
@@ -149,6 +156,12 @@ export default function RAlbum() {
                 ),
               );
 
+              dispatch(setCurrentAlbum({
+                image: val.images.find((b: any) => b.height > 160).url,
+                artists: val.artists.map((t: any) => t.name),
+                artist_ids: val.artists.map((t: any) => t.uri.split(':').pop()),
+              }));
+
               navigate(`/app/album/${val.id}`);
             }}>
               <img key={i} src={val.images.find((b: any) => b.height > 160).url} style={{width: '150px', height: '190px', borderRadius: '10px'}}/>
@@ -169,7 +182,7 @@ export default function RAlbum() {
             <h2 style={{fontSize: '30px'}} >{tracks?.albums?.name}</h2>
             
             {/* Spin Component import now instead of prop */}
-            {Spin(is_active,playerState.is_paused,sessionStorage.getItem("image")!,null)}
+            {Spin(is_active, playerState.is_paused, currentAlbum.image, null)}
 
             <h2 className="artistName">
               {zip.map((artist: any,index: number, row: any) =>

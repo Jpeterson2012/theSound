@@ -12,6 +12,9 @@ import UsePlayerContext from '../.././hooks/PlayerContext.tsx';
 import { spotifyRequest } from '../../utils/utils.ts';
 import { closeIcon } from '../../helpers/CloseIcon.tsx';
 
+import { useAppDispatch } from '../../App/hooks.ts';
+import { setCurrentAlbum } from '../../App/defaultSlice.ts';
+
 function getTracks(ptracks: any) {
   let key = 0;
 
@@ -35,7 +38,7 @@ function getTracks(ptracks: any) {
     )
   );
 };
-function getAlbums(albumss: any, palbums: any, nav: any, close: any) {
+function getAlbums(albumss: any, palbums: any, nav: any, close: any, dispatch: any) {
   var artists: any = [];
   var a_ids: any = [];
   
@@ -47,14 +50,19 @@ function getAlbums(albumss: any, palbums: any, nav: any, close: any) {
           //Check if album is already in library or not
           let found = albumss?.find((e: any) => e?.album_id === t.id);
 
-          found ? sessionStorage.setItem("albumStatus","user") : sessionStorage.setItem("albumStatus", "notuser");
+          sessionStorage.setItem("albumStatus", found ? "user" : "notuser");
 
           t.artists.map((s:any) => artists.push(s.name));
           t.artists.map((s:any) => a_ids.push(s.id));
-          sessionStorage.setItem("artist", JSON.stringify(artists));
-          sessionStorage.setItem("artist_id", JSON.stringify(a_ids));
-          sessionStorage.setItem("image", t.images.filter((t:any) => t.height == 300).map((s:any) => s.url));
+
+          dispatch(setCurrentAlbum({
+            image:  t.images.filter((t:any) => t.height == 300).map((s:any) => s.url),
+            artists: artists,
+            artist_ids: a_ids,
+          }));
+
           nav(`/app/album/${t.id}`);
+
           close();
         }}
       >
@@ -136,6 +144,8 @@ function getPlaylists(plistss:any,plists: any, nav: any, close: any){
 let counter = 0;
 
 export default function Logo () {
+  const dispatch = useAppDispatch();
+
   const navigate: any = useNavigate();
 
   const [html, setHtml] = useState<any>(null)
@@ -196,7 +206,7 @@ export default function Logo () {
         break;
 
       case 'albums':
-        setHtml(getAlbums(albumss, albums, navigate, onCloseModal));
+        setHtml(getAlbums(albumss, albums, navigate, onCloseModal, dispatch));
 
         break;
       case 'artists':
@@ -226,28 +236,19 @@ export default function Logo () {
               // console.log(val)
               // console.log(sessionStorage.getItem("name"))
 
-                let found = (albumss?.find((e: any) => e?.album_id === val.id) || (albums?.find((e: any) => e?.name === val.name)));                                
+                let found = (albumss?.find((e: any) => e?.album_id === val.id) || (albumss?.find((e: any) => e?.name === val.name)));                                
                 
-                if (found) {
-                  sessionStorage.setItem("albumStatus","user");
+                sessionStorage.setItem("albumStatus", found ? "user" : "notuser");
 
-                  if (val.id !== found?.album_id) {
-                    found?.album_id;
-                  }                  
-                } else {
-                  sessionStorage.setItem("albumStatus","notuser");
+                if (found && val.id !== found?.album_id) {
+                  val.id = found?.album_id;
                 }
                 
-                sessionStorage.setItem("image", val.img.url);
-
-                sessionStorage.setItem("artist", JSON.stringify(val.artists.map((t: any) => t.name)));
-
-                sessionStorage.setItem(
-                  "artist_id", 
-                  JSON.stringify(
-                    val.artists.map((t: any) => t.uri.split(':').pop())
-                  ),
-                );
+                dispatch(setCurrentAlbum({
+                  image: val.img.url,
+                  artists: val.artists.map((t: any) => t.name),
+                  artist_ids: val.artists.map((t: any) => t.uri.split(':').pop()),
+                }));
 
                 navigate(`/app/album/${val.id}`);
               }}>                
@@ -400,7 +401,7 @@ export default function Logo () {
                         setHtml(getTracks(tracks));
                         break;
                       case "albums":
-                        setHtml(getAlbums(albumss,albums, navigate, onCloseModal));
+                        setHtml(getAlbums(albumss,albums, navigate, onCloseModal, dispatch));
                         break;
                       case "artists":
                         setHtml(getArtists(artist, navigate, onCloseModal));

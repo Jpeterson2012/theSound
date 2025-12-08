@@ -1,5 +1,6 @@
 //Session storage vars ref_id and ref_items created here
-import './UAlbum.css'
+//import './UAlbum.css';
+import styles from './UAlbum.module.css';
 import { useState, useEffect, useContext } from "react";
 import { UsePlayerContext } from '../hooks/PlayerContext.tsx';
 import { useNavigate } from 'react-router-dom';
@@ -15,15 +16,22 @@ import EditPlaylist from '../components/EditPlaylist/EditPlaylist.tsx';
 import { filterTracks } from "../components/filterTracks.tsx";
 import { spotifyRequest, msToReadable } from '../utils/utils.ts';
 
+import { useAppSelector, useAppDispatch } from '../App/hooks.ts';
+import { setCurrentAlbum } from '../App/defaultSlice.ts';
+
 import { AddToLibrary } from '../helpers/AddToLibrary.tsx';
 
 export default function UAlbum() {
-  const navigate = useNavigate()
+  const currentAlbum = useAppSelector(state => state.defaultState.currentAlbum);
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
   var parts = window.location.href.split('/');
   var lastSegment = parts.pop() || parts.pop();  // handle potential trailing slash    
-  const [isLoading, setIsLoading] = useState(true)
-  var zip = JSON.parse(sessionStorage.getItem("artist")!).map((e: any,i: number) => {
-    return [e, JSON.parse(sessionStorage.getItem("artist_id")!)[i]]
+  const [isLoading, setIsLoading] = useState(true);
+
+  var zip = currentAlbum.artists.map((e: any,i: number) => {
+    return [e, currentAlbum.artist_ids[i]]
   })
 
   const [addAlbum] = useAddAlbumMutation()
@@ -39,33 +47,33 @@ export default function UAlbum() {
 
   const {is_active, playerState} = useContext(UsePlayerContext);
   
-  type getAlbumfromResultArg = TypedUseQueryStateResult<Albums[],any,any>
+  type getAlbumfromResultArg = TypedUseQueryStateResult<Albums[],any,any>;
   
   const selectOneAlbum = createSelector(
     (res: getAlbumfromResultArg) => res.data,
     (res: getAlbumfromResultArg, userId: string) => userId,
     (data, userId) => data?.filter(alist => alist.album_id === userId)
-  )
+  );
 
   const { singleAlbum, isSuccess: asuccess } = useGetAlbumsQuery(undefined, {
     selectFromResult: result => ({
       ...result,
       singleAlbum: selectOneAlbum(result, lastSegment!)
     })
-  })
+  });
 
   const {data: albumss = []} = useGetAlbumsQuery();
   
   let artistss: any = [];
           
   useEffect (() => {                          
-    sessionStorage.setItem("albumStatus", "user");
+    sessionStorage.setItem("albumStatus", "user");    
     
     if(asuccess) {
       setIsLoading(false)
       //Assigns user album to session storage to prevent error if removed from library
       singleAlbum!.length > 0 
-        ? (sessionStorage.setItem("ualbum",JSON.stringify(singleAlbum)), setTAlbum(singleAlbum!)) 
+        ? (sessionStorage.setItem("ualbum",JSON.stringify(singleAlbum![0])), setTAlbum(singleAlbum![0])) 
         : ( setTAlbum(JSON.parse(sessionStorage.getItem("ualbum")!)), setArtists(JSON.parse(sessionStorage.getItem("uartist")!)) );            
     }
       
@@ -106,13 +114,13 @@ export default function UAlbum() {
     fetchDiscog();
 
     //This fixes render bug where fetch doesn't activate when clicking on currently playing album
-  }, [sessionStorage.getItem("image"),asuccess]);
+  }, [currentAlbum.image, ,asuccess]);  
     
-  const listItems2 = talbum[0]?.tracks?.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any,i:any) =>         
-    <div className="listContainer" key={i}>                
-      <div className="removeContainer3" id="removeContainer3">
-        <button className="removeAlbum3" onClick={() => {     
-          let temp = {images: talbum![0].images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists} ;
+  const listItems2 = talbum?.tracks?.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any,i:any) =>         
+    <div className={styles.listContainer} key={i}>                
+      <div className={styles.removeContainer3} id="removeContainer3" style={{position: 'relative'}}>
+        <button className={styles.removeAlbum3} onClick={() => {     
+          let temp = {images: talbum?.images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists} ;
 
           setTrackData(temp);
 
@@ -121,8 +129,8 @@ export default function UAlbum() {
           Edit Playlists
         </button>
 
-        `<img src={dots} className="removeImg2" onClick={() => {
-          let temp = {images: talbum![0].images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists} ;
+        `<img src={dots} className={styles.removeImg2} onClick={() => {
+          let temp = {images: talbum?.images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists} ;
 
           setTrackData(temp);
 
@@ -132,7 +140,7 @@ export default function UAlbum() {
       </div>
 
       <Track 
-        uri={`spotify:album:${talbum[0]?.album_id}`}
+        uri={`spotify:album:${talbum?.album_id}`}
         name={t.name}
         number={t.track_number}
         duration={t.duration_ms}
@@ -165,6 +173,12 @@ export default function UAlbum() {
               }
               
               sessionStorage.setItem("image", val.images.find((b: any) => b.height > 160).url);
+              
+              dispatch(setCurrentAlbum({
+                image: val.images.find((b: any) => b.height > 160).url,
+                artists: val.artists.map((t: any) => t.name),
+                artist_ids: val.artists.map((t: any) => t.uri.split(':').pop()),
+              }));
 
               sessionStorage.setItem("artist", JSON.stringify(val.artists.map((t: any) => t.name)));
 
@@ -190,12 +204,12 @@ export default function UAlbum() {
   
   return (
     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '95vw', maxWidth: '95vw', marginBottom: '150px'}}>                      
-      <h2 style={{fontSize: '30px'}} >{talbum[0]?.name}</h2>
+      <h2 style={{fontSize: '30px'}} >{talbum?.name}</h2>
         
       {/* Spin Component import now instead of prop */}
-      {Spin(is_active,playerState.is_paused,sessionStorage.getItem("image")!,null)}
+      {Spin(is_active, playerState.is_paused, currentAlbum.image, null)}
                   
-      <h2 className="artistName">
+      <h2 className={styles.artistName}>
         {zip.map((artist: any,index: number, row: any) =>
           <a 
             key={index}  
@@ -209,14 +223,14 @@ export default function UAlbum() {
       </h2>
 
       <div style={{width: '90%'}}>
-        <div className="albumDescription">
+        <div className={styles.albumDescription}>
           <div style={{display: 'flex', alignItems: 'center'}}>
-            <div className="innerDescription">
-              <h5 className="desc1">{talbum[0]?.album_type === 'single' && talbum[0]?.total_tracks > 1 ? 'EP' : talbum[0]?.album_type.toUpperCase() } &#8226;</h5>
+            <div className={styles.innerDescription}>
+              <h5 className={styles.desc1}>{talbum?.album_type === 'single' && talbum?.total_tracks > 1 ? 'EP' : (talbum?.album_type ?? "").toUpperCase() } &#8226;</h5>
 
-              <h5>{talbum[0]?.tracks.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length 
+              <h5>{talbum?.tracks?.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).length 
                 + " Song(s) • "
-                + msToReadable(talbum[0]?.tracks.items.reduce((acc: any, item: any) => {
+                + msToReadable(talbum?.tracks?.items.reduce((acc: any, item: any) => {
                   acc += item.duration_ms;
 
                   return acc;
@@ -226,7 +240,7 @@ export default function UAlbum() {
 
             {/* <img src={tracks.images?.map(b => b.find(b => b.height > 100).url)} style={{borderRadius: '50%', height: '40px'}} /> */}
 
-            {artists?.images?.map((a: any,i:any) => <img key={i} className="tinyArtist" src={a.find((b: any) => b.height > 160).url} />)}
+            {artists?.images?.map((a: any,i:any) => <img key={i} className={styles.tinyArtist} src={a.find((b: any) => b.height > 160).url} />)}
 
             <AddToLibrary 
               onClick={(e) => {
@@ -245,9 +259,9 @@ export default function UAlbum() {
                 }, 1000);                    
 
                 if (!singleAlbum!.length){      
-                  addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, 
-                    release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, 
-                    copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name, date_added: new Date().toISOString()});              
+                  addAlbum({album_type: talbum?.album_type, total_tracks: talbum?.total_tracks, album_id: lastSegment!, images: talbum?.images, name: talbum?.name, 
+                    release_date: talbum?.release_date, uri: talbum?.uri, artists: talbum?.artists, tracks: talbum?.tracks, 
+                    copyrights: talbum?.copyrights, label_name: talbum?.label_name, date_added: new Date().toISOString()});              
                   // setTimeout (() => {
                   //   addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, 
                   //     release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, 
@@ -266,14 +280,14 @@ export default function UAlbum() {
           {filterTracks(setFilter_val)}
         </div>                                      
         
-        <div className="tdContainer">
+        <div className={styles.tdContainer}>
           <div style={{marginTop: '50px', width: '100%',display: 'flex', justifyContent: 'space-between'}}>
-            <span className="uTitle">Title</span>
+            <span className={styles.uTitle}>Title</span>
 
-            <span style={{marginLeft: '30px', position: 'absolute', top: '0', left: '60%'}} className="uTitle">Plays</span>
+            <span style={{marginLeft: '30px', position: 'absolute', top: '0', left: '60%'}} className={styles.uTitle}>Plays</span>
 
 
-            <span className="uTitle2">Duration</span>
+            <span className={styles.uTitle2}>Duration</span>
           </div>
 
           {listItems2}
@@ -284,11 +298,11 @@ export default function UAlbum() {
             {artists?.images?.map((a: any, i:any) => <img key={i} src={a.find((b: any) => b.height > 160).url} style={{width: '90px', height: '90px', borderRadius: '10px'}} />)}
           </div>
           
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {talbum[0]?.release_date}</h5>
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>Release Date: {talbum?.release_date}</h5>
 
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ talbum[0]?.copyrights[0]?.text} </h5>
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>{ talbum?.copyrights?.[0]?.text} </h5>
 
-          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {talbum[0]?.label_name}</h5>
+          <h5 style={{textAlign: 'left',color: 'rgb(90, 210, 216)'}}>(R) {talbum?.label_name}</h5>
         </div>
 
         {zip.map((zID: any, i: number) => 
