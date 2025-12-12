@@ -3,7 +3,7 @@ import 'react-responsive-modal/styles.css';
 import { useGetUserQuery,useGetAlbumsQuery, useGetPlaylistsQuery } from '../../App/ApiSlice';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from 'react-responsive-modal';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import Track from '../Track/Track';
 import search from '../../images/search.png';
 import space from '../../images/music.gif';
@@ -15,12 +15,14 @@ import { closeIcon } from '../../helpers/CloseIcon.tsx';
 import { useAppDispatch } from '../../App/hooks.ts';
 import { setCurrentAlbum } from '../../App/defaultSlice.ts';
 
+import InfiniteObserver from '../../helpers/InfiniteObserver.tsx';
+
 function getTracks(ptracks: any) {
   let key = 0;
 
-  return (
+  return (    
     ptracks.map((t:any, index:any) =>  
-      <div className='logoTracks' style={{display: 'flex', alignItems: 'center', fontSize: '20px'}} key={index}>            
+      <div className='logoTracks fade-in-image' style={{display: 'flex', alignItems: 'center', fontSize: '20px'}} key={index}>            
         <img src={t.images.filter((t:any) => t.height == 64).map((s:any) => s.url)} style={{height: '64px', width: '64px', borderRadius: '5px'}}/>
 
         <Track 
@@ -148,6 +150,9 @@ export default function Logo () {
 
   const navigate: any = useNavigate();
 
+  const selectorRef = useRef(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [html, setHtml] = useState<any>(null)
   const [tracks, setTracks] = useState<any>([]);
   const [albums, setAlbums] = useState<any>([]);
@@ -158,7 +163,7 @@ export default function Logo () {
 
   const [open, setOpen] = useState(false);        
   const onOpenModal = () => {setOpen(true)};
-  const onCloseModal = () => {setOpen(false); setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0};
+  const onCloseModal = () => {setOpen(false); setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); setIsLoading(false); counter = 0};
   
   const {resetPlayer} = useContext(UsePlayerContext);
 
@@ -175,10 +180,14 @@ export default function Logo () {
         })
         .then((data) => {
             if (counter){
-              setTracks([...tracks,...data.tracks]);
-              setAlbums([...albums,...data.albums]);
-              setArtist([...artist,...data.artists]);
-              setPlist([...plist,...data.playlists]);
+              setTracks((prev: []) => [...prev, ...data.tracks]);
+              //setTracks([...tracks,...data.tracks]);
+              //setAlbums([...albums,...data.albums]);
+              setAlbums((prev: []) => [...prev, ...data.albums]);
+              //setArtist([...artist,...data.artists]);
+              setArtist((prev: []) => [...prev, ...data.artists]);
+              //setPlist([...plist,...data.playlists]);
+              setPlist((prev: []) => [...prev, ...data.playlists]);
             }
             else{
               setTracks([...data.tracks]);
@@ -326,6 +335,7 @@ export default function Logo () {
           </a>
                     
           <Modal 
+            ref={selectorRef}
             modalId='modal3' 
             open={open} 
             onClose={onCloseModal} 
@@ -334,22 +344,59 @@ export default function Logo () {
             styles={{
               modal: {
                 minWidth: '85vw',
-                minHeight: '85vh',                  
+                minHeight: '90vh',     
+                maxHeight: '90vh',                                             
                 background: 'rgb(33, 33, 33)',                
-              }
+              },
             }}
-          >            
-            <div className={styles.wrap}>
-              <div className={styles.search}>
-                <input 
-                  type="text" 
-                  className={styles.searchTerm} 
-                  id='searchTerm'  
-                  placeholder="What are you looking for?" 
-                  onKeyUp={(e) => {
-                    if (e.key === "Enter") {
+          >
+            <InfiniteObserver
+              root={selectorRef.current}
+              rootMargin="300px"
+              disabled={isLoading || !tracks.length}
+              onIntersect={async (obj: IntersectionObserverEntry) => {
+                //if (counter > 29) return;
+                //console.log(obj);
+
+                setIsLoading(true);                                
+
+                counter += 20;
+
+                //await new Promise(resolve => setTimeout(resolve, 500));  
+                
+                await fetchSearch();                                    
+
+                setIsLoading(false);                
+              }}
+            >
+              <div className={styles.wrap}>
+                <div className={styles.search}>
+                  <input 
+                    type="text" 
+                    className={styles.searchTerm} 
+                    id='searchTerm'  
+                    placeholder="What are you looking for?" 
+                    onKeyUp={(e) => {
+                      if (e.key === "Enter") {
+                        setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0;
+                      
+                        let t = document.getElementById('modalbuttons')!;
+                        t.style.display = 'flex';
+                        t.style.animation = 'fadeIn 0.5s';
+
+                        fetchSearch();
+
+                        return;
+                      }
+                    }}
+                  />
+
+                  <button 
+                    type="button" 
+                    className={styles.searchButton} 
+                    onClick={() => {                    
                       setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0;
-                    
+                      
                       let t = document.getElementById('modalbuttons')!;
                       t.style.display = 'flex';
                       t.style.animation = 'fadeIn 0.5s';
@@ -357,83 +404,87 @@ export default function Logo () {
                       fetchSearch();
 
                       return;
-                    }
-                  }}
-                />
+                    }}
+                  >
+                    <i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}}></i>
+                  </button>
+                </div>
+              </div>
 
+              <img src={space} style={{zIndex: '0', width: '100%', height: '180px', position: 'fixed', top: '0', left: '0', opacity: '0.3', objectFit: 'cover', objectPosition: '20% 50%'}}/>
+
+              <div id='modalbuttons' style={{display: 'none', justifyContent: 'center', zIndex: '9', position: 'absolute', top: '120px', left: '50%', right: '50%'}}>
+                {buttonNames.map((name: string, index: number) =>
+                  <button 
+                    key={index}
+                    style={{
+                      color: 'black', fontWeight: '900', fontFamily: 'math',
+                      ...(activeButton === name ? {background: 'rgb(90, 210, 216)'} : {background: '#7a19e9'}),
+                      ...(name === "tracks" ? {borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px'} : {}),
+                      ...(name === "playlists" ? {borderTopRightRadius: '10px', borderBottomRightRadius: '10px'} : {})
+                    }}
+                    onClick={() => {
+                      setActiveButton(name);
+
+                      switch (name) {
+                        case "tracks":
+                          setHtml(getTracks(tracks));
+                          break;
+                        case "albums":
+                          setHtml(getAlbums(albumss,albums, navigate, onCloseModal, dispatch));
+                          break;
+                        case "artists":
+                          setHtml(getArtists(artist, navigate, onCloseModal));
+                          break;
+                        case "playlists":
+                          setHtml(getPlaylists(playlists,plist, navigate, onCloseModal));
+                          break;
+                        default:
+                          return;
+                      };                      
+
+                      sessionStorage.setItem('searchHome', name.toLowerCase());
+                    }}
+                  >
+                    {capitalize(name)}
+                  </button>
+                )}                
+              </div>
+
+              <div                 
+                className={styles.logoModal} 
+                style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', position: 'relative', overflowY: 'auto', top: '170px', paddingBottom: '20px'}}
+              >
+                {html ?? getTracks(tracks)}               
+
+                {/* {isLoading && <div style={{textAlign: 'center', fontSize: '36px', color: 'white'}}>Loading...</div>}  */}
+                {isLoading &&
+                  <div 
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      border: '4px solid rgb(90, 210, 216)',
+                      borderTop: '4px solid #7a19e9',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite',
+                      margin: '10px 5px 0px',
+                    }}
+                  />
+                }
+              </div>            
+
+              {tracks.length < 0 && 
                 <button 
-                  type="button" 
-                  className={styles.searchButton} 
-                  onClick={() => {                    
-                    setHtml(null); setTracks([]); setAlbums([]); setPlist([]); setArtist([]); counter = 0;
-                    
-                    let t = document.getElementById('modalbuttons')!;
-                    t.style.display = 'flex';
-                    t.style.animation = 'fadeIn 0.5s';
+                  onClick={() => {
+                    counter += 10;
 
                     fetchSearch();
-
-                    return;
-                  }}
+                  }} 
+                  style={{width: '100%', height: '54px', fontSize: '25px', fontWeight: 'bolder', color: 'black', background: '#7a19e9', position: 'absolute', bottom: '0', left: '0'}} 
                 >
-                  <i className="fa fa-search" style={{position: 'absolute', bottom: '9px', right: '14px', color: 'black'}}></i>
-                </button>
-              </div>
-            </div>
-
-            <img src={space} style={{zIndex: '0', width: '100%', height: '180px', position: 'fixed', top: '0', left: '0', opacity: '0.3', objectFit: 'cover', objectPosition: '20% 50%'}}/>
-
-            <div id='modalbuttons' style={{display: 'none', justifyContent: 'center', zIndex: '9', position: 'relative', marginTop: '8vw'}}>
-              {buttonNames.map((name: string, index: number) =>
-                <button 
-                  key={index}
-                  style={{
-                    color: 'black', fontWeight: '900', fontFamily: 'math',
-                    ...(activeButton === name ? {background: 'rgb(90, 210, 216)'} : {background: '#7a19e9'}),
-                    ...(name === "tracks" ? {borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px'} : {}),
-                    ...(name === "playlists" ? {borderTopRightRadius: '10px', borderBottomRightRadius: '10px'} : {})
-                  }}
-                  onClick={() => {
-                    setActiveButton(name);
-
-                    switch (name) {
-                      case "tracks":
-                        setHtml(getTracks(tracks));
-                        break;
-                      case "albums":
-                        setHtml(getAlbums(albumss,albums, navigate, onCloseModal, dispatch));
-                        break;
-                      case "artists":
-                        setHtml(getArtists(artist, navigate, onCloseModal));
-                        break;
-                      case "playlists":
-                        setHtml(getPlaylists(playlists,plist, navigate, onCloseModal));
-                        break;
-                      default:
-                        return;
-                    };                      
-
-                    sessionStorage.setItem('searchHome', name.toLowerCase());
-                  }}
-                >
-                  {capitalize(name)}
-                </button>
-              )}                
-            </div>
-
-            <div className={styles.logoModal} style={{maxWidth: '55vw', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginTop: '40px', marginBottom: '50px'}}>{html ?? getTracks(tracks)}</div>
-
-            {tracks.length > 0 && 
-              <button 
-                onClick={() => {
-                  counter += 10;
-
-                  fetchSearch();
-                }} 
-                style={{width: '100%', height: '54px', fontSize: '25px', fontWeight: 'bolder', color: 'black', background: '#7a19e9', position: 'absolute', bottom: '0', left: '0'}} 
-              >
-                Load More
-              </button>}                      
+                  Load More
+                </button>}
+              </InfiniteObserver>                      
           </Modal>          
         </div>
         </>

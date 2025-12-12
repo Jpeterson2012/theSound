@@ -14,7 +14,7 @@ router.get('/:id', async (req, res) => {
   };
   
   try{  
-    const url = `https://api.spotify.com/v1/search?q=${arr[0]}&offset=${arr[1]}&limit=10&type=track,album,artist,playlist`;
+    const url = `https://api.spotify.com/v1/search?q=${arr[0]}&offset=${arr[1]}&limit=20&type=track,album,artist,playlist`;
     var resp = await fetch(url, {headers});
     var data = await resp.json();
 
