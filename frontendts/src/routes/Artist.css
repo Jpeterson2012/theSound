@@ -6,14 +6,7 @@
     gap: 20px;
     overflow-x: auto;
   }
-@keyframes fadeIn {
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
-}
+
 .headers{
     font-weight: bold;
     font-size: 30px;

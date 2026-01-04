@@ -96,7 +96,7 @@ export default function RAlbum() {
   const listItems = tracks.albums?.tracks?.items.filter((a:any)=> a.name.toLowerCase().includes(filter_val.toLowerCase())).map((t: any, index:any) =>
     <div className="listContainer" key={index}>
 
-      <div className="removeContainer3" id="removeContainer3">
+      <div className="removeContainer3" id="removeContainer3" style={{position: 'relative'}}>
       
         <button className="removeAlbum3" onClick={() => {               
           let temp = {images: tracks?.albums?.images, uri: t.uri, name: t.name, track_number: 0, duration_ms: t.duration_ms, artists: t.artists}                                   
@@ -220,17 +220,17 @@ export default function RAlbum() {
                     onClick={(e) => {
                       setSnack(true);
 
-                      const el = e.target as HTMLElement;
+                      // const el = e.target as HTMLElement;
 
-                      el.style.transform = 'scale(1)';
+                      // el.style.transform = 'scale(1)';
 
-                      el.style.animation = 'pulse3 linear 1s';
+                      // el.style.animation = 'pulse3 linear 1s';
 
-                      setTimeout(() => {                  
-                        el.style.animation = "";
+                      // setTimeout(() => {                  
+                      //   el.style.animation = "";
 
-                        el.style.transform = "";
-                      }, 1000);                    
+                      //   el.style.transform = "";
+                      // }, 1000);                    
 
                       if (found){          
                         deleteAlbum({aID: lastSegment!});          

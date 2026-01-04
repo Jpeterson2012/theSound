@@ -13,6 +13,8 @@ import { spotifyRequest, msToReadable } from '../utils/utils.ts';
 
 import { AddToLibrary } from '../helpers/AddToLibrary.tsx';
 
+import CustomDropdown from '../helpers/CustomDropdown/CustomDropdown.tsx';
+
 function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setmodal:any,settrack:any,rplay:any,filter_val:any){
   let temp2 = document.getElementById('dropdown-content2')!;
 
@@ -23,18 +25,22 @@ function regPlaylists(ptracks: any, last: any, liked_urls: any, paused: any,setm
       <div style={{display: 'flex', alignItems: 'center'}} key={t.uri.split(':').pop()}>
         <p hidden>{liked_urls.push(t.uri)}</p>   
 
-        <div className="removeContainer3" id='removeContainer3' style={{display: 'flex', alignItems: 'center'}}>
+        <div className="removeContainer3" id='removeContainer3' style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
           <button className="removeAlbum3" onClick={() => {        
             settrack(t);
 
             setmodal(true) ;
           }}>Edit Playlists</button>
 
-          <img src={dots} onClick={() => {
-            settrack(t);
+          <img 
+            src={dots}
+            className="removeImg2" 
+            onClick={() => {
+              settrack(t);
 
-            setmodal(true);
-          }} className="removeImg2" />
+              setmodal(true);
+            }}  
+          />
 
           <img className="uPlaylistImgs" src={t.images?.filter((t: any)=>t.height == 64).map((s: any) => s.url)}/>
         </div>
@@ -206,21 +212,21 @@ export default function RPlaylist({lastSegment}: any){
                     )}
                   </h5>
 
-                  {/* {(sessionStorage.getItem("cplaylist") === undefined && !sessionStorage.getItem("cplaylist")) &&  */}
+                  {(sessionStorage.getItem("cplaylist") === undefined && !sessionStorage.getItem("cplaylist")) && 
                     <AddToLibrary 
                       onClick={(e) => {
                         const el = e.target as HTMLElement;
                         setSnack(true);                        
 
-                        el.style.transform = 'scale(1)';
+                        // el.style.transform = 'scale(1)';
 
-                        el.style.animation = 'pulse3 linear 1s';
+                        // el.style.animation = 'pulse3 linear 1s';
 
-                        setTimeout(() => {
-                          el.style.removeProperty('animation');
+                        // setTimeout(() => {
+                        //   el.style.removeProperty('animation');
 
-                          el.style.removeProperty('transform');
-                        }, 1000);                    
+                        //   el.style.removeProperty('transform');
+                        // }, 1000);                    
                       
                         if (found) {                                        
                           setSnack(true);
@@ -244,36 +250,11 @@ export default function RPlaylist({lastSegment}: any){
                     >
                       {found ? "✓" : "+"}
                     </AddToLibrary>
-                  {/* } */}
+                  }
 
-                  <div className="dropdown" id="dropdown">                                                        
-                    <button 
-                      className="dropbtn" 
-                      style={{marginLeft: '100%'}}
-                      onBlur={() => {
-                        let temp = document.getElementById('dropdown-content2')!;
-
-                        setTimeout(() => {
-                          temp.style.display = 'none';
-                        }, 250);                  
-                      }} 
-                      onClick={() => {
-                        let temp = document.getElementById('dropdown-content2')!;
-                        
-                        if (temp.style.display === 'flex') temp.style.display = 'none';
-                        else {
-                          temp.style.display = 'flex';
-
-                          temp.style.flexDirection = 'column';
-                        }
-                      }}
-                    >
-                      Sort
-                    </button>
-                      <div className="dropdown-content2" id='dropdown-content2'>
-                        {playlistSort(ptracks, setpTracks)}
-                      </div>
-                  </div>                                                                    
+                  <CustomDropdown margin="10px">
+                    {playlistSort(ptracks, setpTracks)}
+                  </CustomDropdown>                                                                    
                 </div>
 
                 {filterTracks(setFilter_val)}

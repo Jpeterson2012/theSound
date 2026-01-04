@@ -1,14 +1,6 @@
 .fade-in-image{
     animation: fadeIn 0.5s;
 }
-@keyframes fadeIn {
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
-}
 
 
 @media only screen and (max-width: 768px){
@@ -69,27 +61,10 @@
     }
 }
 
-@keyframes scroll-horizontal{
-    0% {
-        left: 100%;
-    }
-    100% {
-        left: -100%;
-    }
-}
 .discoverCHeader{
     margin-top: 200px;
     max-width: 150px;
 }
-
-@keyframes scrollText {
-    from {
-      transform: translateX(0%);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
 
 @media only screen and (max-width: 768px){
     .scroll-container, .carousel-primary, .categoryContainer{

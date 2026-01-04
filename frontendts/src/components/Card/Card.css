@@ -51,14 +51,7 @@ p {
   white-space: nowrap;
   overflow: hidden;  */
 } 
-@keyframes fadeIn {
-  0%{
-      opacity: 0;
-  }
-  100%{
-      opacity: 1;
-  }
-}
+
 .cardArtist{
   color: rgb(90, 210, 216);
   font-weight: bold;

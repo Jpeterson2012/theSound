@@ -1,6 +1,6 @@
 //session storage c_icon, c_name variable created here; use for categories playlist click
 import './Discover.css'
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { UsePlayerContext } from '../hooks/PlayerContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import { Spin3 } from "../components/Spin/Spin";
@@ -11,17 +11,22 @@ import { spotifyRequest } from '../utils/utils.ts';
 import { useAppDispatch } from '../App/hooks.ts';
 import { setCurrentAlbum } from '../App/defaultSlice.ts';
 
+import InfiniteObserver from '../helpers/InfiniteObserver.tsx';
+
 function customRender(name: any, item: any){
     return (
         <>
             <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >{name}</h2>
-            <div className={name} style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-evenly',
-                alignItems: 'center',
-                paddingTop: '15px',                                                                                                                                                                                                          
-            }}>
+            <div 
+                className={name} 
+                style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-evenly',
+                    alignItems: 'center',
+                    paddingTop: '15px',                                                                                                                                                                                                          
+                }}
+            >
                 {item}
             </div>
         </>        
@@ -37,8 +42,29 @@ export default function Discover() {
     const [categories, setCategories] = useState([]);
     const [albums, setAlbums] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loading2, setLoading2] = useState(true);
 
     const {playerState} = useContext(UsePlayerContext);
+
+    const selectorRef = useRef(null);
+
+    const [counter, setCounter] = useState(0);    
+
+    const fetchDiscover = async () => {
+        try {                    
+            const resp = await spotifyRequest(`/discover?offset=${counter}`);
+            const data = await resp.json();
+            //return data;
+
+            setReleases((prev: []) => [...prev, ...data]);                                    
+            //sessionStorage.setItem("releases", JSON.stringify(data));   
+            setCounter((prev: number) => prev += 40);                
+            setLoading2(false);
+        }
+        catch (err) {
+            console.error(err);                    
+        }
+    };
 
     useEffect (() => {        
         const rel = JSON.parse(sessionStorage.getItem("releases")!)
@@ -56,7 +82,7 @@ export default function Discover() {
                     const data = await resp.json();
                     setAlbums(data.hipster);
                     setCategories(data.categories);                    
-                    sessionStorage.setItem("categories", JSON.stringify(data));
+                    //sessionStorage.setItem("categories", JSON.stringify(data));
                     setLoading(false);
                 }
                 catch (e){
@@ -65,24 +91,35 @@ export default function Discover() {
             }
             fetchCategories();
 
-            const fetchDiscover = async () => {
-                try {                    
-                    const resp = await spotifyRequest('/discover');
-                    const data = await resp.json();
-                    return data;
-                }
-                catch (err) {
-                    console.error(err);                    
-                }
-            }
-            const assignDiscover = async () => {
-                const tempDiscover = await fetchDiscover();                
-                setReleases(tempDiscover);                                    
-                sessionStorage.setItem("releases", JSON.stringify(tempDiscover));                        
-            }
-            assignDiscover();
+            // const fetchDiscover = async () => {
+            //     try {                    
+            //         const resp = await spotifyRequest(`/discover?offset=${counter}`);
+            //         const data = await resp.json();
+            //         //return data;
+
+            //         setReleases((prev: []) => [...prev, ...data]);                                    
+            //         sessionStorage.setItem("releases", JSON.stringify(data));   
+            //         counter += 40;    
+            //         setLoading(false);
+            //     }
+            //     catch (err) {
+            //         console.error(err);                    
+            //     }
+            // }
+            // const assignDiscover = async () => {
+            //     const tempDiscover = await fetchDiscover();                
+            //     //setReleases(tempDiscover);
+            //     setReleases((prev: []) => [...prev, ...tempDiscover]);                                    
+            //     sessionStorage.setItem("releases", JSON.stringify(tempDiscover));   
+            //     counter += 40;    
+            //     setLoading(false);                 
+            // }
+            // assignDiscover();
+
+            fetchDiscover();
         }
 
+        return () => {setCounter(0);}
     }, []);
 
     const listAlbums = albums?.map((album:any, index:any) =>
@@ -187,7 +224,40 @@ export default function Discover() {
                     
                     {customRender("Categories", listCategories)}
 
-                    {window.innerWidth > 500 ? customRender("New Releases", listReleases) : displayWrap()} 
+                    {window.innerWidth > 500 
+                        ? <div ref={selectorRef.current}>
+                            <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >New Releases</h2>                            
+                                <InfiniteObserver
+                                    root={selectorRef.current}
+                                    //spinner={true}
+                                    spin3={true}
+                                    spinnerStyle={{mainColor: "red", sideColor: "white", size: "40px"}}
+                                    style={{display: "flex", flexDirection: "column", alignItems: "center"}}
+                                    rootMargin="300px"
+                                    disabled={loading2 || !listReleases.length}
+                                    onIntersect={async (obj: IntersectionObserverEntry) => {
+                                        setLoading2(true);                                                                                        
+                                        
+                                        await fetchDiscover();                                    
+
+                                        setLoading2(false);                
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            width: '100%',
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            justifyContent: 'space-evenly',
+                                            alignItems: 'center',
+                                            paddingTop: '15px',                                                                                                                                                                                                          
+                                        }}
+                                    >
+                                        {listReleases}
+                                    </div>
+                                </InfiniteObserver>                            
+                        </div>
+                        : displayWrap()} 
                                 
                     <ButtonScroll />      
                 </div>

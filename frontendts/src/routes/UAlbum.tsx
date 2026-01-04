@@ -155,49 +155,49 @@ export default function UAlbum() {
   const showDiscog = (arr: []) => {
     return (
       <div style={{display: 'flex', gap: '25px'}} >
-          {arr?.map((val:any,i: number) =>                
-            <a key={i} style={{display: 'flex', flexDirection: 'column', gap: '10px'}} onClick={() => {
-            // console.log(val)
-            // console.log(sessionStorage.getItem("name"))
+        {arr?.map((val:any,i: number) =>                
+          <a key={i} style={{display: 'flex', flexDirection: 'column', gap: '10px'}} onClick={() => {
+          // console.log(val)
+          // console.log(sessionStorage.getItem("name"))
 
-              let found = (albumss?.find((e: any) => e?.album_id === val.id) || (albumss?.find((e: any) => e?.name === val.name)))  
-              
-              if (found) {
-                sessionStorage.setItem("albumStatus","user");
+            let found = (albumss?.find((e: any) => e?.album_id === val.id) || (albumss?.find((e: any) => e?.name === val.name)))  
+            
+            if (found) {
+              sessionStorage.setItem("albumStatus","user");
 
-                if (val.id !== found?.album_id) {
-                  found?.album_id;
-                }                  
-              } else {
-                sessionStorage.setItem("albumStatus","notuser");
-              }
-              
-              sessionStorage.setItem("image", val.images.find((b: any) => b.height > 160).url);
-              
-              dispatch(setCurrentAlbum({
-                image: val.images.find((b: any) => b.height > 160).url,
-                artists: val.artists.map((t: any) => t.name),
-                artist_ids: val.artists.map((t: any) => t.uri.split(':').pop()),
-              }));
+              if (val.id !== found?.album_id) {
+                found?.album_id;
+              }                  
+            } else {
+              sessionStorage.setItem("albumStatus","notuser");
+            }
+            
+            sessionStorage.setItem("image", val.images.find((b: any) => b.height > 160).url);
+            
+            dispatch(setCurrentAlbum({
+              image: val.images.find((b: any) => b.height > 160).url,
+              artists: val.artists.map((t: any) => t.name),
+              artist_ids: val.artists.map((t: any) => t.uri.split(':').pop()),
+            }));
 
-              sessionStorage.setItem("artist", JSON.stringify(val.artists.map((t: any) => t.name)));
+            sessionStorage.setItem("artist", JSON.stringify(val.artists.map((t: any) => t.name)));
 
-              sessionStorage.setItem(
-                "artist_id", 
-                JSON.stringify(
-                  val.artists.map((t: any) => t.uri.split(':').pop())
-                ),
-              );
+            sessionStorage.setItem(
+              "artist_id", 
+              JSON.stringify(
+                val.artists.map((t: any) => t.uri.split(':').pop())
+              ),
+            );
 
-              navigate(`/app/album/${val.id}`);
-            }}>
-              <img key={i} src={val.images.find((b: any) => b.height > 160).url} style={{width: '150px', height: '190px', borderRadius: '10px'}}/>
+            navigate(`/app/album/${val.id}`);
+          }}>
+            <img key={i} src={val.images.find((b: any) => b.height > 160).url} style={{width: '150px', height: '190px', borderRadius: '10px'}}/>
 
-              <span style={{color: 'rgb(90, 210, 216)'}}>{val.name}</span>
+            <span style={{color: 'rgb(90, 210, 216)'}}>{val.name}</span>
 
-              <span style={{color: 'rgb(90, 210, 216)'}}>{val.release_date}</span>           
-            </a>                    
-          )}        
+            <span style={{color: 'rgb(90, 210, 216)'}}>{val.release_date}</span>           
+          </a>                    
+        )}        
       </div>
     );
   };
@@ -250,13 +250,13 @@ export default function UAlbum() {
 
                 //el.style.transform = 'scale(1)';
 
-                el.style.animation = 'pulse3 linear 1s';
+                // el.style.animation = 'pulse3 linear 1s';
 
-                setTimeout(()=>{
-                  el.style.removeProperty('animation');
+                // setTimeout(()=>{
+                //   el.style.removeProperty('animation');
 
-                  //el.style.removeProperty('transform');
-                }, 1000);                    
+                //   //el.style.removeProperty('transform');
+                // }, 1000);                    
 
                 if (!singleAlbum!.length){      
                   addAlbum({album_type: talbum?.album_type, total_tracks: talbum?.total_tracks, album_id: lastSegment!, images: talbum?.images, name: talbum?.name, 

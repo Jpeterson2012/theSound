@@ -5,6 +5,8 @@ const router = express.Router();
 router.get('/', async (req, res) => {  
   const token = await con.getAccessToken(req.cookies.jwt);
 
+  console.log(req.query.offset);
+
   const info = [];
 
   let index = Math.floor(Math.random() * 51)
@@ -15,17 +17,25 @@ router.get('/', async (req, res) => {
   };
 
   try{
-    for (let i = 0; i < 2; i++) {
-      const url = `https://api.spotify.com/v1/search?q=tag:new&type=album&offset=${40 * i}&limit=40`;
+    // for (let i = 0; i < 2; i++) {
+    //   const url = `https://api.spotify.com/v1/search?q=tag:new&type=album&offset=${40 * i}&limit=40`;
 
-      const resp = await fetch(url, {headers});
+    //   const resp = await fetch(url, {headers});
 
-      const data = await resp.json();      
+    //   const data = await resp.json();      
 
-      info.push(...data.albums.items);
-    }
+    //   info.push(...data.albums.items);
+    // }
+
+    const url = `https://api.spotify.com/v1/search?q=tag:new&type=album&offset=${req.query.offset}&limit=40`;
+
+    const resp = await fetch(url, {headers});
+
+    const data = await resp.json();      
+
+    info.push(...data.albums.items);
     
-  res.send(info);
+    res.send(info);
   }
   catch(e){
     console.error(e);

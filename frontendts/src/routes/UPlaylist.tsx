@@ -20,6 +20,8 @@ import { AddToLibrary } from '../helpers/AddToLibrary.tsx';
 
 import { useAppSelector } from '../App/hooks.ts';
 
+import CustomDropdown from '../helpers/CustomDropdown/CustomDropdown.tsx';
+
 function customImage(ptracks: any){
   return(
     <div className="mainImage2">
@@ -60,12 +62,15 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
 
         <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>                      
           <a>
-            <div className="removeContainer2" id="removeContainer2">
+            <div className="removeContainer2" id="removeContainer2" style={{position: 'relative'}}>
               <div className="removeAlbum2" id="removeAlbum2">
                 <button 
                   type="button" 
                   tabIndex={0} 
-                  style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px',width: '130px', height: '60px'}} 
+                  style={{
+                    color: 'black',background: 'rgb(90, 210, 216)', fontSize: '15px', width: '100px', 
+                    height: 'fit-content', borderRadius: '10px'
+                  }} 
                   onClick={() => {  
                     settrack(t);
 
@@ -77,7 +82,10 @@ function userPlaylists(userLists: any, liked_urls: any, paused: any,removeSong: 
 
                 {lastSegment === 'likedsongs' && 
                   <button 
-                    style={{color: 'black',background: 'rgb(90, 210, 216)', fontSize: '13px', width: '130px', height: '60px'}} 
+                    style={{
+                      color: 'black',background: 'rgb(90, 210, 216)', fontSize: '15px', width: '100px', 
+                      height: 'fit-content', borderRadius: '10px', padding: '5px'
+                    }} 
                     onClick={() => {  
                       setsnack(true)
                     
@@ -234,15 +242,15 @@ export default function UPlaylist({lastSegment}: any){
 
                         setSnack(true);
                         
-                        el.style.transform = 'scale(1)';
+                        // el.style.transform = 'scale(1)';
 
-                        el.style.animation = 'pulse3 linear 1s';
+                        // el.style.animation = 'pulse3 linear 1s';
 
-                        setTimeout(() => {
-                          el.style.removeProperty('animation');
+                        // setTimeout(() => {
+                        //   el.style.removeProperty('animation');
 
-                          el.style.removeProperty('transform');
-                        }, 1000);                    
+                        //   el.style.removeProperty('transform');
+                        // }, 1000);                    
                       
                         if (!singlePlist!.length) {           
                           setSnack(true);  
@@ -262,35 +270,9 @@ export default function UPlaylist({lastSegment}: any){
                       {!singlePlist!.length ? "+" : "✓"}
                     </AddToLibrary>}
 
-                  <div className="dropdown" id="dropdown">
-                    <button 
-                      className="dropbtn" 
-                      style={{marginLeft: '10px', borderRadius: '10px'}} 
-                      onBlur={() => {
-                        let temp = document.getElementById('dropdown-content2')!;
-
-                        setTimeout(() => {
-                          temp.style.display = 'none';
-                        }, 250);                  
-                      }}
-                      onClick={() => {
-                        let temp = document.getElementById('dropdown-content2')!;
-
-                        if (temp.style.display === 'flex') temp.style.display = 'none';
-                        else {
-                          temp.style.display = 'flex';
-
-                          temp.style.flexDirection = 'column';
-                        }                        
-                      }} 
-                    >
-                      Sort
-                    </button>
-
-                    <div className="dropdown-content2" id="dropdown-content2">
-                      {playlistSort(tplaylist!, setTplaylist)}
-                    </div>
-                  </div>                                  
+                  <CustomDropdown margin="10px">
+                    {playlistSort(tplaylist!, setTplaylist)}
+                  </CustomDropdown>                            
                 </div>
 
                 {filterTracks(setFilter_val)}                            

@@ -19,6 +19,8 @@ import { closeIcon } from '../helpers/CloseIcon.tsx';
 import { useAppDispatch } from '../App/hooks.ts';
 import { setCurrentAlbum } from '../App/defaultSlice.ts';
 
+import CustomDropdown from '../helpers/CustomDropdown/CustomDropdown.tsx';
+
 function generatePassword() {
   const length = 22;
 
@@ -48,8 +50,6 @@ function Albums(listRecent:any,listItems: any){
   );
 };
 function albumSort(setSorted: any){
-  let temp = document.getElementById('dropdown-content')!;
-
   const buttonText = ["A-Z", "Z-A", "Artist A-Z", "Artist Z-A", "Oldest", "Newest"];
 
   return(
@@ -59,8 +59,6 @@ function albumSort(setSorted: any){
           key={index}
           className="theme" 
             onClick={(e) => {
-              temp.style.display = 'none';
-
               setSorted(index + 1);
 
               sessionStorage.setItem('sortVal',(index + 1).toString());
@@ -96,8 +94,6 @@ function Playlists(navigate: any, listPlaylists: any){
   );
 };
 function playlistSort(setPSorted: any){
-  let temp = document.getElementById('dropdown-content')!;
-
   const buttonText = ["A-Z", "Z-A"];
 
   return(
@@ -106,8 +102,7 @@ function playlistSort(setPSorted: any){
         <button 
           key={index}
           className="theme" 
-          onClick={(e) => {                  
-            temp.style.display = 'none';
+          onClick={(e) => {                              
             setPSorted(index + 1)
             sessionStorage.setItem('psortVal','1')
           }}
@@ -277,8 +272,8 @@ export default function Home({setIsLoading2}: any) {
   });  
 
   useEffect(() => {            
+    (ready && !loading) && setIsLoading2(false);
 
-    (ready && !loading) && setIsLoading2(false)            
     switch(sessionStorage.getItem('home')){
       case 'album':
         setHtml(Albums(listRecent(),window.innerWidth < 500 ? listItems2() : listItems ))
@@ -412,7 +407,7 @@ export default function Home({setIsLoading2}: any) {
     
   const listPlaylists = sortedPlaylists()?.filter((a:any) => a.name.toLowerCase().includes(filter_val.toLowerCase())).map((a: any,i:any) =>
     <div style={{display: 'flex', gap: '20px', alignItems: 'center'}} key={i}>
-      <div className="removePContainer" style={{width: '20px'}}>
+      <div className="removePContainer" style={{width: '20px', position: "relative"}}>
         <button 
           className="removePlay" 
           id={"removePlay" + i} 
@@ -579,41 +574,13 @@ export default function Home({setIsLoading2}: any) {
                 </button>
               )}
 
-              <div 
-                className="dropbtn" 
-                tabIndex={0}
-                onBlur={(e) => {
-                  const parent = e.currentTarget;
-
-                  if (parent.contains(e.relatedTarget)) {
-                    return;
-                  }
-
-                  const child: HTMLInputElement = parent.querySelector("#dropdown-content")!;
-                  
-                  child.style.display = 'none';                                      
-                }}
-                onClick={(e) => {
-                  const child: HTMLInputElement = e.currentTarget.querySelector("#dropdown-content")!;                  
-                  
-                  if (child.style.display === 'flex') child.style.display = 'none';
-                  else {
-                    child.style.display = 'flex';
-
-                    child.style.flexDirection = 'column';
-
-                    child.style.alignItems = 'center';
-                  }
-                }}
-              >
-                <div className="dropbtn-inner">Sort</div>
-
-                <div className="dropdown-content" id="dropdown-content">
+              <CustomDropdown home={true}>
+                <>
                   {(!sessionStorage.getItem('home') || sessionStorage.getItem('home') === 'album') && albumSort(setSorted)}
 
                   {sessionStorage.getItem('home') === 'playlist' && playlistSort(setPSorted)}
-                </div>
-              </div>
+                </>
+              </CustomDropdown>
 
               <p 
                 style={sessionStorage.getItem('home') === "playlist" ? {display: "inline"} : {display: "none"}} 
