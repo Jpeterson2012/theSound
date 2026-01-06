@@ -1,7 +1,7 @@
 import styles from './CustomDropdown.module.css';
 import { useState } from 'react';
 
-export default function CustomDropdown({children, home = false, margin = "0px"}: any) {
+export default function CustomDropdown({children, home = false, margin = "0px", bold = null}: any) {
     const [open, setOpen] = useState(false);
 
     return (
@@ -33,7 +33,8 @@ export default function CustomDropdown({children, home = false, margin = "0px"}:
                 <div 
                     className={styles.buttonText}
                     style={{
-                        ...(home ? {borderTopRightRadius: '10px', borderBottomRightRadius: '10px'} : {borderRadius: '10px'})
+                        ...(home ? {borderTopRightRadius: '10px', borderBottomRightRadius: '10px'} : {borderRadius: '10px'}),
+                        ...(bold ? {fontWeight: bold} : {}),
                     }}
                 >
                     Sort</div>

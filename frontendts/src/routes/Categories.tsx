@@ -62,7 +62,7 @@ export default function Categories() {
                 <img className="cCardImg" src={a.images.map((s: any) => s.uri)} alt="Avatar"/>
 
                 <div className="container" style={{display: 'flex', justifyContent: 'center'}}>
-                    <h4 style={{ background: '#7a19e9', color: 'rgb(90, 210, 216)',borderRadius: '3px' }} ><b>{a.name}</b></h4>                    
+                    <h4 style={{ background: 'black', color: 'white', borderRadius: '10px', padding: '10px'}} ><b>{a.name}</b></h4>                    
                 </div>
             </div>
         </a>

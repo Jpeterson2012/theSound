@@ -80,7 +80,7 @@ export default function Discover() {
                 try{
                     const resp = await spotifyRequest('/categories');
                     const data = await resp.json();
-                    setAlbums(data.hipster);
+                    setAlbums(data.hipster);                    
                     setCategories(data.categories);                    
                     //sessionStorage.setItem("categories", JSON.stringify(data));
                     setLoading(false);
@@ -143,19 +143,20 @@ export default function Discover() {
     )
 
     const listCategories = categories?.map((a: any, index: any) =>
-        <a key={index} onClick={function handleClick() {
-            sessionStorage.setItem("c_icon", a.icons.map((s: any) => s.url))
-            sessionStorage.setItem("c_name", a.name)
-            navigate(`/app/categories/${a.name.toLowerCase().replaceAll(' ','').replace('-','').replace('&','and')}`)        
-            
-        }}>
-            <div className="categoryContainer" style={{width: '200px',height: '305px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <img className="fade-in-image" src={a.icons.map((s: any) => s.url)} alt="Avatar" style={{width:'80%',height:'190px',borderRadius: '10px'}}/>
+        <div key={index} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0px 0px 20px 0px'}}>
+            <span style={{color: 'white'}}><b>{a.name}</b></span>
 
-                <h4 style={{marginTop: '200px'}} ><b>{a.name}</b></h4>                
-            </div>
-        </a>
-        
+            <a                  
+                onClick={(() => {
+                    sessionStorage.setItem("c_icon", a.icons.map((s: any) => s.url))
+                    sessionStorage.setItem("c_name", a.name)
+                    navigate(`/app/categories/${a.name.toLowerCase().replaceAll(' ','').replace('-','').replace('&','and')}`)        
+                    
+                })}
+            >
+                <img className="fade-in-image" src={a.icons.map((s: any) => s.url)} alt="Avatar" style={{width:'80%',height:'190px',borderRadius: '10px'}}/>
+            </a>
+        </div>
     )
 
     const listReleases = releases?.map((a: any, index: number) => 
@@ -211,7 +212,7 @@ export default function Discover() {
     return (
         <>        
             { loading ? Spin3() :        
-                <div className="discoverContainer" style={{width: '90vw', position: 'absolute', left: '5vw', top: '9vw', paddingBottom: '200px'}}>                   
+                <div className="discoverContainer" style={{width: '90vw', position: 'absolute', left: '5vw', top: '9vw', paddingBottom: '200px', height: '100%'}}>                   
                     <h2 style={{marginLeft: 'auto', marginRight: 'auto'}} >Check These Out</h2>
 
                     <div className="scroll-container" >

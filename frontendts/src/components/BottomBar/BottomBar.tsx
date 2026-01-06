@@ -148,7 +148,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
             <div style={{display: 'flex', alignItems: 'center', width: '95%'}}>
                 {/* Replaced old modal method for adding to playlists here */}                    
 
-                <img style={{height: '30px', cursor: 'pointer'}} src={volume} 
+                <img style={{height: '30px', cursor: 'pointer'}} src={volume} id="volumeIcon"
                     onMouseEnter={(e) => {
                         const el = e.target as HTMLElement;
 
@@ -199,7 +199,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                 />
 
                 <input 
-                    //id='volumeBar' 
+                    id='volumeBar' 
                     style={{minWidth: '85%'}}
                     type='range' 
                     min={0} 

@@ -1,5 +1,6 @@
 .fade-in-image, .fade-in-image2{
   animation: fadeIn 0.5s;
+  border-radius: 10px;
 }
 .row{
   display: flex;

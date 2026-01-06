@@ -64,19 +64,19 @@
   .volAddContainer{
     display: flex;
   }
-  #volumeIcon{
+  /* #volumeIcon{
     position: absolute;
     right: 28.2vw;
     bottom: 8px;
     height: 30px;
     cursor: pointer;
-  }
-  #volumeBar{    
+  } */
+  /* #volumeBar{    
     position: absolute;
     bottom: 14px;
     right: 18.5vw;
     width: 8.8vw;
-  }
+  } */
   .now_playing{
     position: fixed;
     bottom: 50px;
@@ -226,10 +226,10 @@ input[type=range]{
     .scrollbar1, .scrollbar2{
       max-width: 450px;
     }
-    #volumeBar{
+    /* #volumeBar{
       width: 16.5vw;
       right: 11vw;
-    }
+    } */
   }
   .spotifyButtonContainer{
     display: none;

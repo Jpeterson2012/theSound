@@ -574,7 +574,7 @@ export default function Home({setIsLoading2}: any) {
                 </button>
               )}
 
-              <CustomDropdown home={true}>
+              <CustomDropdown home={true} bold="900">
                 <>
                   {(!sessionStorage.getItem('home') || sessionStorage.getItem('home') === 'album') && albumSort(setSorted)}
 

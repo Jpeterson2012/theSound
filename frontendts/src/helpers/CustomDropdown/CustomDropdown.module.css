@@ -2,8 +2,7 @@
   padding-top: 11.7px;
   padding-bottom: 11.7px;
   width: 100%;
-  transition: transform 0.1s ease;
-  font-weight: 900;
+  transition: transform 0.1s ease;  
 }
 
 /* Change the background color of the dropdown button when the dropdown content is shown */

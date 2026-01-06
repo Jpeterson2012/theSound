@@ -40,8 +40,7 @@ export default function RAlbum() {
   const [trackData, setTrackData] = useState<any>(null)
   const [filter_val, setFilter_val] = useState<string>('')
   //Check if album is already in library or not
-  let found = albums?.find((e: any) => e?.album_id === lastSegment)  
-  console.log(found)
+  let found = albums?.find((e: any) => e?.album_id === lastSegment)    
 
   const {is_active, playerState} = useContext(UsePlayerContext);
   const [discog, setDiscog] = useState<any>({});
