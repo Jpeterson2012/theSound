@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import './SeekBar.css';
 import { useInterval } from "../../hooks/useInterval.ts";
 import { spotifyRequest } from "../../utils/utils.ts";
 
-export default function SeekBar({duration, player, paused}: any) {
-  
+export default function SeekBar({duration, player, paused}: any) {  
   const [pos, setPos] = useState<any>(0);
+  const [isSeeking, setIsSeeking] = useState(false);
       
-  let found = [undefined, null, "null"].includes(sessionStorage.getItem("currentContext")) ??  false
+  let found = [undefined, null, "null"].includes(sessionStorage.getItem("currentContext")) ??  false;
+
+  useEffect(() => {   
+    setPos(0);    
+  }, [duration]);
   
   //Checks if current device is The Sound. If not uses session variable to update song progress
   if (found) {
     useInterval(() => {
-      !paused && player?.getCurrentState().then((state: any) => {
+      if (paused || isSeeking) return;
+
+      player?.getCurrentState().then((state: any) => {
         setPos(state?.position);
       });
     },1000);
@@ -30,15 +36,21 @@ export default function SeekBar({duration, player, paused}: any) {
       max={duration ?? 0} 
       value={pos ?? 0} 
       step="100" 
-      onChange={(e) => { 
-        setPos(e.target.value);     
+      onPointerDown={() => setIsSeeking(true)}
+      onPointerUp={(e) => {
+        const value = Number(e.currentTarget.value);      
+        
+        setIsSeeking(false);
 
         if(found) {
-          player.seek(e.target.value)              
+          player.seek(value);              
         } else 
           setTimeout(() => {         
-            spotifyRequest(`/player/seek/${sessionStorage.getItem("currentContext")},${+e.target.value}`, 'POST');
-          },150);        
+            spotifyRequest(`/player/seek/${sessionStorage.getItem("currentContext")},${+value}`, 'POST');
+          },150);
+      }}
+      onChange={(e) => { 
+        setPos(e.target.value);        
       }}
     />
   );

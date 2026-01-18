@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const con = require('../sql.js');
+const con = require('../database/dbpool.js');
 
 router.post('/', async (req, res) => {
   const token = await con.getAccessToken(req.cookies.jwt);

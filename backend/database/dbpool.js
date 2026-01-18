@@ -1,37 +1,5 @@
 const mysql = require('mysql2/promise');
-const {verifyToken} = require('./jwt.js')
-
-const initConnection = async () => {
-  try {
-    // const con = await mysql.createConnection({
-    //   host: process.env.HOST,
-    //   user: process.env.DBUSER,
-    //   password: process.env.PASSWORD,
-    //   database: process.env.DB,
-    // });
-
-    //con.connect((err) => {
-    //  if (err) throw err;
-    //  
-    //  console.log("Connected!");
-    //});
-
-    const con = mysql.createPool({
-      host: process.env.HOST,
-      user: process.env.DBUSER,
-      password: process.env.PASSWORD,
-      database: process.env.DB,
-      waitForConnections: true,
-      connectionLimit: 10
-    });
-
-    console.log("Connected");
-    
-    return con;
-  } catch (e) {
-    console.error(e);
-  }    
-};
+const {verifyToken} = require('../jwt.js')
 
 const con = mysql.createPool({
   host: process.env.HOST,

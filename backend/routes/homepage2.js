@@ -1,4 +1,4 @@
-const con = require('../sql.js');
+const con = require('../database/dbpool.js');
 const express = require('express');
 const router = express.Router();
 const {verifyToken} = require('../jwt.js');

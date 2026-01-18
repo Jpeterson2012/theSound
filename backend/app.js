@@ -1,4 +1,4 @@
-var createError = require('http-errors');
+const createError = require('http-errors');
 //New stuff
 const cors = require('cors');
 require('dotenv').config();
@@ -10,36 +10,44 @@ const options = {
   key: fs.readFileSync('/home/jpeterson93/127.0.0.1+1-key.pem'),
   cert: fs.readFileSync('/home/jpeterson93/127.0.0.1+1.pem')
 };
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 
-var path = require('path');
-var cookieParser = require('cookie-parser');
-//var session = require('express-session')
-var logger = require('morgan');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+//const session = require('express-session')
+const logger = require('morgan');
 
 //app.set('trust proxy', 1);
 
 app.use(cookieParser());
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var loginRouter = require('./routes/login');
-var callbackRouter = require('./routes/callback');
-var tracksRouter = require('./routes/tracks');
-var tokenRouter = require('./routes/token')
-var ptracksRouter = require('./routes/ptracks')
-var artistsRouter = require('./routes/artists')
-var artists2Router = require('./routes/artists2')
-var discoverRouter = require('./routes/discover')
-var searchRouter = require('./routes/search')
-var categoriesRouter = require('./routes/categories')
-var cplaylistsRouter = require('./routes/cplaylists')
-var shuffleRouter = require('./routes/shuffle')
-var localRouter = require('./routes/local')
-var updateRouter = require('./routes/update')
-var homepage2Router = require('./routes/homepage2')
-var playerRouter = require('./routes/player')
+//DB INIT
+const {dbInit} = require('./database/dbinit');
+(async () => {
+  await dbInit();
+
+  console.log('Database initialized.');
+})();
+
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const loginRouter = require('./routes/login');
+const callbackRouter = require('./routes/callback');
+const tracksRouter = require('./routes/tracks');
+const tokenRouter = require('./routes/token')
+const ptracksRouter = require('./routes/ptracks')
+const artistsRouter = require('./routes/artists')
+const artists2Router = require('./routes/artists2')
+const discoverRouter = require('./routes/discover')
+const searchRouter = require('./routes/search')
+const categoriesRouter = require('./routes/categories')
+const cplaylistsRouter = require('./routes/cplaylists')
+const shuffleRouter = require('./routes/shuffle')
+const localRouter = require('./routes/local')
+const updateRouter = require('./routes/update')
+const homepage2Router = require('./routes/homepage2')
+const playerRouter = require('./routes/player')
 
 
 // view engine setup

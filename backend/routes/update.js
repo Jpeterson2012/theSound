@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const con = require('../sql.js');
+const con = require('../database/dbpool.js');
 const {verifyToken} = require('../jwt.js');
 
 router.post('/album', async (req, res) => {

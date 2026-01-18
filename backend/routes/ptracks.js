@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const con = require('../sql.js');
+const con = require('../database/dbpool.js');
 const {verifyToken} = require('../jwt.js');
 
 router.get('/:id', async (req, res) => {
@@ -11,7 +11,7 @@ router.get('/:id', async (req, res) => {
     Authorization: 'Bearer ' + token
   };
 
-  var pages = 0;  
+  let pages = 0;  
   let sqlObj = {items: []};
   // var a = {}
   // var arr = []
@@ -43,9 +43,7 @@ router.get('/:id', async (req, res) => {
         uri: item.track?.uri,
         date_added: new Date(item.added_at ?? Date.now())
       };
-    });
-
-    console.log(sqlObj.items[0])
+    });    
 
     res.write(JSON.stringify({items: arr, total: data.total}) + "\n");
     

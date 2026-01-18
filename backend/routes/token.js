@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mystuff = require("./AuthRoutes.js");
-const con = require('../sql.js');
+const con = require('../database/dbpool.js');
 
 router.get('/', async (req, res) => {
     try{        

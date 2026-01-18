@@ -1,5 +1,5 @@
 //Potential future option: 1 table instead of 3 with a column for type and just include all columns across the 3 tables in the one
-const con = require('../sql.js');
+const con = require('../database/dbpool.js');
 const mystuff = require("./AuthRoutes.js");
 const express = require('express');
 const router = express.Router();
@@ -7,14 +7,6 @@ const {generateToken} = require('../jwt.js');
 
 const EventEmitter = require('events');
 const myEmitter = new EventEmitter();
-
-const sqlQuery = (sql, uname = null) => {
-  const query = `CREATE TABLE IF NOT EXISTS ${uname ?? ""}` + sql;
-
-  //con.query(query, (err) => {
-  //  if (err) throw err;        
-  //});
-};
 
 const fetchPlaylists = async (uname, headers) => {
   let pages = 0;
@@ -139,10 +131,6 @@ router.get('/', async (req, res) => {
 
     const data = await resp.json();    
     
-    //req.session.access_token = data.access_token;
-    //req.session.refresh_token = data.refresh_token;
-    //req.session.expires_in = data.expires_in;
-    
     let url = 'https://api.spotify.com/v1/me';
 
     const headers = {
@@ -152,34 +140,7 @@ router.get('/', async (req, res) => {
     const resp2 = await fetch(url, { headers });
     const data2 = await resp2.json();
 
-    //process.env['username'] = data2.display_name.replace(/\W/g,'');
-    //req.session.username = data2.display_name.replace(/\W/g,'');
-    
-    const username = data2.display_name.replace(/\W/g,'');
-          
-    let sql = `albums (id INT AUTO_INCREMENT PRIMARY KEY, album_type VARCHAR(30), total_tracks SMALLINT(2), 
-    album_id VARCHAR(30), images JSON, name VARCHAR(75), release_date VARCHAR(10), 
-    uri VARCHAR(40), artists JSON, tracks JSON, copyrights JSON, label_name VARCHAR(75), date_added DATETIME)`;
-
-    //sqlQuery(sql, req.session.username);
-    
-    sql = `playlists (id INT AUTO_INCREMENT PRIMARY KEY, playlist_id VARCHAR(70), images JSON, name VARCHAR(100), public BOOL, uri varCHAR(40), tracks JSON)`;
-
-    //sqlQuery(sql, req.session.username);
-    
-    sql = `liked (id INT AUTO_INCREMENT PRIMARY KEY, album_id VARCHAR(30), images JSON, artists JSON, duration VARCHAR(10), track_id VARCHAR(60), name VARCHAR(200), date_added DATETIME)`;
-
-    //sqlQuery(sql, req.session.username);
-    
-    sql = `categories (id INT AUTO_INCREMENT PRIMARY KEY, href VARCHAR(100), icons JSON, c_id VARCHAR(30), name VARCHAR(40))`;
-
-    await con.query('CREATE TABLE IF NOT EXISTS categories (id INT AUTO_INCREMENT PRIMARY KEY, href VARCHAR(100), icons JSON, c_id VARCHAR(30), name VARCHAR(40))');
-
-    //sqlQuery(sql);
-    
-    //sql = `select exists (select 1 from ${req.session.username}albums) AS Output`;
-
-    sql = `INSERT INTO users (username, access_token, refresh_token, expires_in)`
+    const username = data2.display_name.replace(/\W/g,'');            
 
     const [result] = await con.query(
       `INSERT INTO users (username, access_token, refresh_token, expires_in)
@@ -225,41 +186,7 @@ router.get('/', async (req, res) => {
           maxAge: 3600000
         })
         .redirect(`${process.env.FRONTEND_URL}/app`);
-    }
-
-    //con.query(sql, async (err, result) => {
-    //  if (err) throw err;
-//
-    //  const empty = result[0].Output
-    //  //If table already has data read relevent data and send to front end
-    //  if (!empty) {
-    //    res.redirect(`${process.env.FRONTEND_URL}/loading`);      
-//
-    //    sql = `INSERT INTO users (username) values ("${req.session.username}")`;
-//
-    //    con.query(sql, (err) => {
-    //      if (err) throw err;              
-    //    });
-//
-    //    const fetchLibrary = async () => {
-    //      //Fetch user's saved playlists
-    //      await fetchPlaylists(req.session.username, headers);                                      
-//
-    //      //fetch user's saved albums
-    //      await fetchAlbums(req.session.username, headers);
-//
-    //      //Fetch user's liked songs
-    //      await fetchLikedSongs(req.session.username, headers);
-    //    };
-//
-    //    await fetchLibrary().then(() => {                            
-    //      myEmitter.emit('loaded');
-    //    });                        
-    //  }
-    //  else {         
-    //    res.redirect(`${process.env.FRONTEND_URL}/app`);                                               
-    //  }
-    //})    
+    }    
   } catch (e) {
     console.error(e);
   }
