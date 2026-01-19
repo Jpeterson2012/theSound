@@ -15,7 +15,6 @@ const app = express();
 
 const path = require('path');
 const cookieParser = require('cookie-parser');
-//const session = require('express-session')
 const logger = require('morgan');
 
 //app.set('trust proxy', 1);
@@ -44,7 +43,6 @@ const searchRouter = require('./routes/search')
 const categoriesRouter = require('./routes/categories')
 const cplaylistsRouter = require('./routes/cplaylists')
 const shuffleRouter = require('./routes/shuffle')
-const localRouter = require('./routes/local')
 const updateRouter = require('./routes/update')
 const homepage2Router = require('./routes/homepage2')
 const playerRouter = require('./routes/player')
@@ -75,15 +73,9 @@ app.use('/auth/search', searchRouter);
 app.use('/auth/categories', categoriesRouter)
 app.use('/auth/cplaylists', cplaylistsRouter);
 app.use('/auth/shuffle', shuffleRouter);
-app.use('/auth/local', localRouter);
 app.use('/auth/update', updateRouter)
 app.use('/auth/homepage2', homepage2Router);
 app.use('/auth/player', playerRouter);
-// const AuthRoutes = require('./routes/AuthRoutes');
-// app.use('/api', cors(), AuthRoutes);
-// app.listen(PORT, () => {
-//   console.log('Server started on port ${PORT}');
-// });
 
 //app.listen(PORT, "127.0.0.1", () => {
 //  console.log(`server running at http://127.0.0.1:${PORT}`);

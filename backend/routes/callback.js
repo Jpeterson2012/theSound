@@ -143,13 +143,14 @@ router.get('/', async (req, res) => {
     const username = data2.display_name.replace(/\W/g,'');            
 
     const [result] = await con.query(
-      `INSERT INTO users (username, access_token, refresh_token, expires_in)
-      VALUES (?, ?, ?, ?)
+      `INSERT INTO users (spotify_id, username, access_token, refresh_token, expires_in)
+      VALUES (?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE
+      username = VALUES(username),
       access_token = VALUES(access_token),
       refresh_token = VALUES(refresh_token),
       expires_in = VALUES(expires_in)`,
-      [username, data.access_token, data.refresh_token, data.expires_in]
+      [data2.id, username, data.access_token, data.refresh_token, data.expires_in]
     );    
 
     const token = generateToken({id: result.insertId, name: username});    

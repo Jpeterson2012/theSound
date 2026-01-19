@@ -24,11 +24,19 @@ export default function Login() {
         <h1 style={{fontSize: '3.2em', lineHeight: '1.1'}} className="intro">TheSound<sup>TM</sup></h1>
       </div>
 
-      <button style={{color: 'black', background: '#7a19e9', borderRadius: '10px', fontWeight: 'bolder'}} className="home"onClick={() => {
-        location.href = URL + '/login';
+      <button 
+        style={{color: 'black', background: '#7a19e9', borderRadius: '10px', fontWeight: 'bolder'}} 
+        className="home"
+        onClick={(e) => {
+          location.href = URL + '/login';
+          console.log(e.currentTarget.disabled)
+          e.currentTarget.disabled = true;
+          console.log(e.currentTarget.disabled)
 
-        //sessionStorage.setItem("token", "something")
-      }}>Login
+          //sessionStorage.setItem("token", "something")
+        }}
+      >
+        Login
       </button>      
     </>
   );

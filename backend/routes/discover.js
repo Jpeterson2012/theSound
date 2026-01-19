@@ -1,5 +1,5 @@
 const express = require('express');
-const con = require('../sql');
+const con = require('../database/dbpool.js');
 const router = express.Router();
 
 router.get('/', async (req, res) => {  
