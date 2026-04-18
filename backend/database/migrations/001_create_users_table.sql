@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) UNIQUE, 
     access_token VARCHAR(500),
     refresh_token VARCHAR(500),
-    expires_in INT
+    expires_at DATETIME
 );

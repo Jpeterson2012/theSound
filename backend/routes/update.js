@@ -1,17 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const con = require('../database/dbpool.js');
-const {verifyToken} = require('../jwt.js');
 
 router.post('/album', async (req, res) => {
-  const {id} = verifyToken(req.cookies.jwt);
-
   try{
     const sql = `INSERT INTO user_albums (user_id, album_type, total_tracks, album_id, images, 
       name, release_date, uri, artists, tracks, copyrights, label_name, date_added) VALUES ?`;
     
     values = [[
-      id, req.body.album_type, req.body.total_tracks, req.body.album_id, JSON.stringify(req.body.images),
+      req.user.id, req.body.album_type, req.body.total_tracks, req.body.album_id, JSON.stringify(req.body.images),
       req.body.name, req.body.release_date, req.body.uri, JSON.stringify(req.body.artists),
       JSON.stringify(req.body.tracks), JSON.stringify(req.body.copyrights), req.body.label_name, new Date(req.body.date_added)
     ]];
@@ -28,10 +25,8 @@ router.post('/album', async (req, res) => {
 });
 
 router.delete('/album', async (req, res) => {
-  const {id} = verifyToken(req.cookies.jwt);  
-
   try{
-    const sql = `DELETE FROM user_albums WHERE album_id = "${req.body.aID}" AND user_id = ${id}`;
+    const sql = `DELETE FROM user_albums WHERE album_id = "${req.body.aID}" AND user_id = ${req.user.id}`;
 
     await con.query(sql);
 
@@ -45,13 +40,11 @@ router.delete('/album', async (req, res) => {
 });
 
 router.post('/liked', async (req, res) => {
-  const {id} = verifyToken(req.cookies.jwt);
-
   try{
     const sql = `INSERT INTO user_liked (user_id, album_id, images, artists, duration, track_id, name, date_added) VALUES ?`;
 
     const values = [[
-      id, req.body.album_id, JSON.stringify(req.body.images), JSON.stringify(req.body.artists),
+      req.user.id, req.body.album_id, JSON.stringify(req.body.images), JSON.stringify(req.body.artists),
       req.body.duration_ms, req.body.uri, req.body.name, new Date(req.body.date_added),
     ]];
 
@@ -67,10 +60,8 @@ router.post('/liked', async (req, res) => {
 });
 
 router.delete('/liked', async (req, res) => {
-  const {id} = verifyToken(req.cookies.jwt);
-
   try{
-    const sql = `DELETE FROM user_liked WHERE name = "${req.body.name}" AND user_id = ${id}`;
+    const sql = `DELETE FROM user_liked WHERE name = "${req.body.name}" AND user_id = ${req.user.id}`;
 
     await con.query(sql);
 
@@ -83,15 +74,13 @@ router.delete('/liked', async (req, res) => {
 });
 
 router.post('/playlist/bulk', async (req, res) => {  
-  const {id} = verifyToken(req.cookies.jwt);
-
   const conn = await con.getConnection();
 
   try {
     await conn.beginTransaction();
 
     for (const update of req.body.pUpdates.updates) {
-      let sql = `SELECT tracks FROM user_playlists WHERE playlist_id = '${update.pID}' AND user_id = ${id}`;
+      let sql = `SELECT tracks FROM user_playlists WHERE playlist_id = '${update.pID}' AND user_id = ${req.user.id}`;
 
       const [result] = await conn.query(sql);
 
@@ -108,7 +97,7 @@ router.post('/playlist/bulk', async (req, res) => {
 
         await conn.query(
           sql,
-          [JSON.stringify(temp), update.pID, id]
+          [JSON.stringify(temp), update.pID, req.user.id]
         );
       } else {
         temp.items = temp.items.filter(a => a.uri !== req.body.pUpdates.trackUri);
@@ -117,7 +106,7 @@ router.post('/playlist/bulk', async (req, res) => {
 
         await conn.query(
           sql,
-          [JSON.stringify(temp), update.pID, id]
+          [JSON.stringify(temp), update.pID, req.user.id]
         );
       }
     };
@@ -137,10 +126,8 @@ router.post('/playlist/bulk', async (req, res) => {
 });
 
 router.post('/playlist/:id', async (req, res) => {
-  const {id} = verifyToken(req.cookies.jwt);
-
   try{
-    let sql = `SELECT tracks FROM user_playlists WHERE playlist_id = '${req.params.id}' AND user_id = ${id}`;
+    let sql = `SELECT tracks FROM user_playlists WHERE playlist_id = '${req.params.id}' AND user_id = ${req.user.id}`;
 
     const [result] = await con.query(sql);
 
@@ -156,7 +143,7 @@ router.post('/playlist/:id', async (req, res) => {
 
     await con.query(
       sql,
-      [JSON.stringify(temp), req.params.id, id]
+      [JSON.stringify(temp), req.params.id, req.user.id]
     );
 
     console.log("Track added!");
@@ -170,10 +157,8 @@ router.post('/playlist/:id', async (req, res) => {
 });
 
 router.delete('/playlist/:id', async (req, res) => {
-  const {id} = verifyToken(req.cookies.jwt);
-
   try{
-    let sql = `SELECT tracks FROM user_playlists WHERE playlist_id = '${req.params.id}' AND user_id = ${id}`;
+    let sql = `SELECT tracks FROM user_playlists WHERE playlist_id = '${req.params.id}' AND user_id = ${req.user.id}`;
 
     const [result] = await con.query(sql);
 
@@ -185,7 +170,7 @@ router.delete('/playlist/:id', async (req, res) => {
 
     await con.query(
       sql,
-      [JSON.stringify(temp), req.params.id, id]
+      [JSON.stringify(temp), req.params.id, req.user.id]
     );
 
     console.log("Track removed!");
@@ -199,10 +184,8 @@ router.delete('/playlist/:id', async (req, res) => {
 });
 
 router.delete('/playlist', async (req, res) => {
-  const {id} = verifyToken(req.cookies.jwt);
-
   try{
-    const sql = `DELETE FROM user_playlists WHERE playlist_id = "${req.body.pID}" AND user_id = ${id} AND not name="temp_playlist"`;
+    const sql = `DELETE FROM user_playlists WHERE playlist_id = "${req.body.pID}" AND user_id = ${req.user.id} AND not name="temp_playlist"`;
 
     await con.query(sql);
 

@@ -24,11 +24,11 @@ export default function WebPlayback() {
   const [isLoading2, setIsLoading2] = useState(true);
   const navigate = useNavigate();        
       
-  useAuth();
+  //useAuth();
 
   const player = usePlayer();    
 
-  useEffect(() => {            
+  useEffect(() => {                
     if (!player.player) return;
        
     //localStorage.clear()        

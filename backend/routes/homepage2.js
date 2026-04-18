@@ -1,15 +1,12 @@
 const con = require('../database/dbpool.js');
 const express = require('express');
 const router = express.Router();
-const {verifyToken} = require('../jwt.js');
 
 router.get('/albums', async (req, res) => {   
-    const {id} = verifyToken(req.cookies.jwt);
-
     async function getAlbums() {                
         //sql = `SELECT album_type, total_tracks, album_id, images, name, release_date, uri, artists, tracks, copyrights, label_name, date_added from ${req.session.username}albums`;
         sql = `SELECT album_type, total_tracks, album_id, images, name, release_date, uri, artists, 
-        tracks, copyrights, label_name, date_added from user_albums WHERE user_id = ${id}`;
+        tracks, copyrights, label_name, date_added from user_albums WHERE user_id = ${req.user.id}`;
 
         const [result] = await con.query(sql);
 
@@ -65,11 +62,9 @@ router.get('/albums', async (req, res) => {
 });
 
 router.get('/playlists', async (req, res) => {
-    const {id} = verifyToken(req.cookies.jwt);
-
     async function getPlaylists() {        
         //const sql = `SELECT playlist_id, images, name, public, uri, tracks from ${req.session.username}playlists where not name="temp_playlist"`;
-        const sql = `SELECT playlist_id, images, name, public, uri, tracks from user_playlists where user_id = ${id} and not name="temp_playlist"`;
+        const sql = `SELECT playlist_id, images, name, public, uri, tracks from user_playlists where user_id = ${req.user.id} and not name="temp_playlist"`;
 
         const [result] = await con.query(sql);
 
@@ -138,11 +133,9 @@ router.get('/playlists', async (req, res) => {
 });
 
 router.get('/playlists/:id', async (req, res) => {
-    const {id} = verifyToken(req.cookies.jwt);
-
     async function getPlaylist() {        
         //const sql = `SELECT playlist_id, images, name, public, uri, tracks from ${req.session.username}playlists WHERE playlist_id = '${req.params.id}'`;
-        const sql = `SELECT playlist_id, images, name, public, uri, tracks from user_playlists WHERE user_id = ${id} AND playlist_id = '${req.params.id}'`;
+        const sql = `SELECT playlist_id, images, name, public, uri, tracks from user_playlists WHERE user_id = ${req.user.id} AND playlist_id = '${req.params.id}'`;
 
         const [result] = await con.query(sql);
 
@@ -199,11 +192,9 @@ router.get('/playlists/:id', async (req, res) => {
 });
 
 router.get('/liked', async (req, res) => {
-    const {id} = verifyToken(req.cookies.jwt);
-
     async function getLiked() {        
         //const sql = `select album_id, images, duration, track_id, name, artists, date_added from ${req.session.username}liked`;
-        const sql = `select album_id, images, duration, track_id, name, artists, date_added from user_liked WHERE user_id = ${id}`;
+        const sql = `select album_id, images, duration, track_id, name, artists, date_added from user_liked WHERE user_id = ${req.user.id}`;
 
         const [result] = await con.query(sql);
 
@@ -260,7 +251,7 @@ router.get('/liked', async (req, res) => {
 });
 
 router.get('/podcasts', async (req,res) => {    
-    const token = await con.getAccessToken(req.cookies.jwt);
+    const token = await con.getAccessToken(req.user.id);
 
     const url = 'https://api.spotify.com/v1/me/shows';
 
@@ -279,7 +270,7 @@ router.get('/podcasts', async (req,res) => {
 });
 
 router.get('/audiobooks', async (req,res) => {
-    const token = await con.getAccessToken(req.cookies.jwt);
+    const token = await con.getAccessToken(req.user.id);
 
     const url = 'https://api.spotify.com/v1/me/audiobooks';
 

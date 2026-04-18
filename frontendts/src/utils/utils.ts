@@ -1,4 +1,4 @@
-import { resetInactivityTimer } from "./authTimer.ts";
+import { resetInactivityTimer } from "./authTimerV2.ts";
 import { store } from "../App/store.ts";
 
 export async function spotifyRequest(path: string): Promise<Response>;
@@ -17,15 +17,12 @@ export async function spotifyRequest(path: string, method?: string, options?: ob
 
     const urlTest = /^https?:\/\//.test(path);
 
-    const url = urlTest ? path : `${BASE_URL}${path}`;
-
-    const token = store.getState().defaultState.authToken;    
+    const url = urlTest ? path : `${BASE_URL}${path}`;        
 
     return await fetch(url, {
         method: method ?? 'GET',
         headers: {
-            "Content-Type":"application/json",
-            ...(urlTest && {Authorization: 'Bearer ' + token}),
+            "Content-Type":"application/json",            
         },
         ...(!urlTest && {credentials: "include"}),
         ...options,                

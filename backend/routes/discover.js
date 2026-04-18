@@ -3,7 +3,7 @@ const con = require('../database/dbpool.js');
 const router = express.Router();
 
 router.get('/', async (req, res) => {  
-  const token = await con.getAccessToken(req.cookies.jwt);
+  const token = await con.getAccessToken(req.user.id);
 
   console.log(req.query.offset);
 

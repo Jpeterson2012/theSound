@@ -11,15 +11,11 @@ export default function PTrack ( {uri, name, number, duration, liked, artist, t_
                 onClick={() => {                                                
                     sessionStorage.setItem("name", sessionStorage.getItem("playlist_name")!);
                     
-                    const url = `https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem([null, "null"].includes(sessionStorage.getItem("currentContext")) ? "device_id" : "currentContext")}`;
-                    
-                    try{
-                        spotifyRequest(url, 'PUT', {
-                            body: JSON.stringify({uris: liked, offset: {position: number}})
-                        });
-                    } catch(e) {
-                        console.log(e);
-                    }
+                    const deviceId = sessionStorage.getItem([null, "null"].includes(sessionStorage.getItem("currentContext")) ? "device_id" : "currentContext");
+
+                    spotifyRequest(`/player/playback/${deviceId}`, 'POST', {
+                        body: JSON.stringify({uris: liked, offset: {position: number}})
+                    });
                     
                 }}
             >

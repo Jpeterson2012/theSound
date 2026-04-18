@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const con = require('../database/dbpool.js');
-const {verifyToken} = require('../jwt.js');
 
-router.get('/:id', async (req, res) => {
-  const {id} = verifyToken(req.cookies.jwt);
-  const token = await con.getAccessToken(req.cookies.jwt);
+router.get('/:id', async (req, res) => {  
+  const token = await con.getAccessToken(req.user.id);
 
   const headers = {
     Authorization: 'Bearer ' + token
@@ -58,7 +56,7 @@ router.get('/:id', async (req, res) => {
   res.end();
 
   try{            
-    let sql = `select playlist_id from user_playlists where name = "temp_playlist" AND user_id = ${id}`;
+    let sql = `select playlist_id from user_playlists where name = "temp_playlist" AND user_id = ${req.user.id}`;
 
     const [result] = await con.query(sql);    
 
@@ -66,7 +64,7 @@ router.get('/:id', async (req, res) => {
       sql = `INSERT INTO user_playlists (user_id, playlist_id, images, name, public, uri, tracks) VALUES ?`;
 
       const values = [[
-        id, req.params.id, null, 'temp_playlist', true, `spotify:playlist:${req.params.id}`, JSON.stringify(sqlObj)
+        req.user.id, req.params.id, null, 'temp_playlist', true, `spotify:playlist:${req.params.id}`, JSON.stringify(sqlObj)
       ]];
 
       await con.query(sql, [values]);
@@ -80,7 +78,7 @@ router.get('/:id', async (req, res) => {
 
         await con.query(
           sql, 
-          [req.params.id, `spotify:playlist:${req.params.id}`, JSON.stringify(sqlObj), id]);
+          [req.params.id, `spotify:playlist:${req.params.id}`, JSON.stringify(sqlObj), req.user.id]);
 
         console.log('Temp Playlist Updated');
       }   

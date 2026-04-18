@@ -15,7 +15,7 @@ export default function useAuth(){
             
             store.dispatch(setRefreshToken(data.refresh_token));
 
-            scheduleRefresh(data.expires_in, data.refresh_token);
+            //scheduleRefresh(data.expires_in, data.refresh_token);
         }
         catch(e){
             console.error(`Error requesting access token: ${e}`);

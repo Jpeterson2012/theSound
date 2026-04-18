@@ -1,9 +1,10 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { throttle } from './useThrottle';
-///import useAuth from './useAuth';
 import { useAppSelector, useAppDispatch } from '../App/hooks.ts';
 import { setPlaying } from '../App/defaultSlice.ts';
-import { setLogoutCallback, resetInactivityTimer } from '../utils/authTimer.ts';
+import { useNavigate } from 'react-router-dom';
+import { spotifyRequest } from '../utils/utils';
+import { setLogoutCallback, resetInactivityTimer, initInactivityTimer, stopInactivityTimer } from '../utils/authTimerV2.ts';
 
 
 const track: any = {
@@ -61,29 +62,43 @@ function stateUpdates(state: any, setPlayerState: any){
     }
 }
 
+let cachedToken: string | null = null;
+let cachedAt = 0;     
+const TTL = 4 * 60 * 1000;
+
 export const usePlayer = () => {
     const [player, setPlayer] = useState<any>(null); 
     const [playerState, setPlayerState] = useState(intialPlayerState)                   
-    const [is_active, setActive] = useState(false);                    
-
-    //const access_token = useAuth();    
-    const access_token = useAppSelector(state => state.defaultState.authToken); 
+    const [is_active, setActive] = useState(false); 
     const playing = useAppSelector(state => state.defaultState.playing);
     const dispatch = useAppDispatch();      
+    const navigate = useNavigate();
 
-    const resetPlayer = async () => {    
+    const resetPlayer = async () => {   
+        sessionStorage.clear();
+
+        stopInactivityTimer();
+        
         await player?.disconnect();
 
         setPlayer(null);
 
         setPlayerState(intialPlayerState);
 
-        setActive(false);  
+        setActive(false);          
     };
 
+    const playingRef = useRef(playing);
+
     useEffect(() => {
-        if(!access_token) return;
+        playingRef.current = playing;
+    }, [playing]);
+
+    useEffect(() => {
+        //if(!access_token) return;
         resetPlayer();
+
+        initInactivityTimer();
         
         const debUpdate = throttle(stateUpdates, 500);
 
@@ -92,10 +107,32 @@ export const usePlayer = () => {
         script.async = true;
         document.body.appendChild(script);      
 
-        window.onSpotifyWebPlaybackSDKReady = () => {                                      
+        window.onSpotifyWebPlaybackSDKReady = () => {         
             const player = new window.Spotify.Player({ 
                 name: 'TheSound',
-                getOAuthToken: (cb: any) => { cb(access_token); },
+                //getOAuthToken: (cb: any) => { cb(access_token); },
+                getOAuthToken: async (cb: any) => {
+                    const now = Date.now();
+
+                    if (cachedToken && now - cachedAt < TTL) {
+                        return cb(cachedToken);
+                    }
+
+                    try {
+                        const response = await spotifyRequest("/token");
+
+                        if (!response.ok) throw new Error("Token request failed");
+
+                        const data = await response.json();
+
+                        cachedToken = data.access_token;
+                        cachedAt = now;
+
+                        cb(cachedToken);
+                    } catch (err) {
+                        console.error("Spotify token fetch failed", err);
+                    }
+                },
                 volume: 1,                              
             });
             setPlayer(player);                                
@@ -135,14 +172,16 @@ export const usePlayer = () => {
             player.connect();                                    
         };  
 
-        setLogoutCallback(() => {
-            resetPlayer();
+        setLogoutCallback(() => {            
+            if (!playingRef.current) {
+                resetPlayer();
 
-            window.location.href = "/";
-        });
-        
-        resetInactivityTimer();
-    }, [access_token]);
+                navigate("/", {replace: true});
+            } else {
+                resetInactivityTimer();
+            }            
+        });                
+    }, []);    
     
     return {player, playerState, setPlayerState, is_active, resetPlayer};
 }

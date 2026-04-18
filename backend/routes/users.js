@@ -121,8 +121,8 @@ async function makePlaylists() {
 };
 
 /* GET users listing. */
-router.get('/', async (req, res) => {  
-  const {id, name} = verifyToken(req.cookies.jwt);
+router.get('/', async (req, res) => {    
+  const {id, name} = req.user;
   
   //let temp = {items: req.session.username};
   let temp = {id, name};
@@ -134,10 +134,6 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/:playlist', async (req,res) => {    
-  const {id} = verifyToken(req.cookies.jwt);
-
-  console.log(id);
-
   let name = req.body.name;
 
   name = name.replace(/\W/g,' ');
@@ -146,7 +142,7 @@ router.post('/:playlist', async (req,res) => {
 
   try{
     if(req.body.public === undefined) {
-      let sql = `select playlist_id, name from user_playlists where playlist_id = "${req.body.id}" and name = "temp_playlist" and user_id = ${id}`;
+      let sql = `select playlist_id, name from user_playlists where playlist_id = "${req.body.id}" and name = "temp_playlist" and user_id = ${req.user.id}`;
 
       const [result] = await con.query(sql);
 
@@ -157,7 +153,7 @@ router.post('/:playlist', async (req,res) => {
 
         await con.query(
           sql,
-          [JSON.stringify(req.body.images), name, id]
+          [JSON.stringify(req.body.images), name, req.user.id]
         );
 
         console.log('New Playlist Added');
@@ -167,7 +163,7 @@ router.post('/:playlist', async (req,res) => {
 
         await con.query(
           sql,
-          [id, req.body.id, req.body.name, req.body.public, `spotify:playlist:${req.body.id}`, id]
+          [req.user.id, req.body.id, req.body.name, req.body.public, `spotify:playlist:${req.body.id}`, id]
         );
 
         console.log('New Playlist Added')

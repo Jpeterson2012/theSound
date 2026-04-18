@@ -3,7 +3,7 @@ const router = express.Router();
 const con = require('../database/dbpool.js');
 
 router.get('/:id', async (req, res) => {
-  const token = await con.getAccessToken(req.cookies.jwt);
+  const token = await con.getAccessToken(req.user.id);
 
   const headers = {
     Authorization: 'Bearer ' + token,        
@@ -73,7 +73,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/albums/:id', async (req, res) => {
-  const token = await con.getAccessToken(req.cookies.jwt);
+  const token = await con.getAccessToken(req.user.id);
 
   let arr = req.params.id;
 

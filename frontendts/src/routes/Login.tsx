@@ -4,11 +4,11 @@ import logo from '../images/logo.png'
 import Loading2 from '../components/Loading2/Loading2.tsx'
 
 export default function Login() {       
-  useEffect(() => {
-    setTimeout(() => {
-      sessionStorage.clear();
-    }, 500);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     sessionStorage.clear();
+  //   }, 1500);
+  // }, []);
 
   const URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
       ? import.meta.env.VITE_URL 
@@ -28,10 +28,8 @@ export default function Login() {
         style={{color: 'black', background: '#7a19e9', borderRadius: '10px', fontWeight: 'bolder'}} 
         className="home"
         onClick={(e) => {
-          location.href = URL + '/login';
-          console.log(e.currentTarget.disabled)
-          e.currentTarget.disabled = true;
-          console.log(e.currentTarget.disabled)
+          window.location.replace(URL + '/login');          
+          e.currentTarget.disabled = true;          
 
           //sessionStorage.setItem("token", "something")
         }}

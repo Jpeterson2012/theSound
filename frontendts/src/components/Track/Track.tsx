@@ -27,11 +27,11 @@ export default function Track ( {uri, name, number, duration, album_name, artist
                     album_name && sessionStorage.setItem("albumname", album_name);
                     
                     // sessionStorage.setItem("name", sessionStorage.getItem("albumname"))
-                    const url = `https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem([null, "null"].includes(sessionStorage.getItem("currentContext")) ? "device_id" : "currentContext")}`;
-                    
-                    spotifyRequest(url, 'PUT', {
-                        body: JSON.stringify({context_uri: uri, offset: {position: number - 1}}),
-                    });                
+                    const deviceId = sessionStorage.getItem([null, "null"].includes(sessionStorage.getItem("currentContext")) ? "device_id" : "currentContext");
+
+                    spotifyRequest(`/player/playback/${deviceId}`, 'POST', {
+                        body: JSON.stringify({context_uri: uri, offset: {position: number - 1}})
+                    });
                 }}
             >                            
                 <div className="innerMain">

@@ -5,9 +5,7 @@ const con = require('../database/dbpool.js');
 
 router.get('/', async (req, res) => {
     try{        
-        const token = await con.getLogin(req.cookies.jwt);
-
-        res.send(token);
+        res.send({access_token: req.token});
     } catch(e) {
         console.error(e);
     }

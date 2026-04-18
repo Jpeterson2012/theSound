@@ -116,9 +116,11 @@ function playlistSort(setPSorted: any){
 function Podcasts(podcasts:any){
   const listItems = podcasts?.items.map((a:any, i:any) =>
     <a key={i} onClick={() => {
-      const url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`;
-      
-      spotifyRequest(url, 'PUT', {body: JSON.stringify({context_uri: a.show.uri})});
+      const deviceId = sessionStorage.getItem("device_id");
+
+      spotifyRequest(`/player/playback/${deviceId}`, 'POST', {
+        body: JSON.stringify({context_uri: a.show.uri})
+      });
     }}>
       <div className="audioPodcast">
         <img className="fade-in-image2" src={a.show.images.length === 1 
@@ -139,9 +141,11 @@ function Podcasts(podcasts:any){
 function Audiobooks(audiobooks:any){
   const listItems = audiobooks?.items.map((a:any,i:any) =>
     <a key={i} onClick={() => {              
-      const  url =`https://api.spotify.com/v1/me/player/play?device_id=${sessionStorage.getItem("device_id")}`
-      
-      spotifyRequest(url, 'PUT', {body: JSON.stringify({context_uri: a.uri})});
+      const deviceId = sessionStorage.getItem("device_id");
+
+      spotifyRequest(`/player/playback/${deviceId}`, 'POST', {
+        body: JSON.stringify({context_uri: a.uri})
+      });
     }}>
       <div className="audioPodcast">
         <img className="fade-in-image2" src={a.images.length === 1 
