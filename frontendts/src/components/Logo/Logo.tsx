@@ -287,7 +287,7 @@ export default function Logo () {
             className={styles.userName}
             style={{
               cursor: 'pointer',
-              ...(window.innerWidth < 500 && {backgroundColor: 'rgb(90, 210, 216)', width: '32px', height: '32px', borderRadius: '50%'}),
+              ...(window.innerWidth < 500 && {backgroundColor: 'rgb(90, 210, 216)', fontSize: '13px', borderRadius: '50%'}),
             }} 
             onClick={() => {
               resetPlayer();
@@ -295,10 +295,10 @@ export default function Logo () {
               navigate('/', {replace: true});              
             }}
           >
-            {isSuccess ? (window.innerWidth > 500 ? user!.name : user!.name[0]) : ''}
+            {isSuccess ? (window.innerWidth > 500 ? user!.name : user!.name) : ''}
           </button>         
 
-          <div></div> 
+          {window.innerWidth > 500 && <div></div>} 
 
           <h2 
             className={styles.navIcon1} 

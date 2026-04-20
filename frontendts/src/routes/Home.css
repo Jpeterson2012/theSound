@@ -73,11 +73,6 @@
   .removeContainer:hover .removeAlbum {display: block;}
 }
 
-.homeContainer{
-  /* margin-top: 40px; */
-  /* margin-bottom: 25vw; */
-}
-
 .addPlaylist{
   margin: 0px;
   cursor: pointer; 
@@ -144,10 +139,7 @@ form{
 }
 
 
-.homeContainer{
-  position: absolute;
-  top: 8vw; 
-  right: 35vw;
+.homeContainer{  
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -238,15 +230,12 @@ form{
     height: 30px;
     width: 30px;
   }
-  .homeContainer{
-    /* max-width: 350px; */
-    margin-top: 60px;
-    right: 5vw;        
-    flex-direction: column;
+  .homeContainer{   
+                   
   }
   #filterTrack{
-    /* margin-bottom: 10px; */
-    /* margin-right: 100px;     */
+    justify-self: center;
+    width: 70vw !important;
   }
   .buttonContainer{
     
@@ -305,8 +294,8 @@ form{
   }
   #modal4{
     max-height: 90vh !important;
-      max-width: 90vw !important;
-      min-width: 90vw !important;
+    max-width: 90vw !important;
+    min-width: 90vw !important;
   }
   .theme{
     height: 30px;

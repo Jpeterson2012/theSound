@@ -122,7 +122,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
                     </span>
                 </a>
 
-                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>                    
+                <div className="songDescription">                    
                     <div style={{fontWeight: 'bold',margin: '0px', padding: '0px', color: 'rgb(90, 210, 216)'}}>
                         {playerState.current_track?.name}
                     </div>                    
@@ -398,7 +398,7 @@ export default function BottomBar({currentDev, setCurrentDev}:any){
 
             <SeekBar duration={playerState.duration} player={player} paused={playerState.is_paused} />
 
-            <div style={{justifySelf: 'flex-end'}}>
+            <div className='deviceImg' style={{justifySelf: 'flex-end'}}>
                 <img 
                     style={{height: '42px', cursor: 'pointer'}} 
                     src={device} 

@@ -221,6 +221,14 @@ input[type=range]{
     /* margin-bottom: 150px; */
   }
 
+.songDescription {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
   @media(min-height: 1000px){
     .scrollbar1, .scrollbar2{
@@ -249,13 +257,6 @@ input[type=range]{
     cursor: pointer;
 
   }
-  .deviceImg{
-    position: absolute;
-    right: -42vw;
-    bottom: 0;
-    height: 42px;
-    cursor: pointer;
-  }
   .now-playing__side2{
     display: none;
     width: 100%;
@@ -277,7 +278,7 @@ input[type=range]{
   
   @media only screen and (max-width: 768px),
   (max-height: 400px){
-    .now-playing__side2{
+    .songDescription{
       display: flex;
       flex-direction: column;
       align-items: start;
