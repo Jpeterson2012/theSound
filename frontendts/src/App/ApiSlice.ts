@@ -170,7 +170,7 @@ export const apiSlice = createApi({
                 }
             }
         }),
-        bulkEditPTracks: builder.mutation<Playlists, {pUpdates: any}>({
+        bulkEditPTracks: builder.mutation<void, {pUpdates: any}>({
             query: ({pUpdates}) => ({
                 url: '/update/playlist/bulk',
                 method: 'POST',
@@ -195,12 +195,13 @@ export const apiSlice = createApi({
                 );
                 try {
                     await lifecycleApi.queryFulfilled;
-                } catch {
+                } catch(e) {
+                    console.log("RTK ERROR:", e);
                     getPBulkPatchResult.undo();
                 }
             }
         }),
-        deletePlaylist: builder.mutation<Playlists,{pID: any}>({
+        deletePlaylist: builder.mutation<void,{pID: any}>({
             query: ({pID}) => ({
                 url: '/update/playlist',
                 method: 'DELETE',

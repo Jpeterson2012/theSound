@@ -1,6 +1,6 @@
 const con = require('./database/dbpool.js');
 
-const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+const asyncHandler = fn => (req, res, next) => fn(req, res, next).catch(next);
 
 const logError = async (err, req) => {
   try {
@@ -21,7 +21,40 @@ const logError = async (err, req) => {
   }
 };
 
+async function spotifyRequest(path, token, options = {}) {    
+  const BASE_URL = "https://api.spotify.com/v1/";
+
+  const url = `${BASE_URL}${path}`;        
+
+  const response = await fetch(url, {
+    method: options?.method ?? 'GET',
+    ...options,
+    headers: {
+      Authorization: 'Bearer ' + token,
+      ...(options?.body != null ? {"Content-Type": "application/json"} : {}),
+      ...(options?.headers || {}),            
+    },                        
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+
+    throw new Error(`Spotify error: ${response.status}: ${text}`);
+  };
+
+  if (response.status === 204) return null;
+
+  const contentType = response.headers.get('content-type');
+
+  if (contentType && contentType.includes('application/json')) {
+    return response.json();
+  }
+
+  return response.text();
+};
+
 module.exports = {
   asyncHandler,
   logError,
+  spotifyRequest,
 };

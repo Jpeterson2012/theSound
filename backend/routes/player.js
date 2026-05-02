@@ -1,253 +1,99 @@
 const express = require('express');
 const router = express.Router();
-const con = require('../database/dbpool.js');
-const { asyncHandler } = require('../utils.js');
+const { asyncHandler, spotifyRequest } = require('../utils.js');
 
-router.get('/devices', async (req,res,next) => {
-    const token = await con.getAccessToken(req.user.id);
+router.get('/devices', asyncHandler(async (req, res) => {
+    const data = await spotifyRequest('me/player/devices', req.token);
 
-    const url = 'https://api.spotify.com/v1/me/player/devices';
+    res.send(data.devices);
+}));
 
-    try {
-        const headers = {
-            Authorization: 'Bearer ' + token
-        };
-    
-        const resp = await fetch(url, {headers});
+router.get('/', asyncHandler(async (req, res) => {
+    const data = await spotifyRequest('me/player', req.token);
 
-        const data = await resp.json();
+    res.send({device: data.device, progress_ms: data.progress_ms, is_playing: data.is_playing, item: data.item});
+}));
 
-        res.send(data.devices);
-    }
-    catch (e) {
-        console.log(e);
-
-        next(e);
-    }
-});
-
-router.get('/', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    url = 'https://api.spotify.com/v1/me/player'
-    try{
-        const headers = {
-            Authorization: 'Bearer ' + token
-          }
-    
-        var resp = await fetch(url, {headers})   
-        if (resp.status === 204 || resp.status === 202) {
-            //console.log('No active playback');
-            return;
-        }     
-        var data = await resp.json()
-        //console.log('Active playback')
-        res.send({device: data.device, progress_ms: data.progress_ms, is_playing: data.is_playing, item: data.item})
-    
-        
-    }
-    catch (e){
-        console.log(e);
-    }
-});
-
-router.post('/:id', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    url = 'https://api.spotify.com/v1/me/player'
-    try{
-        const headers = {
-            Authorization: 'Bearer ' + token            
-          }
-    
-        await fetch(url, {
-            method: 'PUT',
-            headers: headers,
-            body: `{"device_ids": ["${req.params.id}"]}`
-        }).then(res.send("201"))
-    
-        
-    }
-    catch (e){
-        console.log(e)
-    }
-});
-
-router.post('/pause/:id', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    url = 'https://api.spotify.com/v1/me/player/pause'
-    try{
-        const headers = {
-            Authorization: 'Bearer ' + token            
-          }
-    
-        await fetch(url, {
-            method: 'PUT',
-            headers: headers,
-            body: `{"device_ids": "${req.params.id}"}`            
-        }).then(res.send("201"))
-    
-        
-    }
-    catch (e){
-        console.log(e)
-    }
-});
-
-router.post('/play/:id', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    url = 'https://api.spotify.com/v1/me/player/play'
-    try{
-        const headers = {
-            Authorization: 'Bearer ' + token            
-          }
-    
-        await fetch(url, {
-            method: 'PUT',
-            headers: headers,
-            body: `{"device_ids": "${req.params.id}"}`            
-        }).then(res.send("201"))
-    
-        
-    }
-    catch (e){
-        console.log(e)
-    }
-});
-
-router.post('/previous/:id', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    url = 'https://api.spotify.com/v1/me/player/previous'
-    try{
-        const headers = {
-            Authorization: 'Bearer ' + token            
-          }
-    
-        await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: `{"device_ids": "${req.params.id}"}`            
-        }).then(res.send("201"))
-    
-        
-    }
-    catch (e){
-        console.log(e)
-    }
-});
-
-router.post('/next/:id', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    url = 'https://api.spotify.com/v1/me/player/next'
-    try{
-        const headers = {
-            Authorization: 'Bearer ' + token            
-          }
-    
-        await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: `{"device_ids": "${req.params.id}"}`            
-        }).then(res.send("201"))
-    
-        
-    }
-    catch (e){
-        console.log(e)
-    }
-});
-
-router.get('/currently-playing', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    url = 'https://api.spotify.com/v1/me/player/currently-playing'    
-    try{
-        const headers = {
-            Authorization: 'Bearer ' + token
-          }
-    
-        var resp = await fetch(url, {headers})
-        var data = await resp.json()        
-        res.send(data)
-    }
-    catch (e){
-        console.log(e)
-    }
-
-});
-
-router.post('/volume/:id', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    let arr = req.params.id    
-    arr = arr.split(',')
-    console.log(arr[0])
-    
-    url = `https://api.spotify.com/v1/me/player/volume?volume_percent=${+arr[1]}&device_id=${arr[0]}`    
-    try{        
-        const headers = {
-            Authorization: 'Bearer ' + token
-          }
-    
-          await fetch(url, {
-            method: 'PUT',
-            headers: headers                        
-        }).then(res.send("201"))
-    }
-    catch (e){
-        console.log(e)
-    }
-});
-
-router.post('/seek/:id', async(req,res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    let arr = req.params.id    
-    arr = arr.split(',')    
-    
-    url = `https://api.spotify.com/v1/me/player/seek?position_ms=${+arr[1]}&device_id=${arr[0]}`    
-    try{        
-        const headers = {
-            Authorization: 'Bearer ' + token
-          }
-    
-          await fetch(url, {
-            method: 'PUT',
-            headers: headers                        
-        }).then(res.send("201"))
-    }
-    catch (e){
-        console.log(e)
-    }
-});
-
-router.post('/playback/:id', asyncHandler(async (req,res) => {      
-    //const token = await con.getAccessToken(req.user.id);    
-
-    const url =`https://api.spotify.com/v1/me/player/play?device_id=${req.params.id}`;        
-            
-    const headers = {
-        "Content-Type":"application/json",
-        Authorization: 'Bearer ' + req.token
-    };
-
-    const response = await fetch(url, {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify(req.body)                        
+router.post('/:id', asyncHandler(async (req, res) => {
+    await spotifyRequest('me/player', req.token, {
+        method: 'PUT',        
+        body: `{"device_ids": "${req.params.id}"}`,                        
     });
 
-    const text = await response.text();
+    res.sendStatus(204);
+}));
 
-    if (!response.ok) {
-        throw new Error(`Spotify error: ${response.status}: ${text}`);
-    };
+router.post('/pause/:id', asyncHandler(async (req,res) => {
+    await spotifyRequest('me/player/pause', req.token, {
+        method: 'PUT',        
+        body: `{"device_ids": "${req.params.id}"}`,                        
+    });
 
-    res.send("201");    
+    res.sendStatus(204);
+}));
+
+router.post('/play/:id', asyncHandler(async (req, res) => {
+    await spotifyRequest('me/player/play', req.token, {
+        method: 'PUT',        
+        body: `{"device_ids": "${req.params.id}"}`,                        
+    });
+
+    res.sendStatus(204);
+}));
+
+router.post('/previous/:id', asyncHandler(async (req, res) => {
+    await spotifyRequest('me/player/previous', req.token, {
+        method: 'POST',        
+        body: `{"device_ids": "${req.params.id}"}`,                        
+    });
+
+    res.sendStatus(204);
+}));
+
+router.post('/next/:id', asyncHandler(async (req, res) => {
+    await spotifyRequest('me/player/next', req.token, {
+        method: 'POST',        
+        body: `{"device_ids": "${req.params.id}"}`,                        
+    });
+
+    res.sendStatus(204);
+}));
+
+router.get('/currently-playing', asyncHandler(async (req, res) => {
+    const data = await spotifyRequest('/me/player/currently-playing', req.token);
+
+    res.send(data);
+}));
+
+router.post('/volume/:id', asyncHandler(async (req, res) => {
+    const arr = req.params.id.split(',');
+    
+    await spotifyRequest(`me/player/volume?volume_percent=${+arr[1]}&device_id=${arr[0]}`, req.token, {
+        method: 'PUT',        
+        body: JSON.stringify(req.body),                        
+    });
+
+    res.sendStatus(204);
+}));
+
+router.post('/seek/:id', asyncHandler(async (req, res) => {
+    const arr = req.params.id.split(',');            
+    
+    await spotifyRequest(`me/player/seek?position_ms=${+arr[1]}&device_id=${arr[0]}`, req.token, {
+        method: 'PUT',        
+        body: JSON.stringify(req.body),                        
+    });
+
+    res.sendStatus(204);
+}));
+
+router.post('/playback/:id', asyncHandler(async (req, res) => {      
+    await spotifyRequest(`me/player/play?device_id=${req.params.id}`, req.token, {
+        method: 'PUT',        
+        body: JSON.stringify(req.body),                        
+    });
+
+    res.sendStatus(204);    
 }));
 
 module.exports = router;
