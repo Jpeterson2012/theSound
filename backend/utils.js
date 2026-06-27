@@ -1,38 +1,17 @@
-const con = require('./database/dbpool.js');
-
 const asyncHandler = fn => (req, res, next) => fn(req, res, next).catch(next);
-
-const logError = async (err, req) => {
-  try {
-    await con.query(
-      `INSERT INTO errors (status, message, stack, route, method, user_id)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        err.status || err.statusCode || 500,        
-        String(err.message || err || "Unknown error"),
-        err.stack || null,
-        req?.originalUrl || req?.url || null,
-        req?.method || null,
-        req?.user?.id || null,
-      ]
-    );
-  } catch (e) {    
-    console.error("Failed to log error:", e);
-  }
-};
 
 async function spotifyRequest(path, token, options = {}) {    
   const BASE_URL = "https://api.spotify.com/v1/";
 
-  const url = `${BASE_URL}${path}`;        
+  const url = path.startsWith("https://") ? path : `${BASE_URL}${path}`;        
 
   const response = await fetch(url, {
     method: options?.method ?? 'GET',
     ...options,
     headers: {
-      Authorization: 'Bearer ' + token,
+      ...(token ? {Authorization: 'Bearer ' + token} : {}),
       ...(options?.body != null ? {"Content-Type": "application/json"} : {}),
-      ...(options?.headers || {}),            
+      ...(options?.headers ?? {}),            
     },                        
   });
 
@@ -54,7 +33,6 @@ async function spotifyRequest(path, token, options = {}) {
 };
 
 module.exports = {
-  asyncHandler,
-  logError,
+  asyncHandler,    
   spotifyRequest,
 };

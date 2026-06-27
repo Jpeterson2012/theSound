@@ -12,38 +12,44 @@ const con = mysql.createPool({
 });
 
 const refreshToken = async (token, userId) => {
-  const url = 'https://accounts.spotify.com/api/token';
+  try {
+    const url = 'https://accounts.spotify.com/api/token';
 
-  const headers = {
-    'content-type': 'application/x-www-form-urlencoded',
-    'Authorization': 'Basic ' + (new Buffer.from(process.env.CLIENT_ID + ':' + process.env.CLIENT_SECRET).toString('base64')),
-  };
+    const headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + Buffer.from(process.env.CLIENT_ID + ':' + process.env.CLIENT_SECRET).toString('base64'),
+    };
 
-  const body = {
-    grant_type: 'refresh_token',
-    refresh_token: token,
-  };
+    const body = {
+      grant_type: 'refresh_token',
+      refresh_token: token,
+    };
 
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: headers,
-    body: new URLSearchParams(body)                        
-  });
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: new URLSearchParams(body)                        
+    });
 
-  const data = await resp.json();
+    const data = await resp.json();
 
-  if (!data.access_token) {
-    throw new Error("Spotify refresh failed");
-  }
+    if (!data.access_token) {
+      throw new Error("Spotify refresh failed");
+    }
 
-  const expiresAt = new Date(Date.now() + (data.expires_in * 1000 * 0.9));
+    const expiresAt = new Date(Date.now() + (data.expires_in * 1000 * 0.9));
 
-  await con.query(
-    `UPDATE users SET access_token = ?, expires_at = ? WHERE id = ?`,
-    [data.access_token, expiresAt, userId]
-  );
+    await con.query(
+      `UPDATE users SET access_token = ?, expires_at = ? WHERE id = ?`,
+      [data.access_token, expiresAt, userId]
+    );
 
-  return data.access_token;
+    return data.access_token;
+  } catch (e) {
+    db.logError(e);
+
+    throw e;
+  }  
 };
 
 const db = {
@@ -90,6 +96,25 @@ const db = {
     }
 
     return {access_token: row[0]["access_token"], refresh_token: row[0]["refresh_token"], expires_in: row[0]["expires_at"]};
+  },
+
+  logError: async (err, req) => {
+    try {
+      await con.query(
+        `INSERT INTO errors (status, message, stack, route, method, user_id)
+        VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          err.status ?? err.statusCode ?? 500,        
+          String(err.message ?? err ?? "Unknown error"),
+          err.stack ?? null,
+          req?.originalUrl ?? req?.url ?? null,
+          req?.method ?? null,
+          req?.user?.id ?? null,
+        ]
+      );
+    } catch (e) {    
+      console.error("Failed to log error:", e);
+    }
   },
 };
 

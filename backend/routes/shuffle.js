@@ -1,31 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const con = require('../database/dbpool.js');
+const { asyncHandler, spotifyRequest } = require('../utils.js');
 
-router.post('/', async (req, res) => {
-  const token = await con.getAccessToken(req.user.id);
-  
-  const headers = {
-    Authorization: 'Bearer ' + token
-  };
+router.post('/', asyncHandler(async (req, res) => {
+  const func = ["track", "context", "off"].includes(req.body.state) ? "repeat" : "shuffle";
 
-  try{
-    console.log(req.body.state);
+  await spotifyRequest(`me/player/${func}?state=${req.body.state}`, req.token, {
+    method: 'PUT',        
+    body: `{"device_ids": "${req.params.id}"}`,                        
+  });
 
-    const func = ["track", "context", "off"].includes(req.body.state) ? "repeat" : "shuffle";
-
-    const url = `https://api.spotify.com/v1/me/player/${func}?state=${req.body.state}`;
-  
-    await fetch(url, {
-      method: 'PUT',
-      headers: headers,
-    }).then(res.status(200).json({success: true}));
-  }
-  catch(e){
-    console.log(e);
-
-    res.status(500).json({success: false, message: `Setting shuffle/repeat failed: ${e}`});
-  }
-})
+  res.sendStatus(204);  
+}));
 
 module.exports = router;

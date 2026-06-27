@@ -1,45 +1,11 @@
 const express = require('express');
-const con = require('../database/dbpool.js');
 const router = express.Router();
+const { asyncHandler, spotifyRequest } = require('../utils.js');
 
-router.get('/', async (req, res) => {  
-  const token = await con.getAccessToken(req.user.id);
+router.get('/', asyncHandler(async (req, res) => {  
+  const data = await spotifyRequest(`search?q=tag:new&type=album&offset=${req.query.offset}&limit=40`, req.token);
 
-  console.log(req.query.offset);
-
-  const info = [];
-
-  let index = Math.floor(Math.random() * 51)
-  //const url = `https://api.spotify.com/v1/browse/new-releases?offset=${index}&limit=50`;  
-
-  const headers = {
-    Authorization: 'Bearer ' + token
-  };
-
-  try{
-    // for (let i = 0; i < 2; i++) {
-    //   const url = `https://api.spotify.com/v1/search?q=tag:new&type=album&offset=${40 * i}&limit=40`;
-
-    //   const resp = await fetch(url, {headers});
-
-    //   const data = await resp.json();      
-
-    //   info.push(...data.albums.items);
-    // }
-
-    const url = `https://api.spotify.com/v1/search?q=tag:new&type=album&offset=${req.query.offset}&limit=40`;
-
-    const resp = await fetch(url, {headers});
-
-    const data = await resp.json();      
-
-    info.push(...data.albums.items);
-    
-    res.send(info);
-  }
-  catch(e){
-    console.error(e);
-  };
-})
+  res.send(data?.albums?.items ?? []);
+}));
 
 module.exports = router;

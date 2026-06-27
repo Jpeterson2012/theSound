@@ -1,32 +1,28 @@
-//New stuff
-const cors = require('cors');
 require('dotenv').config();
-const PORT = process.env.PORT || 8888;
 
+const cors = require('cors');
 const https = require('https');
 const fs = require('fs');
-const options = {
-  key: fs.readFileSync('/home/jpeterson93/127.0.0.1+1-key.pem'),
-  cert: fs.readFileSync('/home/jpeterson93/127.0.0.1+1.pem')
-};
 const express = require('express');
 const app = express();
-
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const auth = require('./middleware/auth');
+const con = require('./database/dbpool.js');
+const {dbInit} = require('./database/dbinit');
+const {initSocket} = require("./socket");
 
-//app.set('trust proxy', 1);
-
-app.use(cookieParser());
+const PORT = process.env.PORT || 8888;
 
 //DB INIT
-const {dbInit} = require('./database/dbinit');
-(async () => {
-  await dbInit();
+dbInit()
+  .then(() => console.log("Database initialized."))
+  .catch(err => {
+    console.error("DB init failed:", err);
 
-  console.log('Database initialized.');
-})();
+    process.exit(1);
+  });
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -43,16 +39,15 @@ const categoriesRouter = require('./routes/categories');
 const cplaylistsRouter = require('./routes/cplaylists');
 const shuffleRouter = require('./routes/shuffle');
 const updateRouter = require('./routes/update');
-const homepage2Router = require('./routes/homepage2');
+const homepageRouter = require('./routes/homepage');
 const playerRouter = require('./routes/player');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 app.use(cors({origin: process.env.FRONTEND_URL, credentials: true}));
-
-const auth = require('./middleware/auth');
 
 app.use('/', indexRouter);
 app.use('/auth/login', loginRouter);
@@ -69,14 +64,19 @@ app.use('/auth/categories', auth, categoriesRouter)
 app.use('/auth/cplaylists', auth, cplaylistsRouter);
 app.use('/auth/shuffle', auth, shuffleRouter);
 app.use('/auth/update', auth, updateRouter)
-app.use('/auth/homepage2', auth, homepage2Router);
+app.use('/auth/homepage', auth, homepageRouter);
 app.use('/auth/player', auth, playerRouter);
 
-//app.listen(PORT, "127.0.0.1", () => {
-//  console.log(`server running at http://127.0.0.1:${PORT}`);
-//});
+const options = {
+  key: fs.readFileSync('/home/jpeterson93/127.0.0.1+1-key.pem'),
+  cert: fs.readFileSync('/home/jpeterson93/127.0.0.1+1.pem')
+};
 
-https.createServer(options, app).listen(PORT, "127.0.0.1", () => {
+const httpsServer = https.createServer(options, app);
+
+initSocket(httpsServer, app);
+
+httpsServer.listen(PORT, "127.0.0.1", () => {
   console.log(`HTTPS server running on https://localhost:${PORT}`);
 }); 
 
@@ -85,24 +85,21 @@ app.use((req, res, next) => {
   next({ status: 404, message: "Not found" });
 });
 
-const { logError } = require('./utils.js');
-
 // error handler
 app.use((err, req, res, next) => {
-  logError(err, req).catch(console.error);
+  con.logError(err, req).catch(console.error);
 
   if (res.headersSent) {
     return next(err);
   }  
 
-  res.status(err.status || 500).json({ error: err.message });
+  res.status(err.status || 500).json({error: err.message});
 });
 
-//process.on('SIGINT', () => {
-//  server.close(() => {
-//    console.log('Server closed');
-//    process.exit(0);
-//  });
-//});
-
 module.exports = app;
+
+//app.set('trust proxy', 1);
+
+//app.listen(PORT, "127.0.0.1", () => {
+//  console.log(`server running at http://127.0.0.1:${PORT}`);
+//});

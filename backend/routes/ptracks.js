@@ -1,29 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const con = require('../database/dbpool.js');
+const { asyncHandler, spotifyRequest } = require('../utils.js');
 
-router.get('/:id', async (req, res) => {  
-  const token = await con.getAccessToken(req.user.id);
+router.get('/:id', asyncHandler(async (req, res) => {  
+  const state = {pages: 0, next: "next", sqlPayload: {items: []}};
 
-  const headers = {
-    Authorization: 'Bearer ' + token
-  };
+  const defaultAlbum = {images: [{height: 64, url: 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg', width: 64}]};
 
-  let pages = 0;  
-  let sqlObj = {items: []};
-  // var a = {}
-  // var arr = []
-  
-  while(true) {
-    const url = `https://api.spotify.com/v1/playlists/${req.params.id}/tracks?offset=${pages}&limit=35`;
-    const resp = await fetch(url, {headers});
-    const data = await resp.json();
-        
-    const album = {images: [{height: 64, url: 'https://images.inc.com/uploaded_files/image/1920x1080/getty_626660256_2000108620009280158_388846.jpg', width: 64}]};
+  do {
+    const data = await spotifyRequest(`playlists/${req.params.id}/tracks?offset=${state.pages}&limit=35`, req.token);    
 
-    const arr = data.items?.map(item => {
-      sqlObj.items.push({
-        images: item.track?.album ? item.track?.album.images : album,
+    const payload = data.items?.map(item => {
+      state.sqlPayload.items.push({
+        images: item.track?.album ? item.track?.album.images : defaultAlbum,
         name: item.track?.name, 
         duration_ms: item.track?.duration_ms,
         artists: item.track?.artists, 
@@ -34,7 +24,7 @@ router.get('/:id', async (req, res) => {
 
       return {
         album_id: item.track?.album.id, 
-        images: item.track?.album ? item.track?.album.images : album, 
+        images: item.track?.album ? item.track?.album.images : defaultAlbum, 
         name: item.track?.name, 
         duration_ms: item.track?.duration_ms, 
         artists: item.track?.artists, 
@@ -43,16 +33,13 @@ router.get('/:id', async (req, res) => {
       };
     });    
 
-    res.write(JSON.stringify({items: arr, total: data.total}) + "\n");
+    res.write(JSON.stringify({items: payload, total: data.total}) + "\n");
     
-    pages += 35;
-
-    if(!data.next) {
-      break;
-    }
-  }    
-  //a.items = arr
-  // res.send(a)
+    state.next = data.next;
+    
+    state.pages += 35;
+  } while (state.next);    
+  
   res.end();
 
   try{            
@@ -64,7 +51,7 @@ router.get('/:id', async (req, res) => {
       sql = `INSERT INTO user_playlists (user_id, playlist_id, images, name, public, uri, tracks) VALUES ?`;
 
       const values = [[
-        req.user.id, req.params.id, null, 'temp_playlist', true, `spotify:playlist:${req.params.id}`, JSON.stringify(sqlObj)
+        req.user.id, req.params.id, null, 'temp_playlist', true, `spotify:playlist:${req.params.id}`, JSON.stringify(state.sqlPayload)
       ]];
 
       await con.query(sql, [values]);
@@ -78,7 +65,7 @@ router.get('/:id', async (req, res) => {
 
         await con.query(
           sql, 
-          [req.params.id, `spotify:playlist:${req.params.id}`, JSON.stringify(sqlObj), req.user.id]);
+          [req.params.id, `spotify:playlist:${req.params.id}`, JSON.stringify(state.sqlPayload), req.user.id]);
 
         console.log('Temp Playlist Updated');
       }   
@@ -86,6 +73,6 @@ router.get('/:id', async (req, res) => {
   } catch(e) {
     console.log(e);
   }    
-});
+}));
 
 module.exports = router;

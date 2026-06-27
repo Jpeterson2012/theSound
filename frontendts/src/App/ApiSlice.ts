@@ -84,7 +84,7 @@ export const apiSlice = createApi({
     endpoints: builder => ({
         getAlbums: builder.query<Albums[], void>({
             query: () => ({
-                url: '/homepage2/albums',
+                url: '/homepage/albums',
                 credentials: "include"
             })
         }),
@@ -137,13 +137,13 @@ export const apiSlice = createApi({
         }),
         getPlaylists: builder.query<Playlists[], void>({
             query: () => ({
-                url: '/homepage2/playlists',
+                url: '/homepage/playlists',
                 credentials: "include",
             })
         }),
         getPlaylist: builder.query<Playlists, string>({
             query: playId => ({
-                url: `/homepage2/playlists/${playId}`,
+                url: `/homepage/playlists/${playId}`,
                 credentials: "include",
             })
         }),
@@ -226,7 +226,7 @@ export const apiSlice = createApi({
         }),
         getLiked: builder.query<Liked, void>({
             query: () => ({
-                url: '/homepage2/liked',
+                url: '/homepage/liked',
                 credentials: "include",
             })
         }),
@@ -313,13 +313,13 @@ export const apiSlice = createApi({
         }),
         getPodcasts: builder.query<Podcasts, void>({
             query: () => ({
-                url: '/homepage2/podcasts',
+                url: '/homepage/podcasts',
                 credentials: "include",
             })
         }),
         getAudiobooks: builder.query<Audiobooks, void>({
             query: () => ({
-                url: '/homepage2/audiobooks',
+                url: '/homepage/audiobooks',
                 credentials: "include",
             })
         }),

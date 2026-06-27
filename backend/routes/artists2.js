@@ -1,100 +1,47 @@
 const express = require('express');
 const router = express.Router();
-const con = require('../database/dbpool.js');
+const { asyncHandler, spotifyRequest } = require('../utils.js');
 
-router.get('/:id', async (req, res) => {
-  const token = await con.getAccessToken(req.user.id);
-
-  const headers = {
-    Authorization: 'Bearer ' + token,        
-  };
-
-  try{    
+router.get('/:id', asyncHandler(async (req, res) => {
+  const state = {pages: 0, next: "next", payload: {music: []}};
   
-    // let temp = []
+  do {
+    const data = await spotifyRequest(`artists/${req.params.id}/albums?include_groups=single,album,compilation&offset=${state.pages}&limit=35`, req.token);
 
-    // const getStuff = async() => {
-    //   //Fetch user's saved playlists
-    //   var pages = 0
-    //   while(true) {
-    //       url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?include_groups=single,album,appears_on,compilation&offset=${pages}&limit=50`
-
-    //     resp = await fetch(url, {headers})
-    //     data = await resp.json()
-    //     temp.push(...data.items)
-
-    //     pages += 50
-
-    //     if(data.next == null) {
-    //         console.log("done")
-    //         break
-    //     } 
-    //   }
-    //   info.albums = {}
-    //   info.albums.items = temp
-    //   res.send(info)
-    // }
-
-    // getStuff()
+    state.payload.music.push(
+      ...data.items.map(item => {
+        const {available_markets, ...rest} = item;
+        
+        return rest;
+      })
+    );
     
-    let pages = 0;
+    res.write(JSON.stringify(state.payload) + "\n");
 
-    while(true) {
-      //const url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?include_groups=single,album,appears_on,compilation&offset=${pages}&limit=35`;
-      const url = `https://api.spotify.com/v1/artists/${req.params.id}/albums?include_groups=single,album,compilation&offset=${pages}&limit=35`;
+    state.next = data.next;
 
-      let musicObj = {music: []};        
+    state.pages += 35;
+  } while (state.next);  
 
-      let resp = await fetch(url, {headers});
-      let data = await resp.json();        
+  res.end();   
+}));
 
-      musicObj.music.push(
-        ...data.items.map(item => {
-          const {available_markets, ...rest} = item;
-          
-          return rest;
-        })
-      );
-      
-      res.write(JSON.stringify(musicObj) + "\n");
-      
-      pages += 35;
-  
-      if(!data.next) {
-        break;
-      }
-    };  
+router.get('/albums/:id', asyncHandler(async (req, res) => {
+  const artistIds = req.params.id.split(',');
 
-    res.end();
-  }
-  catch(e){
-    console.error(e);
-  };   
-});
+  const discogs = await Promise.all(
+    artistIds.map(id => spotifyRequest(`artists/${id}/albums?limit=15`, req.token)),
+  );
 
-router.get('/albums/:id', async (req, res) => {
-  const token = await con.getAccessToken(req.user.id);
+  const payload = discogs.reduce((acc, discog, index) => {
+    const artistId = artistIds[index];
 
-  let arr = req.params.id;
+    acc[artistId] = discog.items;
 
-  arr = arr.split(',');
+    return acc;
+  }, {});
 
-  const headers = {
-    Authorization: 'Bearer ' + token,        
-  }
-
-  let items = {};
-
-  for (let i = 0; i < arr.length; i++) {
-    const url = `https://api.spotify.com/v1/artists/${arr[i]}/albums?limit=15`;
-
-    let resp = await fetch(url, {headers});
-    let data = await resp.json();
-
-    items[arr[i]] = data.items;
-  }  
-
-  res.send(items);
-});
+  res.send(payload);
+}));
 
 module.exports = router;

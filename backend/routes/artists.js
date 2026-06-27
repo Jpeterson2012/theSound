@@ -1,33 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const con = require('../database/dbpool.js');
+const { asyncHandler, spotifyRequest } = require('../utils.js');
 
-router.get('/:id', async (req, res) => {
-  const token = await con.getAccessToken(req.user.id);
+router.get('/:id', asyncHandler(async (req, res) => {
+  const [artists, tracks] = await Promise.all([
+    spotifyRequest(`artists/${req.params.id}`, req.token),
+    spotifyRequest(`artists/${req.params.id}/top-tracks`, req.token),
+  ]);
 
-  try{
-    const info = {};
+  const payload = {artists, tracks};
 
-    let url = `https://api.spotify.com/v1/artists/${req.params.id}`;
-
-    const headers = {
-      Authorization: 'Bearer ' + token
-    };
-
-    const resp = await fetch(url, {headers});
-    const data = await resp.json();
-    info.artists = data;
-
-    url = `https://api.spotify.com/v1/artists/${req.params.id}/top-tracks`;
-    const resp2 = await fetch(url, {headers});
-    const data2 = await resp2.json();
-    info.tracks = data2;
-
-    res.send(info);
-  }
-  catch(e) {
-    console.error(e);
-  };        
-});
+  res.send(payload);        
+}));
 
 module.exports = router;

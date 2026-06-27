@@ -2,34 +2,35 @@ import {useEffect} from 'react';
 import { useNavigate } from "react-router-dom"
 import Loading from '../components/Loading/Loading';
 import { spotifyRequest } from '../utils/utils';
+import {io} from "socket.io-client";
 
 export default function LoadingPage() {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchDone = async () => {
-            try {                
-                const temp = await spotifyRequest("/callback/emit")
-                    .then((res) => {                        
-                        return res.json();
-                    })
-                    .then(data => {
-                        console.log(data)
-                    })
-                return temp
-            }
-            catch (err) {
-                console.log(`Login error occured: ${err}`);
-            }
-        }
+    const URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
+      ? import.meta.env.VITE_URL 
+      : import.meta.env.VITE_PROD_URL;
 
-        const dataDone = async () => {
-            await fetchDone();
+    useEffect(() => {        
+        const socket = io(URL.replace(/\/auth$/, ""), {
+            withCredentials: true,
+        });
 
-            navigate('/app', {replace: true});
-        }
+        socket.on("connect", async () => {
+            await spotifyRequest("/callback/import", "POST");
+        });
 
-        dataDone();
+        socket.on("loaded", () => {            
+            navigate("/app", {replace: true});
+        });
+
+        socket.on("connect_error", (err) => {
+            console.error("Socket error:", err.message);
+        });
+
+        return () => {
+            socket.disconnect();
+        };
     },[]);
 
     return <Loading />

@@ -1,79 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const con = require('../database/dbpool.js');
+const { asyncHandler, spotifyRequest } = require('../utils.js');
 
-router.get('/:id', async (req, res) => {
-    const token = await con.getAccessToken(req.user.id);
-        
-    const url = `https://api.spotify.com/v1/albums/${req.params.id}`;    
+router.get('/:id', asyncHandler(async (req, res) => {
+    const data = await spotifyRequest(`albums/${req.params.id}`, req.token);
+    
+    const artists = await Promise.all(
+        data.artists.map(artist => spotifyRequest(`artists/${artist.id}`, req.token)),
+    );
 
-    const headers = {
-        Authorization: 'Bearer ' + token
-    };
+    res.send({
+        albums: data,
+        images: artists.map(artist => artist.images),
+    });
+}));
 
-    try{
-        const resp = await fetch(url,{headers});
-        const data = await resp.json();
-        
-        const apiRequestLoop = async () => {
-            const promiseArray = [];
+router.post('/artists', asyncHandler(async (req, res) => {
+    const artists = await Promise.all(
+        req.body.map(artist => spotifyRequest(`artists/${artist}`, req.token)),
+    );
 
-            for (let i = 0; i < data.artists.length; i++) {
-                promiseArray.push(
-                    await fetch(`https://api.spotify.com/v1/artists/${data.artists[i].id}`,{headers}).then(response => response.json())
-                );
-            }
-
-            return Promise.all(promiseArray);
-        };
-
-        let temp2 = {};
-        let images = [];
-
-        await apiRequestLoop().then(artists => artists.map((a,i,arr) => {            
-            images.push(a.images);
-
-            if (arr.length - 1 === i) {
-                temp2.albums = data;
-                temp2.images = images;
-                res.send(temp2);
-            }
-        }));
-
-    } catch(e) {
-        console.error(e);
-    }
-});
-
-router.post('/artists', async (req, res) => {
-    const token = await con.getAccessToken(req.user.id);
-
-    const headers = {
-        Authorization: 'Bearer ' + token
-    };    
-
-    let apiRequestLoop = async () => {
-        const promiseArray = [];
-
-        for (let i = 0; i < req.body.length; i++) {
-            promiseArray.push(await fetch(`https://api.spotify.com/v1/artists/${req.body[i]}`,{headers}).then(response => response.json()))
-        }
-
-        return Promise.all(promiseArray);
-    };
-
-    let images = [];
-    let temp2 = {};
-
-    await apiRequestLoop().then(artists => artists.map((a,i,arr) => {
-        images.push(a.images);
-
-        if (arr.length - 1 === i) {
-            temp2.images = images;
-            
-            res.send(temp2);
-        }
-    }));
-});
+    res.send({images: artists.map(artist => artist.images)});
+}));
 
 module.exports = router;

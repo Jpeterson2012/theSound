@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require("./AuthRoutes.js");
 const crypto = require('crypto');
+const { asyncHandler } = require('../utils.js');
 
 function generateRandomString(length) {
   let result = '';
@@ -33,7 +34,7 @@ const base64encode = (input) => {
     .replace(/\//g, '_');
 };
 
-router.get('/', async (req, res) => {
+router.get('/', asyncHandler(async (req, res) => {
 
   //Old flow
   const state = generateRandomString(16);
@@ -81,6 +82,6 @@ router.get('/', async (req, res) => {
   //    code_challenge: codeChallenge,
   //    show_dialog: true,
   //  }));
-});
+}));
 
 module.exports = router;

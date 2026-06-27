@@ -1,125 +1,38 @@
 const express = require('express');
 const router = express.Router();
 const con = require('../database/dbpool.js');
+const { asyncHandler, spotifyRequest } = require('../utils.js');
 
-router.get('/', async (req, res) => {      
+router.get('/', asyncHandler(async (req, res) => {  
+  let index = Math.floor(Math.random() * 76); 
+
+  const data = await spotifyRequest(`search?q=tag:hipster&type=album&offset=${index}&limit=20`, req.token);
+  
   const token = await con.getAccessToken(req.user.id);
 
-  const headers = {
-    Authorization: 'Bearer ' + token
-  };
+  const payload = {};
 
-  try {
-    let main = {};
-    let index = Math.floor(Math.random() * 76);
-    let url = `https://api.spotify.com/v1/search?q=tag:hipster&type=album&offset=${index}&limit=20`;
+  payload.hipster = (data?.albums?.items ?? []).reduce((acc, album) => {
+    acc.push({album_id: album.id, images: album.images, name: album.name, artists: album.artists});
 
-    const resp = await fetch(url, {headers});
-    const data = await resp.json();
-    const values = [];
+    return acc;
+  }, []);
 
-    data?.albums?.items.map(a => 
-      values.push({album_id: a.id, images: a.images, name: a.name, artists: a.artists})
-    );
+  const sql = 'SELECT icons, c_id, name from categories';
 
-    main.hipster = values;
+  const [result] = await con.query(sql);
 
-    let sql = 'select exists (select 1 from categories) AS Output';
+  payload.categories = result.reduce((acc, category) => {
+    acc.push({
+      icons: JSON.parse(category.icons),
+      id: category.c_id,
+      name: category.name,
+    });
 
-    let [result] = await con.query(sql);
+    return acc;
+  }, []);
 
-    if (result[0].Output) {
-      sql = 'SELECT icons, c_id, name from categories';
-
-      let [result2] = await con.query(sql);
-
-      const items = [];
-
-      for (let i = 0; i < result2.length; i++) {
-        var temp = {};
-        temp.icons = JSON.parse(result2[i].icons);
-        temp.id = result2[i].c_id;
-        temp.name = result2[i].name;
-        items.push(temp);
-      }
-
-      main.categories = items;
-
-      res.send(main);
-    } else {
-      url = 'https://api.spotify.com/v1/browse/categories?limit=50';
-
-      const getCategories = async () => {
-        const resp = await fetch(url, {headers});
-        const data = await resp.json();        
-
-        const values = [];
-
-        data.categories.items.map(a => 
-          values.push([a.href, JSON.stringify(a.icons), a.id, a.name])
-        );
-
-        sql = "INSERT INTO categories (href, icons, c_id, name) VALUES ?";
-
-        const [result] = await con.query(sql);
-
-        console.log("Number of categories inserted: " + result.affectedRows);
-
-        sql = 'SELECT icons, c_id, name from categories';
-
-        const [result2] = await con.query(sql);
-
-        const items = [];
-
-        for (let i = 0; i < result2.length; i++) {
-          var temp = {};
-          temp.icons = JSON.parse(result2[i].icons);
-          temp.id = result2[i].c_id;
-          temp.name = result2[i].name;
-          items.push(temp);
-        }
-
-        res.send(items);
-      };
-
-      getCategories();
-    }
-  } catch (e) {
-    console.error(e);
-  }
-
-  // url = 'https://api.spotify.com/v1/browse/categories?offset=100&limit=50'
-  // url2 = 'https://api.spotify.com/v1/browse/categories/0JQ5DAqbMKFA6SOHvT3gck'
-  //     const getStuff = async () => {
-  //       const resp = await fetch(url2, {headers})
-  //       const data = await resp.json()
-  //       // info.categories = data
-
-  //       var values = []
-  //       values.push([data.href, JSON.stringify(data.icons), data.id, "Drum and Bass"])
-  //       // data.categories.items.map(a => values.push([a.href, JSON.stringify(a.icons), a.id, a.name]))
-  //       sql = "INSERT INTO categories (href, icons, c_id, name) VALUES ?"
-  //       con.query(sql, [values], function(err, result) {
-  //           if (err) throw err;
-  //           console.log("Number of categories inserted: " + result.affectedRows);
-  //       })
-  //       sql = 'SELECT icons, c_id, name from categories'
-  //       con.query(sql, function (err, result) {
-  //         if (err) throw err;
-          
-  //         var items = []
-  //         for (let i = 0; i < result.length; i++) {
-  //             var temp = {}
-  //             temp.icons = JSON.parse(result[i].icons)
-  //             temp.id = result[i].c_id
-  //             temp.name = result[i].name
-  //             items.push(temp)
-  //         }
-  //         res.send(items)
-  //       })
-
-  //     }
-  //     getStuff()
-});
+  res.send(payload);
+}));
 
 module.exports = router;
