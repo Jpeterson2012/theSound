@@ -11,7 +11,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
     );
 
     res.send({
-        albums: data,
+        album: data,
         images: artists.map(artist => artist.images),
     });
 }));

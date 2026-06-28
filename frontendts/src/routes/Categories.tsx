@@ -30,8 +30,7 @@ export default function Categories() {
         else{
             const fetchcPlaylists = async () => {
                 setLoading(true)                
-                const resp = await spotifyRequest(`/cplaylists/${lastSegment}`);
-                const data = await resp.json()
+                const data = await spotifyRequest(`/cplaylists/${lastSegment}`);                
                 setLoading(false)
                 setClists(data)                 
                 

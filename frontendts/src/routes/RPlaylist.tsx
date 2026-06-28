@@ -9,7 +9,7 @@ import MySnackbar from '../components/MySnackBar.tsx';
 import ButtonScroll from '../components/ButtonScroll/ButtonScroll.tsx';
 import { useGetPlaylistsQuery,useDeletePlaylistMutation } from '../App/ApiSlice.ts';
 import { filterTracks } from "../components/filterTracks.tsx";
-import { spotifyRequest, msToReadable } from '../utils/utils.ts';
+import { spotifyRequest, spotifyStreamRequest, msToReadable } from '../utils/utils.ts';
 
 import { AddToLibrary } from '../helpers/AddToLibrary.tsx';
 
@@ -126,7 +126,7 @@ export default function RPlaylist({lastSegment}: any){
     } else {
       const fetchpTracks = async () => {
         // setLoading(true)        
-        const resp = await spotifyRequest(`/ptracks/${lastSegment}`);
+        const resp = await spotifyStreamRequest(`/ptracks/${lastSegment}`);
 
         setLoading(false)
         

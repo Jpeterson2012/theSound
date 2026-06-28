@@ -57,14 +57,13 @@ export default function RAlbum() {
     else {
       const fetchTracks = async () => {
         try {          
-          const temp = await spotifyRequest(`/tracks/${lastSegment}`)
-            .then((res) => {
-              // console.log(res.json())
-              return res.json();
-            }).then((data) => {return data})
-          return temp
+          const data = await spotifyRequest(`/tracks/${lastSegment}`);
+
+          return data;
         }
-        catch (err) {}
+        catch (err) {
+          console.error(err);
+        }
       }
       const assignTracks = async () => {
         // setIsLoading(true)
@@ -79,8 +78,7 @@ export default function RAlbum() {
 
       const fetchDiscog = async () => {
         //const resp = await spotifyRequest(`/artists2/albums/${zip[0][1]}`);
-        const resp = await spotifyRequest(`/artists2/albums/${zip.map((z: any) => z[1]).join()}`);
-        const data = await resp.json();
+        const data = await spotifyRequest(`/artists2/albums/${zip.map((z: any) => z[1]).join()}`);        
   
         //console.log(data);
         setDiscog(data);

@@ -6,7 +6,7 @@ import { Routes, Route, Navigate } from "react-router-dom"
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '../../hooks/usePlayer.ts';
 import Home from '../../routes/Home';
-import Album from '../../routes/Album';
+import Album from '../../routes/Album.tsx';
 import Playlist from '../../routes/Playlist.tsx';
 import Artist from '../../routes/Artist.tsx';
 import Logo from '../Logo/Logo.tsx';

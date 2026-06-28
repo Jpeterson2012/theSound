@@ -52,8 +52,7 @@ export default function Discover() {
 
     const fetchDiscover = async () => {
         try {                    
-            const resp = await spotifyRequest(`/discover?offset=${counter}`);
-            const data = await resp.json();
+            const data = await spotifyRequest(`/discover?offset=${counter}`);            
             //return data;
 
             setReleases((prev: []) => [...prev, ...data]);                                    
@@ -78,8 +77,7 @@ export default function Discover() {
         else {
             const fetchCategories = async () => {      
                 try{
-                    const resp = await spotifyRequest('/categories');
-                    const data = await resp.json();
+                    const data = await spotifyRequest('/categories');                    
                     setAlbums(data.hipster);                    
                     setCategories(data.categories);                    
                     //sessionStorage.setItem("categories", JSON.stringify(data));
@@ -93,8 +91,7 @@ export default function Discover() {
 
             // const fetchDiscover = async () => {
             //     try {                    
-            //         const resp = await spotifyRequest(`/discover?offset=${counter}`);
-            //         const data = await resp.json();
+            //         const data = await spotifyRequest(`/discover?offset=${counter}`);            
             //         //return data;
 
             //         setReleases((prev: []) => [...prev, ...data]);                                    

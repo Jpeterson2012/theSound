@@ -1,11 +1,8 @@
 import { resetInactivityTimer } from "./authTimerV2.ts";
 import { store } from "../App/store.ts";
 
-export async function spotifyRequest(path: string): Promise<Response>;
-export async function spotifyRequest(path: string, method: string): Promise<Response>;
-export async function spotifyRequest(path: string, method: string, options: object): Promise<Response>;
-export async function spotifyRequest(path: string, method?: string, options?: object): Promise<Response> {    
-    const playing = store.getState().defaultState.playing;    
+async function spotifyFetch(path: string, method?: string, options?: RequestInit) {
+  const playing = store.getState().defaultState.playing;    
 
     if (path !== "/player" || playing) {        
         resetInactivityTimer();
@@ -19,7 +16,7 @@ export async function spotifyRequest(path: string, method?: string, options?: ob
 
     const url = urlTest ? path : `${BASE_URL}${path}`;        
 
-    return await fetch(url, {
+    const response = await fetch(url, {
         method: method ?? 'GET',
         headers: {
             "Content-Type":"application/json",            
@@ -27,6 +24,26 @@ export async function spotifyRequest(path: string, method?: string, options?: ob
         ...(!urlTest && {credentials: "include"}),
         ...options,                
     });
+
+    if (!response.ok) {
+        const text = await response.text();
+
+        throw new Error(`Spotify error: ${response.status}: ${text}`);
+    };
+
+    return response;
+};
+
+export async function spotifyRequest<T = any>(path: string, method?: string, options?: RequestInit): Promise<T | null> {
+    const response = await spotifyFetch(path, method, options);
+
+    if (response.status === 204) return null;
+
+    return (await response.json()) as T;
+};
+
+export async function spotifyStreamRequest(path: string, method?: string, options?: RequestInit): Promise<Response> {
+  return spotifyFetch(path, method, options);
 };
 
 export const BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 

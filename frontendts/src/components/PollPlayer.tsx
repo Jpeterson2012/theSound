@@ -9,9 +9,7 @@ export default function PollPlayer({setCurrentDev,currentDev}: any){
 
   useInterval(() => {                
     const poll = async () => {            
-      const resp = await spotifyRequest('/player');
-
-      const data = await resp.json();
+      const data = await spotifyRequest('/player');      
 
       if (currentDev.name !== data.device.name) {
         if (data.device.name === "TheSound") {

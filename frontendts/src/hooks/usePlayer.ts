@@ -119,11 +119,7 @@ export const usePlayer = () => {
                     }
 
                     try {
-                        const response = await spotifyRequest("/token");
-
-                        if (!response.ok) throw new Error("Token request failed");
-
-                        const data = await response.json();
+                        const data = await spotifyRequest("/token");
 
                         cachedToken = data.access_token;
                         cachedAt = now;

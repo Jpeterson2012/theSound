@@ -35,13 +35,13 @@ function initSocket(server, app) {
 
   io.on("connection", (socket) => {
     if (socket.user?.id) {
-        socket.join(String(socket.user.id));
+      socket.join(String(socket.user.id));
     }
   });
 
   io.engine.on("connection_error", (err) => {
     console.log("Socket connection error:", err.message);
-    });
+  });
 
   app.set("io", io);
 

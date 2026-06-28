@@ -8,8 +8,7 @@ export default function useAuth(){
 
     const tokenManager = async () => {
         try{                
-            const response = await spotifyRequest("/token");
-            const data = await response.json();                                                                                           
+            const data = await spotifyRequest("/token");                                                                                                       
 
             store.dispatch(setAuthToken(data.access_token));            
             
@@ -36,15 +35,13 @@ export default function useAuth(){
 
     const refreshAccessToken = async (refresh: any) => {        
         try{
-            await spotifyRequest("/token/refresh_token", "POST", {
+            const data = await spotifyRequest("/token/refresh_token", "POST", {
                 body: JSON.stringify({refresh_token: refresh})
-            })
-            .then(data => data.json())
-            .then(item => {                                
-                store.dispatch(setAuthToken(item.access_token));     
-                
-                scheduleRefresh(item.expires_in, refresh);
             });
+
+            store.dispatch(setAuthToken(data.access_token));     
+                
+            scheduleRefresh(data.expires_in, refresh);
         } catch (e) {
             console.error(`Error requesting access token: ${e}`);
 

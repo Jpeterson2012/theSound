@@ -6,7 +6,7 @@ import Card from "../components/Card/Card";
 import { Spin3 } from "../components/Spin/Spin.tsx";
 import ButtonScroll from "../components/ButtonScroll/ButtonScroll.tsx";
 import { useParams } from "react-router-dom";
-import { spotifyRequest } from '../utils/utils.ts';
+import { spotifyRequest, spotifyStreamRequest } from '../utils/utils.ts';
 
 export default function Artist() {
   var parts = window.location.href.split('/');
@@ -30,12 +30,9 @@ export default function Artist() {
 
     const fetchArtist = async () => {
       try {        
-        const temp = await spotifyRequest(`/artists/${lastSegment}`)
-          .then((res) => {
-            // console.log(res.json())
-            return res.json();
-          }).then((data) => {return data})
-        return temp
+        const data = await spotifyRequest(`/artists/${lastSegment}`);
+
+        return data;
       }
       catch (err) {}
     }
@@ -67,7 +64,7 @@ export default function Artist() {
   // assignArtists2()
 
     const fetchArtist2 = async () => {      
-      const resp = await spotifyRequest(`/artists2/${lastSegment}`);
+      const resp = await spotifyStreamRequest(`/artists2/${lastSegment}`);
 
       setLoading2(false);
       const reader = resp?.body?.getReader();
