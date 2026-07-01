@@ -46,8 +46,6 @@ function getAlbums(storeAlbums: any, albums: any, nav: any, close: any, dispatch
   const handleAlbumClick = (album: any) => {
     const found = storeAlbums?.find((e: any) => e?.album_id === album.id);
 
-    sessionStorage.setItem("albumStatus", found ? "user" : "notuser");
-
     const artistNames = album.artists.map((a: any) => a.name);
     const artistIDs = album.artists.map((a: any) => a.id);
 
@@ -254,9 +252,7 @@ export default function Logo () {
           {recents.map((recent: any,i: number) => 
             <div key={i}>        
               <a onClick={() => {
-                const found = (storeAlbums?.find((e: any) => e?.album_id === recent.id) || (storeAlbums?.find((e: any) => e?.name === recent.name)));                                
-                
-                sessionStorage.setItem("albumStatus", found ? "user" : "notuser");
+                const found = (storeAlbums?.find((e: any) => e?.album_id === recent.id) || (storeAlbums?.find((e: any) => e?.name === recent.name)));                                                                
 
                 if (found && recent.id !== found?.album_id) {
                   recent.id = found?.album_id;

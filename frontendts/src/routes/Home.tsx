@@ -472,9 +472,7 @@ export default function Home({setIsLoading2}: any) {
               // console.log(val)
               // console.log(sessionStorage.getItem("name"))
 
-                let found = (albums?.find((e: any) => e?.album_id === val.id) || (albums?.find((e: any) => e?.name === val.name)));                                
-                
-                sessionStorage.setItem("albumStatus", found ? "user" : "notuser");
+                let found = (albums?.find((e: any) => e?.album_id === val.id) || (albums?.find((e: any) => e?.name === val.name)));                                                                
 
                 if (found && val.id !== found?.album_id) {
                   val.id = found?.album_id;

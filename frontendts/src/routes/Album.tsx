@@ -185,32 +185,14 @@ export default function Album() {
     return (
       <AddToLibrary 
         onClick={(e) => {
-          const el = e.target as HTMLElement;
-
           setSnack(true);
-
-          //el.style.transform = 'scale(1)';
-
-          // el.style.animation = 'pulse3 linear 1s';
-
-          // setTimeout(()=>{
-          //   el.style.removeProperty('animation');
-
-          //   //el.style.removeProperty('transform');
-          // }, 1000);                    
 
           if (!cachedAlbum){      
             addAlbum({album_type: talbum?.album_type, total_tracks: talbum?.total_tracks, album_id: lastSegment!, images: talbum?.images, name: talbum?.name, 
               release_date: talbum?.release_date, uri: talbum?.uri, artists: talbum?.artists, tracks: talbum?.tracks, 
-              copyrights: talbum?.copyrights, label_name: talbum?.label_name, date_added: new Date().toISOString()});              
-            // setTimeout (() => {
-            //   addAlbum({album_type: talbum[0]?.album_type, total_tracks: talbum[0]?.total_tracks, album_id: lastSegment!, images: talbum[0]?.images, name: talbum[0]?.name, 
-            //     release_date: talbum[0]?.release_date, uri: talbum[0]?.uri, artists: talbum[0]?.artists, tracks: talbum[0]?.tracks, 
-            //     copyrights: talbum[0]?.copyrights, label_name: talbum[0]?.label_name, date_added: new Date().toISOString()}) 
-            // },1100);                    
+              copyrights: talbum?.copyrights, label_name: talbum?.label_name, date_added: new Date().toISOString()});                    
           } else {                                        
-            deleteAlbum({aID: lastSegment!});
-            //setTimeout(() => { deleteAlbum({aID: lastSegment!}) },1100);                                        
+            deleteAlbum({aID: lastSegment!});                                                    
           }                  
         }}
       >
@@ -291,13 +273,9 @@ export default function Album() {
       );  
             
       if (found) {
-        sessionStorage.setItem("albumStatus","user");
-
         if (discog.id !== found?.album_id) {
           found?.album_id;
         }                  
-      } else {
-        sessionStorage.setItem("albumStatus","notuser");
       }
       
       sessionStorage.setItem("image", discog.images.find((b: any) => b.height > 160).url);

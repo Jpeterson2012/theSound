@@ -121,8 +121,6 @@ export default function Discover() {
 
     const listAlbums = albums?.map((album:any, index:any) =>
         <a key={index} onClick={function handleClick() {
-            sessionStorage.setItem("albumStatus", "notuser")
-            
             dispatch(setCurrentAlbum({
                 image: album.images.filter((t: any)=>t.height == 300).map((s: any) => s.url),
                 artists: album.artists.map((a:any) => a.name),

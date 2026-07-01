@@ -25,11 +25,6 @@ export default function Card( {id, image, name, artist, a_id, paused}: any ) {
         <div className="card">
             {(!paused && sessionStorage.getItem('name') === name) && <Loading3/>}
             <a onClick={() => {
-                //Check if album is already in library or not
-                found ? sessionStorage.setItem("albumStatus","user") : sessionStorage.setItem("albumStatus", "notuser");
-                
-                //sessionStorage.setItem("albumname", name);
-
                 dispatch(setCurrentAlbum({
                     image,
                     artists: artist,
